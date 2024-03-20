@@ -174,17 +174,18 @@ class ChatScreen extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  controller.isFileSendEnable.isTrue ? CircleIconButton(
+                                  controller.isAttachmentSendEnable.isTrue ? CircleIconButton(
                                     height: ChatHelpers.iconSizeExtraOverLarge,
                                     width: ChatHelpers.iconSizeExtraOverLarge,
                                     padding: 0,
                                     splashColor: ChatHelpers.black.withOpacity(.3),
                                     boxColor: ChatHelpers.transparent,
                                     isImage: false,
+                                    colors: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.textColor_4,
                                     icons: Icons.attach_file,
                                     onTap: () => controller.openDialog(),
                                   ) : const SizedBox(),
-                                  controller.isImageSendEnable.isTrue ? CircleIconButton(
+                                  controller.isCameraImageSendEnable.isTrue ? CircleIconButton(
                                     height: ChatHelpers.iconSizeExtraOverLarge,
                                     width: ChatHelpers.iconSizeExtraOverLarge,
                                     padding: 0,
@@ -192,6 +193,7 @@ class ChatScreen extends StatelessWidget {
                                     boxColor: ChatHelpers.transparent,
                                     isImage: false,
                                     icons: Icons.camera_alt,
+                                    colors: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.textColor_4,
                                     onTap: () => controller.cameraPermission(),
                                   ) : const SizedBox()
                                 ],
@@ -203,7 +205,7 @@ class ChatScreen extends StatelessWidget {
                           CircleIconButton(
                             height: 50,
                             width: 50,
-                            boxColor: ChatHelpers.mainColorLight,
+                            boxColor: controller.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
                             isImage: false,
                             icons: Icons.send,
                             colors: ChatHelpers.white,
@@ -218,9 +220,7 @@ class ChatScreen extends StatelessWidget {
                       duration: const Duration(milliseconds: 500),
                       child: AnimatedContainer(
                         height: controller.isDialogOpen.isTrue ? 90 : 0,
-                        width: controller.isDialogOpen.isTrue
-                            ? MediaQuery.of(context).size.width
-                            : 0,
+                        width: controller.isDialogOpen.isTrue ? MediaQuery.of(context).size.width : 0,
                         padding: const EdgeInsets.all(
                             ChatHelpers.marginSizeSmall),
                         decoration: BoxDecoration(
@@ -232,6 +232,7 @@ class ChatScreen extends StatelessWidget {
                         child: Wrap(
                           alignment: WrapAlignment.center,
                           children: [
+                            controller.imageArguments?.isImageFromCamera ?? false ?
                             CommonIconVBtn(
                               onPressed: () async {
                                 controller.cameraPermission();
@@ -243,9 +244,10 @@ class ChatScreen extends StatelessWidget {
                               width:
                               MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
-                              color: ChatHelpers.mainColorLight,
+                              color: controller.themeArguments?.colorArguments?.attachmentCameraIconColor ?? ChatHelpers.mainColorLight,
                               iconSize: ChatHelpers.iconSizeLarge,
-                            ),
+                            ) : const SizedBox(),
+                            controller.imageArguments?.isImageFromGallery ?? false ?
                             CommonIconVBtn(
                               onPressed: () async {
                                 controller.photoPermission();
@@ -257,9 +259,10 @@ class ChatScreen extends StatelessWidget {
                               width:
                               MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
-                              color: ChatHelpers.red,
+                              color: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.red,
                               iconSize: ChatHelpers.iconSizeLarge,
-                            ),
+                            ) : const SizedBox(),
+                            controller.imageArguments?.isDocumentsSendEnable ?? false ?
                             CommonIconVBtn(
                               onPressed: () async {
                                 controller.pickFile();
@@ -271,9 +274,9 @@ class ChatScreen extends StatelessWidget {
                               width:
                               MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
-                              color: ChatHelpers.green,
+                              color: controller.themeArguments?.colorArguments?.attachmentDocumentsIconColor ?? ChatHelpers.green,
                               iconSize: ChatHelpers.iconSizeLarge,
-                            ),
+                            ) : const SizedBox(),
                           ],
                         ),
                       ),

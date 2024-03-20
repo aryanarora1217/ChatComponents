@@ -96,6 +96,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   /// arguments get
   late ChatArguments chatArguments;
+  ImageArguments? imageArguments;
+  ThemeArguments? themeArguments;
 
   String chatRoomId="";
   String userId = "";
@@ -108,11 +110,12 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   String agoraAppCertificate = "";
   RxBool isVideoCallEnable = false.obs;
   RxBool isAudioCallEnable = false.obs;
-  RxBool isFileSendEnable = false.obs;
-  RxBool isImageSendEnable = false.obs;
+  RxBool isAttachmentSendEnable = false.obs;
+  RxBool isCameraImageSendEnable = false.obs;
 
 
-/// for genrating chatroom Id
+
+/// for generating chatroom Id
   getChatRoomId(String a, String b) {
     if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
       chatRoomId = "${b}_$a";
@@ -598,19 +601,22 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
     /// get all details with arguments
     chatArguments = Get.arguments;
+
     chatRoomId = chatArguments.chatRoomId;
-    userId = chatArguments.userId;
+    userId = chatArguments.otherUserId;
     currentUserId = chatArguments.currentUserId;
     firebaseServerKey = chatArguments.firebaseServerKey;
-    imageBaseUrl = chatArguments.imageBaseUrl;
+    imageBaseUrl = chatArguments.imageBaseUrlFirebase;
     agoraAppId = chatArguments.agoraAppId ??"";
     agoraChannelName = chatArguments.agoraChannelName ??"";
     agoraToken = chatArguments.agoraToken ??"";
     agoraAppCertificate = chatArguments.agoraAppCertificate ??"";
     isVideoCallEnable.value = chatArguments.isVideoCallEnable;
     isAudioCallEnable.value = chatArguments.isAudioCallEnable;
-    isFileSendEnable.value = chatArguments.isAttachmentSendEnable;
-    isImageSendEnable.value = chatArguments.isCameraImageSendEnable;
+    isAttachmentSendEnable.value = chatArguments.isAttachmentSendEnable;
+    isCameraImageSendEnable.value = chatArguments.isCameraImageSendEnable;
+    imageArguments = chatArguments.imageArguments;
+    themeArguments = chatArguments.themeArguments;
 
     isScreenOn.value = true;
 

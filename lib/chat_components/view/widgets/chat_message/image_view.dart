@@ -95,8 +95,10 @@ class ImageView extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: Text(
                           time,
-                          style: const TextStyle(
-                              color: ChatHelpers.white, fontSize: 11),
+                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                              isSender == true
+                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
                         ),
                       ),
                     ),

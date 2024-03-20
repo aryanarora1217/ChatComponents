@@ -10,8 +10,6 @@ class MessageView extends StatelessWidget {
   final bool isSender;
   final bool isSeen;
   final bool visible;
-  final Color? senderColor;
-  final Color? receiverColor;
   final bool isReaction;
   final List<String> reactionList;
   final VoidCallback onLongTap;
@@ -28,7 +26,7 @@ class MessageView extends StatelessWidget {
       required this.visible,
       required this.isReaction,
       required this.reactionList,
-      required this.chatController, this.senderColor, this.receiverColor});
+      required this.chatController});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +73,7 @@ class MessageView extends StatelessWidget {
                         Flexible(
                           child: Text(
                             message,
-                            style: ChatHelpers.instance.styleRegular(
+                            style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
                                 ChatHelpers.fontSizeDefault,
                                 isSender == true
                                     ? ChatHelpers.white
@@ -88,11 +86,11 @@ class MessageView extends StatelessWidget {
                         ),
                         Text(
                           time,
-                          style: ChatHelpers.instance.styleLight(
-                              ChatHelpers.fontSizeExtraSmall,
+                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??
+                              ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
                               isSender == true
-                                  ? senderColor ?? ChatHelpers.white
-                                  : receiverColor ?? ChatHelpers.black),
+                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
                         )
                       ],
                     ),

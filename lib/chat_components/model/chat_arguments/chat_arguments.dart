@@ -1,14 +1,13 @@
-
 import 'package:chatcomponent/chat_components/model/models/user_model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 
 /// Chat screen Arguments
 class ChatArguments {
-  final String userId;
+  final String otherUserId;
   final String currentUserId;
   final String chatRoomId;
   final String firebaseServerKey;
-  final String imageBaseUrl;
+  final String imageBaseUrlFirebase;
   final String? agoraAppId;
   final String? agoraChannelName;
   final String? agoraToken;
@@ -22,7 +21,7 @@ class ChatArguments {
 
   ChatArguments(
       {this.imageArguments,
-        this.themeArguments,
+      this.themeArguments,
       this.agoraChannelName,
       this.agoraToken,
       required this.isVideoCallEnable,
@@ -30,24 +29,24 @@ class ChatArguments {
       required this.isAttachmentSendEnable,
       required this.isCameraImageSendEnable,
       required this.chatRoomId,
-      required this.imageBaseUrl,
+      required this.imageBaseUrlFirebase,
       required this.agoraAppId,
       required this.agoraAppCertificate,
-      required this.userId,
+      required this.otherUserId,
       required this.currentUserId,
       required this.firebaseServerKey});
 }
 
 /// Image send able Arguments
 class ImageArguments {
-  final bool isImageFromGallery;
-  final bool isImageFromCamera;
-  final bool isDocumentsSendEnable;
+  final bool? isImageFromGallery;
+  final bool? isImageFromCamera;
+  final bool? isDocumentsSendEnable;
 
   ImageArguments({
-    required this.isImageFromGallery,
-    required this.isImageFromCamera,
-    required this.isDocumentsSendEnable,
+    this.isImageFromGallery = false,
+    this.isImageFromCamera = false,
+    this.isDocumentsSendEnable = false,
   });
 }
 
@@ -58,8 +57,8 @@ class ThemeArguments {
   final BorderRadiusArguments? borderRadiusArguments;
   final CustomWidgetsArguments? customWidgetsArguments;
 
-  ThemeArguments(
-      this.colorArguments, this.styleArguments, this.borderRadiusArguments, this.customWidgetsArguments);
+  ThemeArguments(this.colorArguments, this.styleArguments,
+      this.borderRadiusArguments, this.customWidgetsArguments);
 }
 
 /// Color change for app theme Arguments
@@ -67,6 +66,8 @@ class ColorArguments {
   final Color? mainColor;
   final Color? mainColorLight;
   final Color? textColor;
+  final Color? senderMessageTextColor;
+  final Color? receiverMessageTextColor;
   final Color? backgroundColor;
   final Color? iconColor;
   final Color? attachmentIconColor;
@@ -82,6 +83,8 @@ class ColorArguments {
 
   ColorArguments(
       {this.iconColor,
+      this.senderMessageTextColor,
+      this.receiverMessageTextColor,
       this.attachmentIconColor,
       this.cameraIconColor,
       this.audioCallIconColor,
@@ -144,7 +147,7 @@ class BorderRadiusArguments {
       this.iconButtonsRadius});
 }
 
-/// custom Widget changes for app theme Arguments 
+/// custom Widget changes for app theme Arguments
 class CustomWidgetsArguments {
   final Widget customIconButtonWidgets;
   final Widget customSendIconButtonWidgets;
@@ -168,11 +171,13 @@ class CallArguments {
   final String agoraToken;
   final String agoraAppCertificate;
   final bool? isMicOn;
+  final ThemeArguments? themeArguments;
 
   CallArguments(
       {required this.agoraChannelName,
       required this.agoraToken,
       this.isMicOn,
+      this.themeArguments,
       required this.user,
       required this.currentUser,
       required this.callType,
