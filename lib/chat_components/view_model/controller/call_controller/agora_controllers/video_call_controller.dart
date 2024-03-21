@@ -16,8 +16,8 @@ class VideoCallController extends GetxController {
   RtcEngine agoraRtcEngine = createAgoraRtcEngine();
 
   /// user details variable
-  Rx<Users> currentUser = Users().obs;
-  Rx<Users> user = Users().obs;
+  // Rx<Users> currentUser = Users().obs;
+  // Rx<Users> user = Users().obs;
 
   // final expirationInSeconds = 3600;
   // final currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -31,14 +31,14 @@ class VideoCallController extends GetxController {
 
   /// call details
   CallModel callDetails = CallModel();
-  String callId = "";
+  // String callId = "";
   RxBool isMicOn = true.obs;
   RxBool isSpeakerOn = true.obs;
   RxBool isUserMicOn = true.obs;
   RxBool isVideoOn = true.obs;
   RxBool isUserVideoOn = true.obs;
-  String channelName = '';
-  String token = '';
+  // String channelName = '';
+  // String token = '';
   /// firebase function class variable
   var firebase = FirebaseDataBase();
 
@@ -49,12 +49,12 @@ class VideoCallController extends GetxController {
   /// call agruments
   late CallArguments callArguments;
 
-  RxString userId = "".obs;
-  RxString currentUserId ="".obs;
-  String firebaseServerKey = "";
-  RxString imageBaseUrl="".obs;
-  RxString agoraAppId="".obs;
-  String? agoraAppCertificate="";
+  // RxString userId = "".obs;
+  // RxString currentUserId ="".obs;
+  // String firebaseServerKey = "";
+  // RxString imageBaseUrl="".obs;
+  // RxString agoraAppId="".obs;
+  // String? agoraAppCertificate="";
 
   /// start timer for display on screen to users
   void startTimer() {
@@ -71,7 +71,7 @@ class VideoCallController extends GetxController {
   Future<void> setupAgoraEngine() async {
     agoraRtcEngine = createAgoraRtcEngine();
     await agoraRtcEngine.initialize(RtcEngineContext(
-        appId: agoraAppId.value,
+        appId: callArguments.agoraAppId,
         channelProfile: ChannelProfileType.channelProfileLiveBroadcasting));
     agoraRtcEngine.registerEventHandler(getEventHandler());
     await agoraRtcEngine.setClientRole(
@@ -147,14 +147,12 @@ class VideoCallController extends GetxController {
       await [Permission.microphone, Permission.camera].request();
       await setupAgoraEngine();
       await agoraRtcEngine.isSpeakerphoneEnabled();
-      // token =
-      //     "007eJxTYBA+dUr4usBjLyf3DVHcUyZvmb8nVsX4Ueb0SEvVR++9ftxUYEhNtDA2NTY3MjAzTDExSbZMsrRMSUk0skwzs0gySLS0dOfaldoQyMgw10STlZEBAkF8AQbHosrEvHjHovyixHhDIxNzBgYAu84iYQ==";
       logPrint("tokens is");
-      logPrint(token);
+      logPrint(callArguments.agoraToken);
       await agoraRtcEngine.joinChannel(
           options: const ChannelMediaOptions(),
-          token: token,
-          channelId: channelName,
+          token: callArguments.agoraToken,
+          channelId: callArguments.agoraChannelName,
           uid: 0);
     } catch (e) {
       logPrint("error agora room : $e");
@@ -167,17 +165,17 @@ class VideoCallController extends GetxController {
     /// get all details form arguments for call
     callArguments = Get.arguments;
 
-    user.value = callArguments.user;
-    callId = callArguments.callId;
-    userId.value = callArguments.userId;
-    currentUserId.value = callArguments.currentUserId;
-    currentUser.value = callArguments.currentUser;
-    firebaseServerKey = callArguments.firebaseServerKey;
-    imageBaseUrl.value = callArguments.imageBaseUrl;
-    agoraAppId.value = callArguments.agoraAppId;
-    agoraAppCertificate = callArguments.agoraAppCertificate;
-    channelName = callArguments.agoraChannelName;
-    token = callArguments.agoraToken;
+    // user.value = callArguments.user;
+    // callId = callArguments.callId;
+    // userId.value = callArguments.userId;
+    // currentUserId.value = callArguments.currentUserId;
+    // currentUser.value = callArguments.currentUser;
+    // firebaseServerKey = callArguments.firebaseServerKey;
+    // imageBaseUrl.value = callArguments.imageBaseUrl;
+    // agoraAppId.value = callArguments.agoraAppId;
+    // agoraAppCertificate = callArguments.agoraAppCertificate;
+    // channelName = callArguments.agoraChannelName;
+    // token = callArguments.agoraToken;
 
     isMicOn.value = callArguments.isMicOn??false;
 
@@ -190,22 +188,22 @@ class VideoCallController extends GetxController {
 
 
   /// fetch  all user details
-  Future<void> fetchUsers() async {
-    currentUser.value = await firebase.fetchUser(callDetails.receiverId??"") ?? Users();
-    user.value = (callDetails.callerId == currentUser.value.id ?  await firebase.fetchUser(callDetails.receiverId??"") : await firebase.fetchUser(callDetails.callerId??"")) ?? Users();
-    logPrint("user joined details");
-    logPrint(user.value.id);
-  }
+  // Future<void> fetchUsers() async {
+  //   currentUser.value = await firebase.fetchUser(callDetails.receiverId??"") ?? Users();
+  //   user.value = (callDetails.callerId == currentUser.value.id ?  await firebase.fetchUser(callDetails.receiverId??"") : await firebase.fetchUser(callDetails.callerId??"")) ?? Users();
+  //   logPrint("user joined details");
+  //   logPrint(user.value.id);
+  // }
 
 
 /// fetch call details
   fetchCallDetails() async {
     try{
-      streamRef = firebase.callReferenceById(callId).snapshots();
-      DocumentReference<Map<String, dynamic>> reference = firebase.callReferenceById(callId);
+      streamRef = firebase.callReferenceById(callArguments.callId).snapshots();
+      DocumentReference<Map<String, dynamic>> reference = firebase.callReferenceById(callArguments.callId);
       await reference.get().then((value) async {
         callDetails = CallModel.fromJson(value.data()??{});
-        await fetchUsers();
+        // await fetchUsers();
       });
       await streamListener();
       logPrint(callDetails.callStatus);

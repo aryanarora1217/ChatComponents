@@ -16,11 +16,13 @@ class CircleIconButton extends StatelessWidget {
   final double? height;
   final double? width;
   final double? padding;
+  final Widget? sendBtn;
 
   const CircleIconButton(
       {super.key,
       this.isImageText,
       this.icons,
+        this.sendBtn,
       required this.onTap,
       this.colors,
       this.height,
@@ -34,20 +36,21 @@ class CircleIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return shapeRec == false
-        ? Container(
+        ? InkWell(
+         borderRadius: BorderRadius.circular(ChatHelpers.roundButtonRadius),
+          splashColor: splashColor ?? ChatHelpers.textColor_4,
+          onTap: onTap,
+          child: Container(
             height: height ?? ChatHelpers.iconSizeExtraLarge,
             width: width ?? ChatHelpers.iconSizeExtraLarge,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: boxColor ?? ChatHelpers.mainColorLight,
-            ),
+                shape: BoxShape.circle,
+                color: boxColor ?? ChatHelpers.mainColorLight,
+              ),
             padding: EdgeInsets.all(padding??ChatHelpers.marginSizeExtraSmall),
             child: ClipOval(
-              child: Material(
-                color: ChatHelpers.transparent, // Button color
-                child: InkWell(
-                  splashColor: splashColor ?? ChatHelpers.textColor_4,
-                  onTap: onTap,
+                child: Material(
+                  color: ChatHelpers.transparent,
                   child: isImage == true
                       ? isImageText ?? false
                           ? Text(
@@ -68,26 +71,27 @@ class CircleIconButton extends StatelessWidget {
                         ),
                 ),
               ),
-            ),
-          )
-        : Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: boxColor ?? ChatHelpers.mainColorLight,
-              borderRadius:
+          ),
+        )
+        : InkWell(
+      borderRadius: BorderRadius.circular(ChatHelpers.roundButtonRadius),
+      splashColor: splashColor ?? ChatHelpers.mainColorLight,
+          onTap: onTap,
+          child: sendBtn ?? ClipRRect(
+            borderRadius:
                   BorderRadius.circular(ChatHelpers.cornerRadius),
-            ),
-            height: height ?? ChatHelpers.iconSizeExtraLarge,
-            width: width ?? ChatHelpers.iconSizeExtraLarge,
-            padding: EdgeInsets.all(padding??ChatHelpers.marginSizeExtraSmall),
-            child: ClipRRect(
-              borderRadius:
-                  BorderRadius.circular(ChatHelpers.cornerRadius),
+            child: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: boxColor ?? ChatHelpers.mainColorLight,
+                  borderRadius:
+                      BorderRadius.circular(ChatHelpers.cornerRadius),
+                ),
+              height: height ?? ChatHelpers.iconSizeExtraLarge,
+              width: width ?? ChatHelpers.iconSizeExtraLarge,
+              padding: EdgeInsets.all(padding??ChatHelpers.marginSizeExtraSmall),
               child: Material(
-                color: ChatHelpers.transparent,
-                child: InkWell(
-                  splashColor: splashColor ?? ChatHelpers.mainColorLight,
-                  onTap: onTap,
+                  color: ChatHelpers.transparent,
                   child: isImage == true
                       ? isImageText ?? false
                           ? Text(
@@ -104,8 +108,8 @@ class CircleIconButton extends StatelessWidget {
                           color: colors ?? ChatHelpers.textColor_4,
                         ),
                 ),
-              ),
             ),
-          );
+          ),
+        );
   }
 }

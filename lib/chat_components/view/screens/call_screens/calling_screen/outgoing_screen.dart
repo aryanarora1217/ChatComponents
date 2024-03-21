@@ -18,31 +18,29 @@ class OutGoingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ChatHelpers.transparent,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              ChatHelpers.mainColor,
-              ChatHelpers.mainColorLight,
-              ChatHelpers.grey
+              controller.callArguments.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,
+              controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
+              controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.grey
             ],
           ),
         ),
         child: Stack(
           children: [
-            controller.callType == CallType.audioCall.name
+            controller.callArguments.callType == CallType.audioCall.name
                 ? const SizedBox()
                 : SizedBox(
                     child: CameraAwesomeBuilder.awesome(
                     saveConfig: SaveConfig.photo(
-                      mirrorFrontCamera: false,
-                    ),
+                      mirrorFrontCamera: false,),
                     sensorConfig: SensorConfig.single(
                       aspectRatio: CameraAspectRatios.ratio_4_3,
                       sensor: Sensor.position(SensorPosition.front),
-                      zoom: 0.0,
-                    ),
+                      zoom: 0.0,),
                     topActionsBuilder: (state) {
                       controller.cameraState = state;
                       return const SizedBox();
@@ -62,20 +60,20 @@ class OutGoingScreen extends StatelessWidget {
                       alignment: Alignment.topCenter,
                       child: Text(
                         controller.isIncoming.isTrue
-                            ? 'Incoming ${controller.callType}'
-                            : 'Outgoing ${controller.callType}',
-                        style: ChatHelpers.instance.styleMedium(
+                            ? 'Incoming ${controller.callArguments.callType}'
+                            : 'Outgoing ${controller.callArguments.callType}',
+                        style: controller.callArguments.themeArguments?.styleArguments?.callNameTextStyles ?? ChatHelpers.instance.styleMedium(
                             ChatHelpers.fontSizeExtraLarge,
-                            ChatHelpers.white),
+                            controller.callArguments.themeArguments?.colorArguments?.textColor ??  ChatHelpers.white),
                       ))),
                   const SizedBox(
                     height: 60,
                   ),
                   Text(
-                    controller.userDetails.value.profileName ?? "UserName",
-                    style: ChatHelpers.instance.styleMedium(
+                    controller.callArguments.user.profileName ?? "UserName",
+                    style: controller.callArguments.themeArguments?.styleArguments?.callNameTextStyles ?? ChatHelpers.instance.styleMedium(
                         ChatHelpers.fontSizeExtraLarge,
-                        ChatHelpers.white),
+                        controller.callArguments.themeArguments?.colorArguments?.textColor ??  ChatHelpers.white),
                   ),
                   const SizedBox(
                     height: 10,
@@ -88,21 +86,13 @@ class OutGoingScreen extends StatelessWidget {
                             child: Lottie.asset(ChatHelpers
                                 .instance.soundEffectLottie)),
                         ProfileImageView(
-                          profileImage:
-                          controller.userDetails.value.profileImage == null
-                              ? ""
-                              : controller.userDetails.value.signInType ==
-                              SignType.google.name
-                              ? controller
-                              .userDetails.value.profileImage ??
-                              ""
-                              : controller.imageBaseUrl +
-                              (controller.userDetails
-                                  .value.profileImage ??
-                                  ''),
-                          profileName: controller
-                              .userDetails.value.profileName?[0].capitalizeFirst
-                              .toString(),
+                          textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
+                          boxColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
+                          profileImage: controller.callArguments.user.profileImage == null ? ""
+                              : controller.callArguments.user.signInType == SignType.google.name
+                              ? controller.callArguments.user.profileImage ?? ""
+                              : controller.callArguments.imageBaseUrl + (controller.callArguments.user.profileImage ?? ''),
+                          profileName: controller.callArguments.user.profileName?[0].capitalizeFirst.toString(),
                           height: 100,
                           width: 100,
                         ),
@@ -112,9 +102,9 @@ class OutGoingScreen extends StatelessWidget {
                   ),
                   Obx(() => Text(
                     controller.callDetails.value.callStatus ?? "calling",
-                    style: ChatHelpers.instance.styleMedium(
+                    style: controller.callArguments.themeArguments?.styleArguments?.callNameTextStyles ?? ChatHelpers.instance.styleMedium(
                         ChatHelpers.fontSizeExtraLarge,
-                        ChatHelpers.white),
+                        controller.callArguments.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white),
                   ),),
                   const Spacer(),
                   Obx(() => controller.callDetails.value.callStatus !=
@@ -125,7 +115,7 @@ class OutGoingScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        controller.callType ==
+                        controller.callArguments.callType ==
                             CallType.videoCall.name
                             ? CircleIconButton(
                           boxColor: ChatHelpers.black
@@ -136,7 +126,7 @@ class OutGoingScreen extends StatelessWidget {
                               controller.onCameraSwitchTap(
                                   controller.cameraState),
                           icons: Icons.cameraswitch_rounded,
-                          colors: ChatHelpers.white,
+                          colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                           height: 60,
                           width: 60,
                         )
@@ -150,7 +140,7 @@ class OutGoingScreen extends StatelessWidget {
                               : ChatHelpers.instance.speakerOff,
                           shapeRec: false,
                           onTap: () => controller.onSpeakerTap(),
-                          colors: ChatHelpers.white,
+                          colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                           height: 60,
                           width: 60,
                         ),
@@ -160,7 +150,7 @@ class OutGoingScreen extends StatelessWidget {
                           shapeRec: false,
                           onTap: () => controller.onEndCall(),
                           icons: Icons.call_end_rounded,
-                          colors: ChatHelpers.white,
+                          colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                           height: 70,
                           width: 70,
                         ),
@@ -173,7 +163,7 @@ class OutGoingScreen extends StatelessWidget {
                           icons: controller.isMicOn.isTrue
                               ? Icons.mic
                               : Icons.mic_off,
-                          colors: ChatHelpers.white,
+                          colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                           height: 60,
                           width: 60,
                         ),
@@ -184,7 +174,7 @@ class OutGoingScreen extends StatelessWidget {
                           shapeRec: false,
                           onTap: () => controller.ansCall(),
                           icons: Icons.call,
-                          colors: ChatHelpers.white,
+                          colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                           height: 70,
                           width: 70,
                         )
@@ -195,9 +185,9 @@ class OutGoingScreen extends StatelessWidget {
                       : Center(
                     child: Text(
                       "Call Ended",
-                      style: ChatHelpers.instance.styleMedium(
+                      style: controller.callArguments.themeArguments?.styleArguments?.callNameTextStyles ?? ChatHelpers.instance.styleMedium(
                           ChatHelpers.fontSizeDefault,
-                          ChatHelpers.white),
+                          controller.callArguments.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white),
                     ),
                   )),
                   const SizedBox(

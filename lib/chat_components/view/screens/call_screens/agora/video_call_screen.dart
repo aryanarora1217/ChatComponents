@@ -1,7 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../model/chatHelper/chat_helper.dart';
 import '../../../../model/function_helper/date_time_convertor/date_time_convertor.dart';
 import '../../../../view_model/controller/call_controller/agora_controllers/video_call_controller.dart';
@@ -18,14 +17,14 @@ class VideoCallScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ChatHelpers.transparent,
       body: Container(
-          decoration: const BoxDecoration(
+          decoration:  BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                ChatHelpers.mainColor,
-                ChatHelpers.mainColorLight,
-                ChatHelpers.grey
+                controller.callArguments.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,
+                controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
+                controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.grey
               ],
             ),
           ),
@@ -43,10 +42,9 @@ class VideoCallScreen extends StatelessWidget {
                     height: 180,
                     decoration: BoxDecoration(
                         color: controller.isVideoOn.isFalse
-                            ? ChatHelpers.mainColorLight
+                            ? controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight
                             : ChatHelpers.transparent,
-                        borderRadius: BorderRadius.circular(
-                            ChatHelpers.cornerRadius)),
+                        borderRadius: BorderRadius.circular(ChatHelpers.cornerRadius)),
                     child: ClipRRect(
                       borderRadius:
                           BorderRadius.circular(ChatHelpers.cornerRadius),
@@ -57,8 +55,10 @@ class VideoCallScreen extends StatelessWidget {
                                   canvas: const VideoCanvas(uid: 0)))
                           : Center(
                               child: VideoOffView(
+                                backGroundColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
+                                textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
                                 isRemote: false,
-                                users: controller.currentUser.value, imageBaseUrl: controller.imageBaseUrl.value,
+                                users: controller.callArguments.currentUser, imageBaseUrl: controller.callArguments.imageBaseUrl,
                               ),
                             ),
                     ))),
@@ -69,13 +69,13 @@ class VideoCallScreen extends StatelessWidget {
                   margin: const EdgeInsets.all(ChatHelpers.marginSizeSmall),
                   padding: const EdgeInsets.all(ChatHelpers.marginSizeSmall),
                   decoration: BoxDecoration(
-                    color: ChatHelpers.mainColorLight,
+                    color: controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
                     borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)
                   ),
                   child: Obx(()=> Text(
                     DateTimeConvertor.formattedTime(
                         timeInSecond: controller.start.value),
-                    style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeSmall, ChatHelpers.white),)),
+                    style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeSmall, controller.callArguments.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white),)),
                 ),
               ),
               Container(
@@ -91,7 +91,7 @@ class VideoCallScreen extends StatelessWidget {
                         isImage: false,
                         onTap: () => controller.endCall(false),
                         icons: Icons.call_end_rounded,
-                        colors: ChatHelpers.white,
+                        colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                         height: 65,
                         width: 65,
                       ),
@@ -107,7 +107,7 @@ class VideoCallScreen extends StatelessWidget {
                         icons: controller.isMicOn.isTrue
                             ? Icons.mic
                             : Icons.mic_off,
-                        colors: ChatHelpers.white,
+                        colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                         height: 60,
                         width: 60,
                       ),
@@ -123,7 +123,7 @@ class VideoCallScreen extends StatelessWidget {
                         icons: controller.isVideoOn.isTrue
                             ? Icons.videocam
                             : Icons.videocam_off_rounded,
-                        colors: ChatHelpers.white,
+                        colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                         height: 60,
                         width: 60,
                       ),
@@ -139,7 +139,7 @@ class VideoCallScreen extends StatelessWidget {
                         image: controller.isSpeakerOn.isTrue
                             ? ChatHelpers.instance.speaker
                             : ChatHelpers.instance.speakerOff,
-                        colors: ChatHelpers.white,
+                        colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                         height: 60,
                         width: 60,
                       ),
@@ -160,17 +160,19 @@ Widget _remoteVideo(VideoCallController controller) {
             controller: VideoViewController.remote(
               rtcEngine: controller.agoraRtcEngine,
               canvas: VideoCanvas(uid: controller.remoteUid.value),
-              connection: RtcConnection(channelId: controller.channelName),
+              connection: RtcConnection(channelId: controller.callArguments.agoraChannelName),
             ),
           )
         : Center(
             child: VideoOffView(
-              imageBaseUrl: controller.imageBaseUrl.value,
+              backGroundColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
+              textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
+              imageBaseUrl: controller.callArguments.imageBaseUrl,
               height: 100,
               width: 100,
               isRemote: true,
               fontSize: ChatHelpers.fontSizeDoubleExtraLarge,
-              users: controller.user.value,
+              users: controller.callArguments.user,
           ));
   } else {
     return Center(

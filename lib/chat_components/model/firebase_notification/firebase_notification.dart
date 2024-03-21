@@ -31,6 +31,9 @@ class FirebaseNotification {
   String token = '';
   var firebase = FirebaseDataBase();
 
+  late CallArguments callArguments;
+
+
   RxMap<String, dynamic> presence = <String, dynamic>{}.obs;
 
   /// send notification function
@@ -43,12 +46,13 @@ class FirebaseNotification {
       MessageModel? messageModel,
       String? chatRoomId,
       String firebaseServerKey,
-      Users users) async {
+      Users users,CallArguments callArgument) async {
     try {
       userDetails = currentUsers;
       token = userToken;
       isMessages.value = isMessage;
       otherUserDetails = users;
+      callArguments = callArgument;
       if (isMessage) {
         chatRoomID = chatRoomId ?? "";
         messageDetails = messageModel ?? MessageModel();
@@ -109,6 +113,7 @@ class FirebaseNotification {
           ChatHelpers.instance.userDetails: userDetails.toJson(),
           ChatHelpers.instance.otherUserDetails: otherUserDetails.toJson(),
           ChatHelpers.instance.callId: callDetails.callId,
+          ChatHelpers.instance.callArguments: callArguments,
         },
         'to': token
       },
@@ -132,15 +137,6 @@ class FirebaseNotification {
         .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(androidDetailsChannel);
-
-    // var androidDetailsC = const AndroidNotificationDetails(
-    //   'syncChat',
-    //   'syncApp',
-    //   sound: RawResourceAndroidNotificationSound('cellphone_sound'),
-    //   playSound: true,
-    //   importance: Importance.max,
-    //   priority: Priority.max,
-    // );
 
     var androidDetails = const AndroidNotificationDetails(
       'syncChat',
@@ -168,45 +164,6 @@ class FirebaseNotification {
             });
           }
         });
-
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-    //   try {
-    //     RemoteNotification? notification = message.notification;
-    //     AndroidNotification? android = message.notification?.android;
-    //     logPrint("message resciving : $chatRoomID , ${message.data}");
-    //     if (notification != null && android != null) {
-    //       String isMessage = message.data[ChatHelpers.instance.isMessage];
-    //       otherUserDetails = Users.fromJson(
-    //           jsonDecode(message.data[ChatHelpers.instance.userDetails]));
-    //       if (isMessage == "true") {
-    //         chatRoomID = message.data[ChatHelpers.instance.chatRoomId];
-    //         chatRoomModel = await fetchMessages(chatRoomID);
-    //         Get.toNamed(ChatHelpers.chatScreen,
-    //         //     arguments: {
-    //         //   ChatHelpers.instance.chatRoomId: chatRoomID.toString(),
-    //         //   ChatHelpers.instance.userId: ChatHelpers.instance.userId
-    //         // }
-    //           arguments: ChatArguments(chatRoomId: chatRoomID.toString(), userId: ChatHelpers.instance.userId, isVideoCallEnable: true, isAudioCallEnable: true, isFileSendEnable: true, isImageSendEnable: true, imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', currentUserId: '', firebaseServerKey: '')
-    //         );
-    //       }
-    //       else {
-    //         callTypes = message.data[ChatHelpers.instance.callType];
-    //         callId = message.data[ChatHelpers.instance.callId];
-    //         if (callDetails.callId != "") {
-    //           // Get.toNamed(Routes.outGoingScreen, arguments: {
-    //           //   ChatHelpers.instance.callType: callTypes,
-    //           //   ChatHelpers.instance.userDetails: otherUserDetails,
-    //           //   ChatHelpers.instance.callId: callId,
-    //           // });
-    //           Get.toNamed(ChatHelpers.outGoingScreen,
-    //               arguments: CallArguments(user: userDetails, callType: callTypes, callId: callId, imageBaseUrl: '', agoraAppId: 'ea835372061d44c9b99dda29f68b0a99', agoraAppCertificate: '', userId: userDetails.id??"", currentUserId: otherUserDetails.id??"", firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-', currentUser: otherUserDetails, agoraChannelName: 'demoRoom', agoraToken: '007eJxTYJjwwlJKyr5oy0qjfLX0f7deXvF3z5IU/rJe5dihFfkHvrQoMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaMuT9TG0IZGQ44lHHzMgAgSA+B0NKam5+UH5+LgMDAPphIa4='));
-    //         }
-    //       }
-    //     }
-    //   } catch (e) {
-    //     logPrint("error fetching notification : $e");
-    //   }
-    // });
 
     /// notification listner form firebase
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -269,13 +226,14 @@ class FirebaseNotification {
             }
           }
           else {
+            callArguments = message.data[ChatHelpers.instance.callArguments];
             callTypes = message.data[ChatHelpers.instance.callType];
             callId = message.data[ChatHelpers.instance.callId];
-            logPrint("Call details : ${callDetails.callId} , $callId");
+            logPrint("Call details : ${callDetails.callId} , $callId , $callArguments");
             if (callId != "") {
               /// navigate to outgoing screen when call notification screens
               Get.toNamed(ChatHelpers.outGoingScreen,
-                  arguments: CallArguments(user: otherUserDetails, callType: callTypes, callId: callId, imageBaseUrl: '', agoraAppId: 'ea835372061d44c9b99dda29f68b0a99', agoraAppCertificate: '', userId: otherUserDetails.id??"", currentUserId: userDetails.id??"", firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-', currentUser: userDetails, agoraChannelName: 'demoRoom', agoraToken: '007eJxTYJjwwlJKyr5oy0qjfLX0f7deXvF3z5IU/rJe5dihFfkHvrQoMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaMuT9TG0IZGQ44lHHzMgAgSA+B0NKam5+UH5+LgMDAPphIa4='));
+                  arguments:  CallArguments(user: otherUserDetails, callType: callTypes, callId: callArguments.callId, imageBaseUrl: callArguments.imageBaseUrl, agoraAppId: callArguments.agoraAppId, agoraAppCertificate: callArguments.agoraAppCertificate, userId: otherUserDetails.id??"", currentUserId: userDetails.id??"", firebaseServerKey: callArguments.firebaseServerKey, currentUser: userDetails, agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken));
             }
           }
         }

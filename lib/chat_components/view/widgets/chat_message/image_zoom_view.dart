@@ -48,7 +48,7 @@ class ViewImageAndPlayVideoScreen extends StatelessWidget {
                   onDoubleTap: handleDoubleTap,
                   child: InteractiveViewer(
                     transformationController: transformationController,
-                    child: Image.network(fit: BoxFit.contain,  chatController.imageBaseUrl+file,),
+                    child: Image.network(fit: BoxFit.contain,  chatController.chatArguments.imageBaseUrlFirebase+file,),
                   ),
                 ),
               ),
@@ -65,15 +65,15 @@ class ViewImageAndPlayVideoScreen extends StatelessWidget {
                       quarterTurns.value=4;
                     }
                   },
-                  icon:const Icon(
+                  icon: Icon(
                     Icons.rotate_left_outlined,
-                    color: Colors.white,
+                    color: chatController.themeArguments?.colorArguments?.iconColor ?? Colors.white,
                     size: 30,
                   ))),
           Positioned(
               top: MediaQuery.of(context).padding.top + 10,
               left: 5,
-              child: IconButton(onPressed: ()=>Get.back(),icon: Icon(Icons.arrow_back_ios , color: ChatHelpers.white,),)),
+              child: IconButton(onPressed: ()=>Get.back(),icon: Icon(Icons.arrow_back_ios , color: chatController.themeArguments?.colorArguments?.backButtonIconColor ?? chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,),)),
         ],
       ),
     );

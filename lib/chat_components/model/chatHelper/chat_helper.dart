@@ -81,6 +81,7 @@ class ChatHelpers {
   String get chatRoomId => 'chatRoomId';
   String get userId => 'userId';
   String get isMicOn => 'isMicOn';
+  String get callArguments => 'callArguments';
 
   ///messages string
   String get noChatsMessage =>
@@ -124,7 +125,7 @@ class ChatHelpers {
   static const Color mainColor = Color(0xff2A6EE7);
   static const Color mainColorLight = Color(0xff3e82ff);
   static const Color textColor_4 = Color(0xff758793);
-  static const Color backcolor = Color(0xffecedff);
+  static const Color backcolor = Color(0xffe5e6ff);
   static const Color lightGrey = Color(0xfff8f8ff);
 
   static const Color white = Colors.white;
@@ -266,17 +267,17 @@ class ChatHelpers {
         borderRadius: BorderRadius.circular(buttonRadius));
   }
 
-  BoxDecoration borderMessageFieldRadius() {
+  BoxDecoration borderMessageFieldRadius(Color borderColor , double borderRadius) {
     return BoxDecoration(
-        border: Border.all(width: 1, color: textColor_4),
-        borderRadius: BorderRadius.circular(cornerRadius));
+        border: Border.all(width: 1, color: borderColor),
+        borderRadius: BorderRadius.circular(borderRadius));
   }
 
-  BoxDecoration focusedMessageFieldRadius() {
+  BoxDecoration focusedMessageFieldRadius(Color borderColor , double borderRadius) {
     return BoxDecoration(
       color: ChatHelpers.backcolor,
-        border: Border.all(width: 1, color: mainColorLight),
-        borderRadius: BorderRadius.circular(cornerRadius));
+        border: Border.all(width: 1, color: borderColor),
+        borderRadius: BorderRadius.circular(borderRadius));
   }
 
   BoxDecoration chipDecoration() {

@@ -14,22 +14,22 @@ class ImageView extends StatelessWidget {
   final bool isSender;
   final bool isSeen;
   final bool isVisible;
-  final Color? senderColor;
-  final Color? receiverColor;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   final ChatController chatController;
 
   const ImageView(
-      {super.key,
+      {
+        super.key,
       required this.time,
       required this.image,
       required this.isSender,
       required this.onTap,
       required this.isSeen,
-      required this.isVisible, this.senderColor, this.receiverColor,
+      required this.isVisible,
       required this.onLongPress,
-      required this.chatController, required this.index});
+      required this.chatController, required this.index
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -49,22 +49,23 @@ class ImageView extends StatelessWidget {
                 width: 220,
                 margin: const EdgeInsets.only(top:ChatHelpers.marginSizeExtraSmall),
                 decoration: BoxDecoration(
+                  color: isSender == true
+                      ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
+                      : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
                   borderRadius: BorderRadius.only(
-                      bottomLeft:
-                          const Radius.circular(ChatHelpers.cornerRadius),
-                      topRight:
-                          const Radius.circular(ChatHelpers.cornerRadius),
-                      topLeft: isSender == true
-                          ? const Radius.circular(
-                              ChatHelpers.cornerRadius)
-                          : Radius.zero,
-                      bottomRight: isSender == false
-                          ? const Radius.circular(
-                              ChatHelpers.cornerRadius)
-                          : Radius.zero),
-                  color: isSender
-                      ? senderColor?? ChatHelpers.mainColor
-                      : receiverColor ?? ChatHelpers.backcolor,
+                    bottomLeft: isSender == true
+                        ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomLeftRadius ?? ChatHelpers.cornerRadius)
+                        : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomLeftRadius ?? ChatHelpers.cornerRadius),
+                    topRight: isSender == true
+                        ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopRightRadius ?? ChatHelpers.cornerRadius)
+                        : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopRightRadius ?? ChatHelpers.cornerRadius),
+                    topLeft: isSender == true
+                        ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopLeftRadius ?? ChatHelpers.cornerRadius)
+                        : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopLeftRadius ?? ChatHelpers.cornerRadius),
+                    bottomRight: isSender == true
+                        ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomRightRadius ?? ChatHelpers.cornerRadius)
+                        : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomRightRadius ?? ChatHelpers.cornerRadius),
+                  ),
                 ),
                 child: Stack(
                   children: [
@@ -76,16 +77,15 @@ class ImageView extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                             ChatHelpers.marginSizeDefault),
-                        color: isSender
-                            ? ChatHelpers.mainColor
-                            : ChatHelpers.lightGrey,
+                        color: isSender == true
+                            ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
+                            : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
                       ),
                       child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              ChatHelpers.marginSizeSmall),
+                          borderRadius: BorderRadius.circular(ChatHelpers.marginSizeSmall),
                           child: cachedNetworkImage(
                               isProfile: false,
-                              url: chatController.imageBaseUrl + image)),
+                              url: chatController.chatArguments.imageBaseUrlFirebase + image)),
                     ),
                     Positioned(
                       child: Container(
@@ -108,8 +108,7 @@ class ImageView extends StatelessWidget {
                       left: 0,
                       child: Text(
                         chatController.emoji[chatController.reactionIndex.value],
-                        style: const TextStyle(
-                            fontSize: ChatHelpers.fontSizeExtraLarge),
+                        style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
                         textAlign: TextAlign.center,
                       ),
                     )
@@ -134,8 +133,7 @@ class ImageView extends StatelessWidget {
                   right: ChatHelpers.marginSizeSmall),
               child: Text(
                 isSeen == false ? "Delivered" : "Seen",
-                style: ChatHelpers.instance.styleRegular(
-                    ChatHelpers.fontSizeSmall, ChatHelpers.black),
+                style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeSmall, ChatHelpers.black),
                 textAlign: TextAlign.right,
               ),
             )

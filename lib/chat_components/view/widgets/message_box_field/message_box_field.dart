@@ -7,21 +7,26 @@ class MessageField extends StatelessWidget {
   final String hintText;
   final Widget? suffixValue;
   final TextStyle? hintTextStyle;
+  final TextStyle? textStyle;
   final FocusNode? focus;
   final int maxLines;
   final double? height;
   final double? width;
+  final double? focusedRadius;
+  final double? unFocusedRadius;
+  final Color? focusedColors;
+  final Color? unFocusedColor;
   final String? Function(String?) onChange;
   final String? Function(String?) onValidators;
 
-  const MessageField({super.key, required this.controller, required this.hintText, this.hintTextStyle, required this.onValidators, this.focus, this.suffixValue, this.height, this.width, required this.onChange, required this.maxLines});
+  const MessageField({super.key, required this.controller, required this.hintText, this.hintTextStyle, required this.onValidators, this.focus, this.suffixValue, this.height, this.width, required this.onChange, required this.maxLines, this.focusedColors, this.unFocusedColor, this.focusedRadius, this.unFocusedRadius, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
-        decoration: focus?.hasFocus == true ? ChatHelpers.instance.focusedMessageFieldRadius() : ChatHelpers.instance.borderMessageFieldRadius(),
+        decoration: focus?.hasFocus == true ? ChatHelpers.instance.focusedMessageFieldRadius(focusedColors ?? ChatHelpers.mainColorLight, focusedRadius ?? ChatHelpers.cornerRadius) : ChatHelpers.instance.borderMessageFieldRadius(unFocusedColor ?? ChatHelpers.textColor_4, unFocusedRadius ?? ChatHelpers.cornerRadius),
         child: Row(
           children: [
             Expanded(
@@ -38,7 +43,7 @@ class MessageField extends StatelessWidget {
                   minLines: null,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
-                  style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.black),
+                  style: textStyle ?? ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.black),
                   decoration:  InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 1,horizontal: 12),
                     hintText: hintText,
@@ -48,7 +53,7 @@ class MessageField extends StatelessWidget {
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     errorStyle: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.red),
-                    hintStyle:hintTextStyle?? const  TextStyle(color: ChatHelpers.textColor_4, fontSize: ChatHelpers.fontSizeDefault),
+                    hintStyle: hintTextStyle ?? const  TextStyle(color:  ChatHelpers.textColor_4, fontSize: ChatHelpers.fontSizeDefault),
                   ),
                 ),
               ),

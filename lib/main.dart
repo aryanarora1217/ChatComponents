@@ -1,3 +1,4 @@
+import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
 import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -16,11 +17,34 @@ void main() {
 Future<void> initServices() async {
   await Firebase.initializeApp();
   await FirebaseNotification().initMessaging();
+  runChatServices();
   await FirebaseMessaging.instance
       .getToken()
       .then((value) => logPrint("firebase token : ${value.toString()}"));
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 }
+
+ Future<void> runChatServices() async {
+   await Get.putAsync(() => ChatServices().init(
+       ChatArguments(
+     chatRoomId: ChatHelpers.instance.chatRoomId,
+     currentUserId: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
+     otherUserId: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+     isVideoCallEnable: false,
+     isAudioCallEnable: true,
+     isAttachmentSendEnable: true,
+     isCameraImageSendEnable: true,
+     imageBaseUrlFirebase: 'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
+     imageArguments: ImageArguments(isImageFromCamera: true, isImageFromGallery: false, isDocumentsSendEnable: true),
+     agoraAppId: 'ea835372061d44c9b99dda29f68b0a99',
+     agoraAppCertificate: '',
+     agoraChannelName: 'demoRoom',
+     agoraToken: '007eJxTYCiWTxByYF2RY6+kyplx/JzYnz1bvn6fmiUn4LTx5FqO4xsUGFITLYxNjc2NDMwMU0xMki2TLC1TUhKNLNPMLJIMEi0tT235ldoQyMggfFmEmZEBAkF8DoaU1Nz8oPz8XAYGAFLUIBs=',
+     firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
+     themeArguments: ThemeArguments(
+         colorArguments: ColorArguments(mainColor: const Color(0xff32a852),mainColorLight: const  Color(0xff67cf83),videoCallIconColor: Colors.black,audioCallIconColor: Colors.amber,iconColor: Colors.purpleAccent)),
+   )));
+ }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -59,13 +83,16 @@ class MyHomePage extends StatelessWidget {
                   isAudioCallEnable: true,
                   isAttachmentSendEnable: true,
                   isCameraImageSendEnable: true,
-                  imageBaseUrlFirebase: '',
+                  imageBaseUrlFirebase: 'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
                   imageArguments: ImageArguments(isImageFromCamera: true, isImageFromGallery: false, isDocumentsSendEnable: true),
                   agoraAppId: 'ea835372061d44c9b99dda29f68b0a99',
                   agoraAppCertificate: '',
                   agoraChannelName: 'demoRoom',
                   agoraToken: '007eJxTYCiWTxByYF2RY6+kyplx/JzYnz1bvn6fmiUn4LTx5FqO4xsUGFITLYxNjc2NDMwMU0xMki2TLC1TUhKNLNPMLJIMEi0tT235ldoQyMggfFmEmZEBAkF8DoaU1Nz8oPz8XAYGAFLUIBs=',
-                  firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-')),
+                  firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
+                  themeArguments: ThemeArguments(
+                    colorArguments: ColorArguments(mainColor: const Color(0xff32a852),mainColorLight: const  Color(0xff67cf83),videoCallIconColor: Colors.black,audioCallIconColor: Colors.amber,iconColor: Colors.purpleAccent)),
+              )),
           child: const Text(
             'Chat Screen',
             style: TextStyle(color: ChatHelpers.white),

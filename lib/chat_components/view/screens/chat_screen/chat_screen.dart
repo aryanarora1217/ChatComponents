@@ -31,6 +31,7 @@ class ChatScreen extends StatelessWidget {
         controller.isDialogOpen.value = false;
       },
       child: Scaffold(
+        backgroundColor: controller.themeArguments?.colorArguments?.backgroundColor ?? ChatHelpers.white,
         body: SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
@@ -46,21 +47,21 @@ class ChatScreen extends StatelessWidget {
                             ? controller.users.value.profileName ?? ""
                             : controller.isFirstCurrent.isTrue ? controller.chatRoomModel.value.userSecond?.userName.toString().capitalizeFirst ?? ""
                             : controller.chatRoomModel.value.userFirst?.userName.toString().capitalizeFirst ?? "",
-                        userProfile: controller.isUserId.isTrue ? controller.users.value.signInType == SignType.google.name ? (controller.users.value.profileImage ?? "") : controller.imageBaseUrl + (controller.users.value.profileImage ?? "") : controller.isFirstCurrent.isTrue ? controller.chatRoomModel.value.userSecond?.userSignType == SignType.google.name ? (controller.chatRoomModel.value.userSecond?.userProfile ?? "")
-                            : controller.imageBaseUrl +
+                        userProfile: controller.isUserId.isTrue ? controller.users.value.signInType == SignType.google.name ? (controller.users.value.profileImage ?? "") : controller.chatArguments.imageBaseUrlFirebase + (controller.users.value.profileImage ?? "") : controller.isFirstCurrent.isTrue ? controller.chatRoomModel.value.userSecond?.userSignType == SignType.google.name ? (controller.chatRoomModel.value.userSecond?.userProfile ?? "")
+                            : controller.chatArguments.imageBaseUrlFirebase +
                             (controller.chatRoomModel.value.userSecond?.userProfile ?? "")
                             : controller.chatRoomModel.value.userFirst
                             ?.userSignType == SignType.google.name
                             ? (controller.chatRoomModel.value.userFirst?.userProfile ?? "")
-                            : controller.imageBaseUrl + (controller.chatRoomModel.value.userFirst?.userProfile ?? ""),
+                            : controller.chatArguments.imageBaseUrlFirebase + (controller.chatRoomModel.value.userFirst?.userProfile ?? ""),
                         presence: controller.userTypingStatus.isFalse ? controller.users.value.presence == PresenceStatus.online.name
                             ? controller.users.value.presence?.capitalizeFirst ?? "" : ""
                             : PresenceStatus.typing.name.capitalizeFirst ?? "",
                         backButtonTap: () => Get.back(),
                         audioCallButtonTap: () => Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.imageBaseUrl, agoraAppId: controller.agoraAppId, agoraAppCertificate: controller.agoraAppCertificate, userId: controller.users.value.id??"", currentUserId: controller.currentUserId, firebaseServerKey: controller.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.agoraChannelName, agoraToken: controller.agoraToken)),
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)),
                         videoCallButtonTap: () => Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.imageBaseUrl, agoraAppId: controller.agoraAppId, agoraAppCertificate: controller.agoraAppCertificate, userId: controller.users.value.id??"", currentUserId: controller.currentUserId, firebaseServerKey: controller.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.agoraChannelName, agoraToken: controller.agoraToken)), chatController: controller,
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)), chatController: controller,
                         )),
                     Expanded(
                       child: Obx(() => controller.isLoadingChats.isFalse
@@ -86,9 +87,9 @@ class ChatScreen extends StatelessWidget {
                                 },
                                 message: controller.messages[index].message ?? '',
                                 time: DateTimeConvertor.timeExt(controller.messages[index].time ?? ''),
-                                isSender: controller.messages[index].sender == controller.currentUserId,
+                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
                                 isSeen: controller.messages[index].isSeen ?? false,
-                                visible: controller.messages[index].sender == controller.currentUserId
+                                visible: controller.messages[index].sender == controller.chatArguments.currentUserId
                                     ? controller.messages.length -1 == index ? true : false
                                     : false,
                                 isReaction: controller.isReaction.value,
@@ -97,7 +98,7 @@ class ChatScreen extends StatelessWidget {
                                   : controller.messages[index].file?.fileType == FileTypes.image.name ? ImageView(
                                 time: DateTimeConvertor.timeExt(controller.messages[index].time??""),
                                 image: controller.messages[index].file?.fileUrl ?? '',
-                                isSender: controller.messages[index].sender == controller.currentUserId,
+                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
                                 onTap: () => Get.to(
                                   ViewImageAndPlayVideoScreen(
                                     file: controller.messages[index].file?.fileUrl ??
@@ -105,7 +106,7 @@ class ChatScreen extends StatelessWidget {
                                   ),
                                 ),
                                 isSeen: controller.messages[index].isSeen ?? false,
-                                isVisible: controller.messages[index].sender == controller.currentUserId
+                                isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
                                     ? controller.messages.length -1 == index ? true : false
                                     : false, onLongPress: () { controller.selectReactionIndex
                                   .value = index.toString();
@@ -115,7 +116,7 @@ class ChatScreen extends StatelessWidget {
                                   : FileView(
                                 isSeen: controller.messages[index].isSeen ??
                                     false,
-                                isVisible: controller.messages[index].sender == controller.currentUserId
+                                isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
                                     ? controller.messages.length -1 == index ? true : false
                                     : false,
                                 onLongPress: () { controller.selectReactionIndex.value = index.toString();
@@ -125,12 +126,12 @@ class ChatScreen extends StatelessWidget {
                                 DateTimeConvertor.timeExt(
                                     controller.messages[index].time??""),
                                 fileName: controller.messages[index].file?.fileName ?? '',
-                                isSender: controller.messages[index].sender == controller.currentUserId,
+                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
                               );
                             }).reversed.toList(),
                       )
                           : const Center(
-                        child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(),
                       )),
                     ),
                     Obx(() => controller.isLoadingChats.isFalse
@@ -168,24 +169,29 @@ class ChatScreen extends StatelessWidget {
                             onValidators: (String? value) {
                               return null;
                             },
+                            unFocusedColor: controller.themeArguments?.colorArguments?.messageTextFieldColor ,
+                            focusedColors: controller.themeArguments?.colorArguments?.messageTextFieldColor ,
+                            focusedRadius: controller.themeArguments?.borderRadiusArguments?.messageTextFieldRadius,
+                            hintTextStyle: controller.themeArguments?.styleArguments?.messageTextFieldHintTextStyle,
+                            textStyle: controller.themeArguments?.styleArguments?.messageTextFieldTextStyle,
                             suffixValue: Container(
                               alignment: Alignment.centerRight,
                               width: MediaQuery.of(context).size.width * .22,
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  controller.isAttachmentSendEnable.isTrue ? CircleIconButton(
+                                  controller.chatArguments.isAttachmentSendEnable ? CircleIconButton(
                                     height: ChatHelpers.iconSizeExtraOverLarge,
                                     width: ChatHelpers.iconSizeExtraOverLarge,
                                     padding: 0,
                                     splashColor: ChatHelpers.black.withOpacity(.3),
                                     boxColor: ChatHelpers.transparent,
                                     isImage: false,
-                                    colors: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.textColor_4,
+                                    colors: controller.themeArguments?.colorArguments?.attachmentIconColor ?? ChatHelpers.textColor_4,
                                     icons: Icons.attach_file,
                                     onTap: () => controller.openDialog(),
                                   ) : const SizedBox(),
-                                  controller.isCameraImageSendEnable.isTrue ? CircleIconButton(
+                                  controller.chatArguments.isCameraImageSendEnable ? CircleIconButton(
                                     height: ChatHelpers.iconSizeExtraOverLarge,
                                     width: ChatHelpers.iconSizeExtraOverLarge,
                                     padding: 0,
@@ -193,7 +199,7 @@ class ChatScreen extends StatelessWidget {
                                     boxColor: ChatHelpers.transparent,
                                     isImage: false,
                                     icons: Icons.camera_alt,
-                                    colors: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.textColor_4,
+                                    colors: controller.themeArguments?.colorArguments?.cameraIconColor ?? ChatHelpers.textColor_4,
                                     onTap: () => controller.cameraPermission(),
                                   ) : const SizedBox()
                                 ],
@@ -208,7 +214,8 @@ class ChatScreen extends StatelessWidget {
                             boxColor: controller.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
                             isImage: false,
                             icons: Icons.send,
-                            colors: ChatHelpers.white,
+                            sendBtn: controller.themeArguments?.customWidgetsArguments?.customSendIconButtonWidgets,
+                            colors: controller.themeArguments?.colorArguments?.sendIconColor ?? controller.themeArguments?.colorArguments?.iconColor ??  ChatHelpers.white,
                             onTap: () => controller.sendMessage(),
                           ),
                         ],
@@ -225,8 +232,7 @@ class ChatScreen extends StatelessWidget {
                             ChatHelpers.marginSizeSmall),
                         decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(
-                                ChatHelpers.cornerRadius)),
+                            borderRadius: BorderRadius.circular(ChatHelpers.cornerRadius)),
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeInOutQuart,
                         child: Wrap(

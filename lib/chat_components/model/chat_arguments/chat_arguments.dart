@@ -1,23 +1,26 @@
 import 'package:chatcomponent/chat_components/model/models/user_model/user_model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+
+
 
 /// Chat screen Arguments
 class ChatArguments {
-  final String otherUserId;
-  final String currentUserId;
-  final String chatRoomId;
-  final String firebaseServerKey;
-  final String imageBaseUrlFirebase;
-  final String? agoraAppId;
-  final String? agoraChannelName;
-  final String? agoraToken;
-  final String? agoraAppCertificate;
-  final bool isVideoCallEnable;
-  final bool isAudioCallEnable;
-  final bool isAttachmentSendEnable;
-  final ImageArguments? imageArguments;
-  final ThemeArguments? themeArguments;
-  final bool isCameraImageSendEnable;
+  String otherUserId;
+  String currentUserId;
+  String chatRoomId;
+  String firebaseServerKey;
+  String imageBaseUrlFirebase;
+  String? agoraAppId;
+  String? agoraChannelName;
+  String? agoraToken;
+  String? agoraAppCertificate;
+  bool isVideoCallEnable;
+  bool isAudioCallEnable;
+  bool isAttachmentSendEnable;
+  ImageArguments? imageArguments;
+  ThemeArguments? themeArguments;
+  bool isCameraImageSendEnable;
 
   ChatArguments(
       {this.imageArguments,
@@ -57,8 +60,11 @@ class ThemeArguments {
   final BorderRadiusArguments? borderRadiusArguments;
   final CustomWidgetsArguments? customWidgetsArguments;
 
-  ThemeArguments(this.colorArguments, this.styleArguments,
-      this.borderRadiusArguments, this.customWidgetsArguments);
+  ThemeArguments(
+      {this.colorArguments,
+      this.styleArguments,
+      this.borderRadiusArguments,
+      this.customWidgetsArguments});
 }
 
 /// Color change for app theme Arguments
@@ -66,10 +72,13 @@ class ColorArguments {
   final Color? mainColor;
   final Color? mainColorLight;
   final Color? textColor;
+  final Color? appBarNameTextColor;
+  final Color? appBarPresenceTextColor;
   final Color? senderMessageTextColor;
   final Color? receiverMessageTextColor;
   final Color? backgroundColor;
   final Color? iconColor;
+  final Color? sendIconColor;
   final Color? attachmentIconColor;
   final Color? cameraIconColor;
   final Color? audioCallIconColor;
@@ -80,15 +89,27 @@ class ColorArguments {
   final Color? senderMessageBoxColor;
   final Color? receiverMessageBoxColor;
   final Color? buttonColor;
+  final Color? callButtonsBackgroundColors;
+  final Color? backButtonIconColor;
+  final Color? reactionViewBoxColor;
+  final Color? reactionBoxColor;
+  final Color? messageTextFieldColor;
 
   ColorArguments(
-      {this.iconColor,
+      {this.messageTextFieldColor,
+      this.iconColor,
+      this.sendIconColor,
+      this.reactionViewBoxColor,
+      this.reactionBoxColor,
+      this.appBarNameTextColor,
+      this.appBarPresenceTextColor,
       this.senderMessageTextColor,
       this.receiverMessageTextColor,
       this.attachmentIconColor,
       this.cameraIconColor,
       this.audioCallIconColor,
       this.videoCallIconColor,
+      this.backButtonIconColor,
       this.attachmentCameraIconColor,
       this.attachmentGalleryIconColor,
       this.attachmentDocumentsIconColor,
@@ -98,7 +119,8 @@ class ColorArguments {
       this.mainColor,
       this.mainColorLight,
       this.textColor,
-      this.backgroundColor});
+      this.backgroundColor,
+      this.callButtonsBackgroundColors});
 }
 
 /// style changes for app theme Arguments
@@ -106,15 +128,19 @@ class StyleArguments {
   final TextStyle? appbarNameStyle;
   final TextStyle? appbarPresenceStyle;
   final TextStyle? messageTextStyle;
+  final TextStyle? messageTextFieldHintTextStyle;
+  final TextStyle? messageTextFieldTextStyle;
   final TextStyle? messagesTimeTextStyle;
-  final TextStyle? textStyles;
+  final TextStyle? callNameTextStyles;
 
   StyleArguments(
-      {this.appbarNameStyle,
+      {this.messageTextFieldHintTextStyle,
+      this.messageTextFieldTextStyle,
+      this.appbarNameStyle,
       this.appbarPresenceStyle,
+      this.callNameTextStyles,
       this.messageTextStyle,
-      this.messagesTimeTextStyle,
-      this.textStyles});
+      this.messagesTimeTextStyle});
 }
 
 /// border Radius  changes for app  theme Arguments
@@ -149,29 +175,27 @@ class BorderRadiusArguments {
 
 /// custom Widget changes for app theme Arguments
 class CustomWidgetsArguments {
-  final Widget customIconButtonWidgets;
-  final Widget customSendIconButtonWidgets;
+  final Widget? customSendIconButtonWidgets;
 
-  CustomWidgetsArguments(
-      this.customIconButtonWidgets, this.customSendIconButtonWidgets);
+  CustomWidgetsArguments({this.customSendIconButtonWidgets});
 }
 
 /// Call screen Arguments
 class CallArguments {
-  final String userId;
-  final Users user;
-  final Users currentUser;
-  final String currentUserId;
-  final String callType;
-  final String callId;
-  final String firebaseServerKey;
-  final String imageBaseUrl;
-  final String agoraAppId;
-  final String agoraChannelName;
-  final String agoraToken;
-  final String agoraAppCertificate;
-  final bool? isMicOn;
-  final ThemeArguments? themeArguments;
+  String userId;
+  Users user;
+  Users currentUser;
+  String currentUserId;
+  String callType;
+  String callId;
+  String firebaseServerKey;
+  String imageBaseUrl;
+  String agoraAppId;
+  String agoraChannelName;
+  String agoraToken;
+  String agoraAppCertificate;
+  bool? isMicOn;
+  ThemeArguments? themeArguments;
 
   CallArguments(
       {required this.agoraChannelName,

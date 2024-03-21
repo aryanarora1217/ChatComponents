@@ -3,24 +3,22 @@ import 'package:chatcomponent/chat_components/model/chat_arguments/chat_argument
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-
 import '../../../../model/chatHelper/chat_helper.dart';
 import '../../../../model/firebase_notification/firebase_notification.dart';
 import '../../../../model/function_helper/debounce_function.dart';
 import '../../../../model/models/call_model/call_model.dart';
 import '../../../../model/models/message_model/message_model.dart';
-import '../../../../model/models/user_model/user_model.dart';
 import '../../../../model/network_services/firebase_database.dart';
 import '../../../../model/randomkey/randomkey.dart';
 import '../../../../view/widgets/log_print/log_print_condition.dart';
 
 class OutGoingController extends GetxController {
   /// user details of current and other user
-  Rx<Users> userDetails = Users().obs;
-  Rx<Users> currentUser = Users().obs;
+  // Rx<Users> userDetails = Users().obs;
+  // Rx<Users> currentUser = Users().obs;
   /// call details
-  String callType = "";
-  String callId = "";
+  // String callType = "";
+  // String callId = "";
   Rx<CallModel> callDetails = CallModel().obs;
   RxBool isIncoming = false.obs;
   RxBool isMicOn = true.obs;
@@ -71,20 +69,20 @@ class OutGoingController extends GetxController {
   /// send notification to user for call
   Future<void> sendInvite() async {
     String id = getRandomString();
-    callId = callId;
+    callArguments.callId = id;
     callDetails.value = CallModel(
-        callerId: currentUserId.value,
+        callerId: callArguments.currentUserId,
         callId: id,
-        receiverId: userDetails.value.id,
-        callType: callType,
+        receiverId: callArguments.user.id,
+        callType: callArguments.callType,
         callStatus: CallStatus.calling.name,
         callTimeStamp: DateTime.now().toUtc().toString(),
-      callMembers: [userDetails.value.id,currentUserId.value]
+      callMembers: [callArguments.user.id,callArguments.currentUserId]
     );
-    await firebaseNotification.sendNotification(callType,
-        currentUser.value,
-        userDetails.value.deviceToken ?? "",
-        callDetails.value,false,MessageModel(),"",firebaseServerKey,userDetails.value);
+    await firebaseNotification.sendNotification(callArguments.callType,
+        callArguments.currentUser,
+        callArguments.user.deviceToken ?? "",
+        callDetails.value,false,MessageModel(),"",callArguments.firebaseServerKey,callArguments.user,callArguments);
   }
 
   /// ans call on click
@@ -117,10 +115,10 @@ class OutGoingController extends GetxController {
             onDebounceCall: () => callDetails.value.callType == CallType.audioCall.name
 
                 ? Get.offAndToNamed(ChatHelpers.audioCall,
-              arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callType,currentUser: currentUser.value,currentUserId: currentUserId.value,user: userDetails.value,userId: userId.value,firebaseServerKey: firebaseServerKey,agoraAppCertificate: agoraAppCertificate,agoraAppId: agoraAppId.value, imageBaseUrl: imageBaseUrl.value,agoraChannelName: 'demoRoom', agoraToken: '007eJxTYJjwwlJKyr5oy0qjfLX0f7deXvF3z5IU/rJe5dihFfkHvrQoMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaMuT9TG0IZGQ44lHHzMgAgSA+B0NKam5+UH5+LgMDAPphIa4='))
+              arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken))
 
                 : Get.offAndToNamed(ChatHelpers.videoCall,
-                arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callType,currentUser: currentUser.value,currentUserId: currentUserId.value,user: userDetails.value,userId: userId.value,firebaseServerKey: firebaseServerKey,agoraAppCertificate: agoraAppCertificate,agoraAppId: agoraAppId.value, imageBaseUrl: imageBaseUrl.value,agoraChannelName: 'demoRoom', agoraToken: '007eJxTYJjwwlJKyr5oy0qjfLX0f7deXvF3z5IU/rJe5dihFfkHvrQoMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaMuT9TG0IZGQ44lHHzMgAgSA+B0NKam5+UH5+LgMDAPphIa4=')
+                arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken)
             ),
             duration: const Duration(milliseconds: 500));
       }
@@ -151,12 +149,12 @@ class OutGoingController extends GetxController {
   /// call agruments variables
   late CallArguments callArguments;
 
-  RxString userId = "".obs;
-  RxString currentUserId ="".obs;
-  String firebaseServerKey = "";
-  RxString imageBaseUrl="".obs;
-  RxString agoraAppId="".obs;
-  String agoraAppCertificate="";
+  // RxString userId = "".obs;
+  // RxString currentUserId ="".obs;
+  // String firebaseServerKey = "";
+  // RxString imageBaseUrl="".obs;
+  // RxString agoraAppId="".obs;
+  // String agoraAppCertificate="";
 
   /// call in init method
   Future<void> initServices() async {
@@ -164,16 +162,16 @@ class OutGoingController extends GetxController {
       /// call arguments
       callArguments = Get.arguments;
 
-      userDetails.value = callArguments.user;
-      callType = callArguments.callType;
-      callId = callArguments.callId;
-      userId.value = callArguments.userId;
-      currentUserId.value = callArguments.currentUserId;
-      currentUser.value = callArguments.currentUser;
-      firebaseServerKey = callArguments.firebaseServerKey;
-      imageBaseUrl.value = callArguments.imageBaseUrl;
-      agoraAppId.value = callArguments.agoraAppId;
-      agoraAppCertificate = callArguments.agoraAppCertificate;
+      // userDetails.value = callArguments.user;
+      // callType = callArguments.callType;
+      // callId = callArguments.callId;
+      // userId.value = callArguments.userId;
+      // currentUserId.value = callArguments.currentUserId;
+      // currentUser.value = callArguments.currentUser;
+      // firebaseServerKey = callArguments.firebaseServerKey;
+      // imageBaseUrl.value = callArguments.imageBaseUrl;
+      // agoraAppId.value = callArguments.agoraAppId;
+      // agoraAppCertificate = callArguments.agoraAppCertificate;
 
 /// play sound when screen open
       await player.setAsset(ChatHelpers.instance.ringingSound);
@@ -181,10 +179,10 @@ class OutGoingController extends GetxController {
       player.setLoopMode(LoopMode.all);
 
       /// check if call is incoming or outgoing
-      if (callId != "") {
+      if (callArguments.callId != "") {
         isIncoming.value = true;
         logPrint("Incoming calling ${isIncoming.value}");
-        streamRef = firebase.callReferenceById(callId).snapshots();
+        streamRef = firebase.callReferenceById(callArguments.callId).snapshots();
       } else {
         isIncoming.value = false;
         logPrint("Incoming calling ${isIncoming.value}");

@@ -11,8 +11,6 @@ class FileView extends StatelessWidget {
   final bool isSender;
   final bool isSeen;
   final bool isVisible;
-  final Color? senderColor;
-  final Color? receiverColor;
   final VoidCallback onLongPress;
   final ChatController chatController;
 
@@ -24,8 +22,6 @@ class FileView extends StatelessWidget {
       required this.index,
       required this.isSeen,
       required this.isVisible,
-        this.senderColor,
-        this.receiverColor,
       required this.onLongPress,
       required this.chatController});
 
@@ -53,22 +49,24 @@ class FileView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: ChatHelpers.marginSizeSmall),
                       decoration: BoxDecoration(
-                          color: isSender == true
-                              ? ChatHelpers.mainColor
-                              : ChatHelpers.backcolor,
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: const Radius.circular(
-                                  ChatHelpers.cornerRadius),
-                              topRight: const Radius.circular(
-                                  ChatHelpers.cornerRadius),
-                              topLeft: isSender == true
-                                  ? const Radius.circular(
-                                      ChatHelpers.cornerRadius)
-                                  : Radius.zero,
-                              bottomRight: isSender == false
-                                  ? const Radius.circular(
-                                      ChatHelpers.cornerRadius)
-                                  : Radius.zero)),
+                        color: isSender == true
+                            ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
+                            : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: isSender == true
+                              ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomLeftRadius ?? ChatHelpers.cornerRadius)
+                              : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomLeftRadius ?? ChatHelpers.cornerRadius),
+                          topRight: isSender == true
+                              ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopRightRadius ?? ChatHelpers.cornerRadius)
+                              : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopRightRadius ?? ChatHelpers.cornerRadius),
+                          topLeft: isSender == true
+                              ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopLeftRadius ?? ChatHelpers.cornerRadius)
+                              : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopLeftRadius ?? ChatHelpers.cornerRadius),
+                          bottomRight: isSender == true
+                              ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomRightRadius ?? ChatHelpers.cornerRadius)
+                              : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomRightRadius ?? ChatHelpers.cornerRadius),
+                        ),
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -83,8 +81,8 @@ class FileView extends StatelessWidget {
                                 bottom: ChatHelpers.marginSizeExtraSmall),
                             decoration: BoxDecoration(
                                 color: isSender == true
-                                    ? senderColor ?? ChatHelpers.mainColorLight
-                                    : receiverColor ?? ChatHelpers.backcolor,
+                                    ? chatController.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight
+                                    : chatController.themeArguments?.colorArguments?.backgroundColor ?? ChatHelpers.backcolor,
                                 borderRadius: BorderRadius.circular(
                                     ChatHelpers.cornerRadius)),
                             child: Row(
@@ -93,8 +91,8 @@ class FileView extends StatelessWidget {
                                 Icon(
                                   Icons.folder,
                                   color: isSender == true
-                                      ? ChatHelpers.white
-                                      : ChatHelpers.black,
+                                      ? chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white
+                                      : chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.black,
                                 ),
                                 const SizedBox(
                                   width: 15,
@@ -105,8 +103,8 @@ class FileView extends StatelessWidget {
                                     style: ChatHelpers.instance.styleRegular(
                                         ChatHelpers.fontSizeSmall,
                                         isSender == true
-                                            ? ChatHelpers.white
-                                            : ChatHelpers.black),
+                                            ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                            : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
                                   ),
                                 ),
                                 const SizedBox(
@@ -117,8 +115,8 @@ class FileView extends StatelessWidget {
                                     icon: Icon(
                                       Icons.download,
                                       color: isSender == true
-                                          ? ChatHelpers.white
-                                          : ChatHelpers.black,
+                                          ? chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white
+                                          : chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.black,
                                     )),
                               ],
                             ),
@@ -133,8 +131,8 @@ class FileView extends StatelessWidget {
                                 style: ChatHelpers.instance.styleRegular(
                                     ChatHelpers.fontSizeSmall,
                                     isSender == true
-                                        ? ChatHelpers.white
-                                        : ChatHelpers.black),
+                                        ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                        : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ??ChatHelpers.black),
                               ),
                             ),
                           ),

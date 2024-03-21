@@ -18,14 +18,14 @@ class AudioCallScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ChatHelpers.transparent,
       body: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                ChatHelpers.mainColor,
-                ChatHelpers.mainColorLight,
-                ChatHelpers.grey
+                controller.callArguments.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,
+                controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
+                controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.grey
               ],
             ),
           ),
@@ -51,9 +51,11 @@ class AudioCallScreen extends StatelessWidget {
                           child: Obx(
                             () => Center(
                               child: VideoOffView(
-                                imageBaseUrl: controller.imageBaseUrl.value,
+                                backGroundColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
+                                textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
+                                imageBaseUrl: controller.callArguments.imageBaseUrl,
                                 isRemote: false,
-                                users: controller.currentUser.value,
+                                users: controller.callArguments.currentUser,
                               ),
                             ),
                           )))),
@@ -65,15 +67,14 @@ class AudioCallScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.all(ChatHelpers.marginSizeSmall),
                   decoration: BoxDecoration(
-                      color: ChatHelpers.mainColorLight,
-                      borderRadius: BorderRadius.circular(
-                          ChatHelpers.buttonRadius)),
+                      color: controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
+                      borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)),
                   child: Obx(() => Text(
                         DateTimeConvertor.formattedTime(
                             timeInSecond: controller.start.value),
                         style: ChatHelpers.instance.styleRegular(
                             ChatHelpers.fontSizeSmall,
-                            ChatHelpers.white),
+                            controller.callArguments.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white),
                       )),
                 ),
               ),
@@ -90,7 +91,7 @@ class AudioCallScreen extends StatelessWidget {
                         boxColor: ChatHelpers.red,
                         onTap: () => controller.endCall(false),
                         icons: Icons.call_end_rounded,
-                        colors: ChatHelpers.white,
+                        colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                         height: 60,
                         width: 60,
                         isImage: false,
@@ -106,7 +107,7 @@ class AudioCallScreen extends StatelessWidget {
                             icons: controller.isMicOn.isTrue
                                 ? Icons.mic
                                 : Icons.mic_off,
-                            colors: ChatHelpers.white,
+                            colors:controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                             splashColor: ChatHelpers.red,
                             height: 60,
                             width: 60,
@@ -122,7 +123,7 @@ class AudioCallScreen extends StatelessWidget {
                             image: controller.isSpeakerOn.isTrue
                                 ? ChatHelpers.instance.speaker
                                 : ChatHelpers.instance.speakerOff,
-                            colors: ChatHelpers.white,
+                            colors: controller.callArguments.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
                             height: 60,
                             width: 60,
                           ),
@@ -140,19 +141,21 @@ Widget _remoteVideo(AudioCallController controller) {
   if (controller.remoteUid.value != 0) {
     return Center(
         child: VideoOffView(
-          imageBaseUrl: controller.imageBaseUrl.value,
+          backGroundColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
+          textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
+          imageBaseUrl: controller.callArguments.imageBaseUrl,
           height: 100,
           width: 100,
       fontSize: ChatHelpers.fontSizeDoubleExtraLarge,
       isRemote: true,
-      users: controller.user.value,
+      users: controller.callArguments.user,
     ));
   } else {
     return Center(
       child: Text(
         'User Connecting ...',
         style: ChatHelpers.instance.styleMedium(
-            ChatHelpers.marginSizeDefault, ChatHelpers.white),
+            ChatHelpers.marginSizeDefault,controller.callArguments.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white),
         textAlign: TextAlign.center,
       ),
     );

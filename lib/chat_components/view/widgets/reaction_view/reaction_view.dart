@@ -25,7 +25,7 @@ class ReactionView extends StatelessWidget {
         width: isChange ? MediaQuery.of(context).size.width * .65 : 0,
         decoration: BoxDecoration(
             borderRadius: isChange ? BorderRadius.circular(ChatHelpers.cornerRadius) : BorderRadius.circular(ChatHelpers.circularImage),
-            color: ChatHelpers.mainColor),
+            color: chatController.themeArguments?.colorArguments?.reactionViewBoxColor ?? chatController.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor),
         curve: Curves.bounceInOut,
         duration: const Duration(milliseconds: 200),
         child: ListView(
@@ -42,7 +42,7 @@ class ReactionView extends StatelessWidget {
                         chatController.reactionIndex.value = index;
                         chatController.selectReactionIndex.value = "";
                       },
-                      boxColor: ChatHelpers.white,
+                      boxColor: chatController.themeArguments?.colorArguments?.reactionBoxColor ?? ChatHelpers.white,
                       isImage: true,
                       isImageText: true,
                       shapeRec: false,

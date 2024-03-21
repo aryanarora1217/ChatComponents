@@ -1,7 +1,7 @@
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/view/widgets/icon_button/icon_button.dart';
+import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../../view_model/controller/chat_screen_controller/chat_screen_controller.dart';
 import '../cricle_image_view/profile_image_view.dart';
 
@@ -24,7 +24,7 @@ class UserViewChatScreen extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).viewPadding.top;
     return Container(
       height: statusBarHeight+55,
-      color: ChatHelpers.mainColor,
+      color: chatController.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,
       padding:
       EdgeInsets.only(top: statusBarHeight+5, bottom: 10),
       child: SizedBox(
@@ -33,12 +33,13 @@ class UserViewChatScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(width: 5,),
-            CircleIconButton(onTap: backButtonTap, isImage: false,icons: Icons.arrow_back,colors: ChatHelpers.white,boxColor: ChatHelpers.transparent,),
+            CircleIconButton(onTap: backButtonTap, isImage: false,icons: Icons.arrow_back,colors: chatController.themeArguments?.colorArguments?.backButtonIconColor ?? chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,boxColor: ChatHelpers.transparent,),
             const SizedBox(width: 10,),
             ProfileImageView(
+              boxColor: chatController.themeArguments?.colorArguments?.mainColorLight,
                 height: 38,
                 width: 38,
-                profileName: userName,
+                profileName: userName.isNotEmpty ? userName[0] :"",
                 profileImage: userProfile),
             const SizedBox(
               width: 15,
@@ -49,33 +50,33 @@ class UserViewChatScreen extends StatelessWidget {
               children: [
                 Text(
                     userName,
-                    style: ChatHelpers.instance.styleSemiBold(
+                    style: chatController.themeArguments?.styleArguments?.appbarNameStyle ?? ChatHelpers.instance.styleSemiBold(
                         ChatHelpers.fontSizeDefault,
-                        ChatHelpers.white)),
+                        chatController.themeArguments?.colorArguments?.appBarNameTextColor ?? chatController.themeArguments?.colorArguments?.textColor ?? ChatHelpers.white)),
                 presence== "" ? const SizedBox() :Text(
                     presence,
-                    style: ChatHelpers.instance.styleRegular(
+                    style: chatController.themeArguments?.styleArguments?.appbarPresenceStyle ?? ChatHelpers.instance.styleRegular(
                         ChatHelpers.fontSizeExtraSmall,
-                        ChatHelpers.white.withOpacity(.9))),
+                        chatController.themeArguments?.colorArguments?.appBarPresenceTextColor ?? chatController.themeArguments?.colorArguments?.textColor?.withOpacity(.8) ?? ChatHelpers.white.withOpacity(.9))),
               ],
             ),
             const Spacer(),
-            chatController.isAudioCallEnable.isTrue ?CircleIconButton(
+            chatController.chatArguments.isAudioCallEnable ? CircleIconButton(
               isImage: false,
               boxColor: ChatHelpers.transparent,
               icons: Icons.call,
               onTap: audioCallButtonTap,
-              colors: ChatHelpers.white,
+              colors: chatController.themeArguments?.colorArguments?.audioCallIconColor ??  chatController.themeArguments?.colorArguments?.iconColor ?? ChatHelpers.white,
             ) : const SizedBox(),
             const SizedBox(
               width: 15,
             ),
-            chatController.isVideoCallEnable.isTrue ? CircleIconButton(
+            chatController.chatArguments.isVideoCallEnable ? CircleIconButton(
               boxColor: ChatHelpers.transparent,
               isImage: false,
               icons: Icons.videocam,
               onTap: videoCallButtonTap,
-              colors: ChatHelpers.white,
+              colors: chatController.themeArguments?.colorArguments?.videoCallIconColor ?? chatController.themeArguments?.colorArguments?.iconColor ??  ChatHelpers.white,
             ) : const SizedBox(),
             const SizedBox(
               width: 15,

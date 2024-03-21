@@ -51,21 +51,23 @@ class MessageView extends StatelessWidget {
                         const EdgeInsets.all(ChatHelpers.paddingSizeSmall),
                     decoration: BoxDecoration(
                         color: isSender == true
-                            ? ChatHelpers.mainColor
-                            : ChatHelpers.backcolor,
+                            ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
+                            : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
                         borderRadius: BorderRadius.only(
-                            bottomLeft: const Radius.circular(
-                                ChatHelpers.cornerRadius),
-                            topRight: const Radius.circular(
-                                ChatHelpers.cornerRadius),
+                            bottomLeft: isSender == true
+                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomLeftRadius ?? ChatHelpers.cornerRadius)
+                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomLeftRadius ?? ChatHelpers.cornerRadius),
+                            topRight: isSender == true
+                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopRightRadius ?? ChatHelpers.cornerRadius)
+                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopRightRadius ?? ChatHelpers.cornerRadius),
                             topLeft: isSender == true
-                                ? const Radius.circular(
-                                    ChatHelpers.cornerRadius)
-                                : Radius.zero,
-                            bottomRight: isSender == false
-                                ? const Radius.circular(
-                                    ChatHelpers.cornerRadius)
-                                : Radius.zero)),
+                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopLeftRadius ?? ChatHelpers.cornerRadius)
+                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopLeftRadius ?? ChatHelpers.cornerRadius),
+                            bottomRight: isSender == true
+                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomRightRadius ?? ChatHelpers.cornerRadius)
+                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomRightRadius ?? ChatHelpers.cornerRadius),
+                        ),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
@@ -76,8 +78,8 @@ class MessageView extends StatelessWidget {
                             style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
                                 ChatHelpers.fontSizeDefault,
                                 isSender == true
-                                    ? ChatHelpers.white
-                                    : ChatHelpers.black),
+                                    ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                    : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
                             softWrap: true,
                           ),
                         ),
