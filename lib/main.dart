@@ -26,15 +26,18 @@ Future<void> initServices() async {
 }
 
 Future<void> runChatServices() async {
+
   Get.putAsync(() => ChatServices().init(
-      otherUserId: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
-      currentUserId: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
-      imageBaseUrlFirebase: 'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
-      firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
-      imageArguments: ImageArguments(isImageFromCamera: true),
-      isAttachmentSendEnable: true,
-      isAudioCallEnable: true )
-  );
+        otherUserId: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+        currentUserId: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
+        imageBaseUrlFirebase:
+            'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
+        firebaseServerKey:
+            'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
+        imageArguments: ImageArguments(isImageFromCamera: true),
+        isAttachmentSendEnable: true,
+        isAudioCallEnable: true,
+      ));
 }
 
 class MyApp extends StatelessWidget {

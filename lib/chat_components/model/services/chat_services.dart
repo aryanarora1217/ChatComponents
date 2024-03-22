@@ -7,7 +7,22 @@ import '../chatHelper/chat_helper.dart';
 class ChatServices extends GetxService {
   late ChatArguments chatArguments;
 
-  Future<ChatServices> init({ImageArguments? imageArguments, ThemeArguments? themeArguments, String? agoraChannelName, String? agoraToken, bool? isVideoCallEnable, bool? isAudioCallEnable, bool? isAttachmentSendEnable, bool? isCameraImageSendEnable, String? chatRoomId, required String imageBaseUrlFirebase, String? agoraAppId, String? agoraAppCertificate, required String otherUserId, required String currentUserId, required String firebaseServerKey}) async {
+  Future<ChatServices> init(
+      {ImageArguments? imageArguments,
+      ThemeArguments? themeArguments,
+      String? agoraChannelName,
+      String? agoraToken,
+      bool? isVideoCallEnable,
+      bool? isAudioCallEnable,
+      bool? isAttachmentSendEnable,
+      bool? isCameraImageSendEnable,
+      String? chatRoomId,
+      required String imageBaseUrlFirebase,
+      String? agoraAppId,
+      String? agoraAppCertificate,
+      required String otherUserId,
+      required String currentUserId,
+      required String firebaseServerKey}) async {
     chatArguments = ChatArguments(
         chatRoomId: chatRoomId ?? ChatHelpers.instance.chatRoomId,
         currentUserId: currentUserId,
