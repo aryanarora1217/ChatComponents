@@ -38,6 +38,7 @@ Future<void> runChatServices() async {
         isAttachmentSendEnable: true,
         isAudioCallEnable: true,
       ));
+
 }
 
 class MyApp extends StatelessWidget {
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
       getPages: getPages,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: ChatHelpers.mainColor),
         useMaterial3: true,
       ),
       home: const MyHomePage(),

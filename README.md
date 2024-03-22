@@ -68,7 +68,7 @@ Both user IDs will be used when creating the chat room ID.
 
 # A example of code to add values to chat services
 
-'''dart
+``` 
 Get.putAsync(() => ChatServices().init(
 otherUserId: "other user Id ",
 currentUserId: "Current user Id ",
@@ -82,4 +82,4 @@ colorArguments: ColorArguments(mainColor: Colors.red),
 styleArguments: StyleArguments(appbarNameStyle: TextStyle(color: Colors.white)),
 customWidgetsArguments: CustomWidgetsArguments(customSendIconButtonWidgets: CircleAvatar(
 backgroundColor: Colors.red,child: Icon(Icons.send_rounded,color: Colors.yellowAccent,),)))));
-'''
+```
