@@ -16,8 +16,8 @@ class VideoCallController extends GetxController {
   RtcEngine agoraRtcEngine = createAgoraRtcEngine();
 
   /// user details variable
-  // Rx<Users> currentUser = Users().obs;
-  // Rx<Users> user = Users().obs;
+  Rx<Users> currentUser = Users().obs;
+  Rx<Users> user = Users().obs;
 
   // final expirationInSeconds = 3600;
   // final currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -165,11 +165,11 @@ class VideoCallController extends GetxController {
     /// get all details form arguments for call
     callArguments = Get.arguments;
 
-    // user.value = callArguments.user;
+    user.value = callArguments.user;
     // callId = callArguments.callId;
     // userId.value = callArguments.userId;
     // currentUserId.value = callArguments.currentUserId;
-    // currentUser.value = callArguments.currentUser;
+    currentUser.value = callArguments.currentUser;
     // firebaseServerKey = callArguments.firebaseServerKey;
     // imageBaseUrl.value = callArguments.imageBaseUrl;
     // agoraAppId.value = callArguments.agoraAppId;

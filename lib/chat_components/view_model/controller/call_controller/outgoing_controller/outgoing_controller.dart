@@ -1,5 +1,7 @@
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
+import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
+import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -68,21 +70,32 @@ class OutGoingController extends GetxController {
 
   /// send notification to user for call
   Future<void> sendInvite() async {
-    String id = getRandomString();
-    callArguments.callId = id;
-    callDetails.value = CallModel(
-        callerId: callArguments.currentUserId,
-        callId: id,
-        receiverId: callArguments.user.id,
-        callType: callArguments.callType,
-        callStatus: CallStatus.calling.name,
-        callTimeStamp: DateTime.now().toUtc().toString(),
+try{
+  String id = getRandomString();
+  callArguments.callId = id;
+  callDetails.value = CallModel(
+      callerId: callArguments.currentUserId,
+      callId: id,
+      receiverId: callArguments.user.id,
+      callType: callArguments.callType,
+      callStatus: CallStatus.calling.name,
+      callTimeStamp: DateTime.now().toUtc().toString(),
       callMembers: [callArguments.user.id,callArguments.currentUserId]
-    );
-    await firebaseNotification.sendNotification(callArguments.callType,
-        callArguments.currentUser,
-        callArguments.user.deviceToken ?? "",
-        callDetails.value,false,MessageModel(),"",callArguments.firebaseServerKey,callArguments.user,callArguments);
+  );
+  await firebaseNotification.sendNotification(callArguments.callType,
+      callArguments.currentUser,
+      callArguments.user.deviceToken ?? "",
+      callDetails.value,false,MessageModel(),"",callArguments.firebaseServerKey,callArguments.user,callArguments);
+}
+catch(e){
+  logPrint("Error sending invite : $e");
+  onEndCall();
+  toastShow(massage: "Error Making call ", error: true);
+  callDetails.value = await firebase.readCall(callDetails.value.callId??"");
+  if(callDetails.value.callStatus == CallStatus.ringing.name || callDetails.value.callStatus == CallStatus.calling.name ){
+    DebounceHelper.instance.debounceFunction(onDebounceCall: () => Get.back(), duration: const Duration(milliseconds: 500));
+  }
+}
   }
 
   /// ans call on click
@@ -115,10 +128,10 @@ class OutGoingController extends GetxController {
             onDebounceCall: () => callDetails.value.callType == CallType.audioCall.name
 
                 ? Get.offAndToNamed(ChatHelpers.audioCall,
-              arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken))
+              arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken,themeArguments: Get.find<ChatServices>().chatArguments.themeArguments))
 
                 : Get.offAndToNamed(ChatHelpers.videoCall,
-                arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken)
+                arguments: CallArguments(isMicOn: isMicOn.value, callId: callDetails.value.callId ?? "",callType: callArguments.callType,currentUser: callArguments.currentUser,currentUserId: callArguments.currentUserId,user: callArguments.user,userId: callArguments.userId,firebaseServerKey: callArguments.firebaseServerKey,agoraAppCertificate: callArguments.agoraAppCertificate,agoraAppId: callArguments.agoraAppId, imageBaseUrl: callArguments.imageBaseUrl,agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken,themeArguments: Get.find<ChatServices>().chatArguments.themeArguments)
             ),
             duration: const Duration(milliseconds: 500));
       }

@@ -58,7 +58,7 @@ class VideoCallScreen extends StatelessWidget {
                                 backGroundColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
                                 textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
                                 isRemote: false,
-                                users: controller.callArguments.currentUser, imageBaseUrl: controller.callArguments.imageBaseUrl,
+                                users: controller.currentUser.value, imageBaseUrl: controller.callArguments.imageBaseUrl,
                               ),
                             ),
                     ))),
@@ -172,7 +172,7 @@ Widget _remoteVideo(VideoCallController controller) {
               width: 100,
               isRemote: true,
               fontSize: ChatHelpers.fontSizeDoubleExtraLarge,
-              users: controller.callArguments.user,
+              users: controller.user.value,
           ));
   } else {
     return Center(

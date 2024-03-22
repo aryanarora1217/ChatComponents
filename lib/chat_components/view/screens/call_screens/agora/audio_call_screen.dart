@@ -42,7 +42,7 @@ class AudioCallScreen extends StatelessWidget {
                       width: 130,
                       height: 180,
                       decoration: BoxDecoration(
-                          color: ChatHelpers.mainColorLight,
+                          color: controller.callArguments.themeArguments?.colorArguments?.mainColorLight ?? ChatHelpers.mainColorLight,
                           borderRadius: BorderRadius.circular(
                               ChatHelpers.cornerRadius)),
                       child: ClipRRect(
@@ -55,7 +55,7 @@ class AudioCallScreen extends StatelessWidget {
                                 textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
                                 imageBaseUrl: controller.callArguments.imageBaseUrl,
                                 isRemote: false,
-                                users: controller.callArguments.currentUser,
+                                users: controller.currentUser.value,
                               ),
                             ),
                           )))),
@@ -148,7 +148,7 @@ Widget _remoteVideo(AudioCallController controller) {
           width: 100,
       fontSize: ChatHelpers.fontSizeDoubleExtraLarge,
       isRemote: true,
-      users: controller.callArguments.user,
+      users: controller.user.value,
     ));
   } else {
     return Center(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
+import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
 import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -31,7 +32,7 @@ class FirebaseNotification {
   String token = '';
   var firebase = FirebaseDataBase();
 
-  late CallArguments callArguments;
+  CallArguments? callArguments;
 
 
   RxMap<String, dynamic> presence = <String, dynamic>{}.obs;
@@ -113,7 +114,10 @@ class FirebaseNotification {
           ChatHelpers.instance.userDetails: userDetails.toJson(),
           ChatHelpers.instance.otherUserDetails: otherUserDetails.toJson(),
           ChatHelpers.instance.callId: callDetails.callId,
-          ChatHelpers.instance.callArguments: callArguments,
+          ChatHelpers.instance.agoraChannelName: callArguments?.agoraChannelName,
+          ChatHelpers.instance.agoraToken: callArguments?.agoraToken,
+          ChatHelpers.instance.agoraAppId: callArguments?.agoraAppId,
+          ChatHelpers.instance.agoraCertificate: callArguments?.agoraAppCertificate,
         },
         'to': token
       },
@@ -180,8 +184,8 @@ class FirebaseNotification {
             chatRoomID = message.data[ChatHelpers.instance.chatRoomId];
             chatRoomModel = await fetchChatroomDetails(chatRoomID);
             if (chatRoomModel.userFirstId == userDetails.id) {
-              if (chatRoomModel.userFirst?.userActiveStatus == false ||
-                  chatRoomModel.userFirst?.userActiveStatus == null) {
+              // if (chatRoomModel.userFirst?.userActiveStatus == false ||
+              //     chatRoomModel.userFirst?.userActiveStatus == null) {
                 /// show message notifications
                 fltNotification.show(
                     notification.hashCode,
@@ -199,9 +203,9 @@ class FirebaseNotification {
                         "",
                     generalNotificationDetails,
                     payload: chatRoomID);
-              }
+              // }
             } else {
-              if (chatRoomModel.userSecond?.userActiveStatus == false || chatRoomModel.userSecond?.userActiveStatus == null) {
+              // if (chatRoomModel.userSecond?.userActiveStatus == false || chatRoomModel.userSecond?.userActiveStatus == null) {
                 /// show message notification for messages
                 fltNotification.show(
                     notification.hashCode,
@@ -222,18 +226,21 @@ class FirebaseNotification {
                         "",
                     generalNotificationDetails,
                     payload: chatRoomID);
-              }
+              // }
             }
           }
           else {
-            callArguments = message.data[ChatHelpers.instance.callArguments];
+            String agoraAppID = message.data[ChatHelpers.instance.agoraAppId];
+            String agoraCertificate = message.data[ChatHelpers.instance.agoraCertificate];
+            String agoraChannelName = message.data[ChatHelpers.instance.agoraChannelName];
+            String agoraToken = message.data[ChatHelpers.instance.agoraToken];
             callTypes = message.data[ChatHelpers.instance.callType];
             callId = message.data[ChatHelpers.instance.callId];
             logPrint("Call details : ${callDetails.callId} , $callId , $callArguments");
             if (callId != "") {
               /// navigate to outgoing screen when call notification screens
               Get.toNamed(ChatHelpers.outGoingScreen,
-                  arguments:  CallArguments(user: otherUserDetails, callType: callTypes, callId: callArguments.callId, imageBaseUrl: callArguments.imageBaseUrl, agoraAppId: callArguments.agoraAppId, agoraAppCertificate: callArguments.agoraAppCertificate, userId: otherUserDetails.id??"", currentUserId: userDetails.id??"", firebaseServerKey: callArguments.firebaseServerKey, currentUser: userDetails, agoraChannelName: callArguments.agoraChannelName, agoraToken: callArguments.agoraToken));
+                  arguments:  CallArguments(themeArguments: Get.find<ChatServices>().chatArguments.themeArguments,user: otherUserDetails, callType: callTypes, callId: callId, imageBaseUrl: Get.find<ChatServices>().chatArguments.imageBaseUrlFirebase, agoraAppId: agoraAppID, agoraAppCertificate: agoraCertificate, userId: otherUserDetails.id??"", currentUserId: userDetails.id ??"", firebaseServerKey: Get.find<ChatServices>().chatArguments.firebaseServerKey, currentUser: userDetails, agoraChannelName: agoraChannelName, agoraToken: agoraToken));
             }
           }
         }

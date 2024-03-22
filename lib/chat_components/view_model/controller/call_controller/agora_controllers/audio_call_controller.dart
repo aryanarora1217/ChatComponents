@@ -15,8 +15,8 @@ class AudioCallController extends GetxController {
 /// agora engine variable
   RtcEngine agoraRtcEngine = createAgoraRtcEngine();
   /// user details current and other user
-  // Rx<Users> currentUser = Users().obs;
-  // Rx<Users> user = Users().obs;
+  Rx<Users> currentUser = Users().obs;
+  Rx<Users> user = Users().obs;
   // final expirationInSeconds = 3600;
   // final currentTimestamp = DateTime
   //     .now()
@@ -174,11 +174,11 @@ class AudioCallController extends GetxController {
     /// call arguments adding value to variables
     callArguments = Get.arguments;
 
-    // user.value = callArguments.user;
+    user.value = callArguments.user;
     // callId = callArguments.callId;
     // userId.value = callArguments.userId;
     // currentUserId.value = callArguments.currentUserId;
-    // currentUser.value = callArguments.currentUser;
+    currentUser.value = callArguments.currentUser;
     // firebaseServerKey = callArguments.firebaseServerKey;
     // imageBaseUrl.value = callArguments.imageBaseUrl;
     // agoraAppId.value = callArguments.agoraAppId;

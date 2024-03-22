@@ -1,4 +1,6 @@
+import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../model/chatHelper/chat_helper.dart';
 import '../../../model/models/user_model/user_model.dart';
@@ -37,9 +39,12 @@ class VideoOffView extends StatelessWidget {
               color:  backGroundColor ?? ChatHelpers.backcolor,
             ),
               child: ProfileImageView(
+                textColor: Get.find<ChatServices>().chatArguments.themeArguments?.colorArguments?.textColor,
+                boxColor: Get.find<ChatServices>().chatArguments.themeArguments?.colorArguments?.mainColor,
             profileImage: users.signInType == SignType.google.name
                 ? users.profileImage ?? ""
                 : imageBaseUrl + (users.profileImage ?? ""),
+            profileName: users.profileName?.isNotEmpty ?? false ? users.profileName![0] : "",
             height: height,
             width: width,
           )),

@@ -1,9 +1,6 @@
 import 'package:chatcomponent/chat_components/model/models/user_model/user_model.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 /// Chat screen Arguments
 class ChatArguments {
   String otherUserId;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
+import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -624,7 +625,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// call in init method
   Future<void> initServices() async {
     /// get all details with arguments
-    chatArguments = Get.arguments;
+    chatArguments = Get.find<ChatServices>().chatArguments ;
+
     imageArguments = chatArguments.imageArguments;
     themeArguments = chatArguments.themeArguments;
 
@@ -632,14 +634,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
     updatePresence(PresenceStatus.online.name);
 
-    if (chatArguments.chatRoomId != ChatHelpers.instance.chatRoomId) {
-      try {
-        await chatroomUpdates();
-        isLoadingChats.value = false;
-      } catch (e) {
-        logPrint('error presence => $e');
-      }
-    } else {
+    if (chatArguments.otherUserId != "" || chatArguments.currentUserId != "") {
       users.value = (await firebase.fetchUser(chatArguments.otherUserId)) ?? Users();
       currentUser.value = (await firebase.fetchUser(chatArguments.currentUserId)) ?? Users();
       isUserId.value = true;
@@ -649,6 +644,14 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           ? chatroomUpdates()
           : null;
       isLoadingChats.value = false;
+    } else {
+      try {
+        await chatroomUpdates();
+        isLoadingChats.value = false;
+      } catch (e) {
+        logPrint('error presence => $e');
+      }
+
     }
   }
 }

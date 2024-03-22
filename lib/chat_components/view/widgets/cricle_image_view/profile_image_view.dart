@@ -26,7 +26,7 @@ class ProfileImageView extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(ChatHelpers.circularImage),
-        child: profileImage == "" || profileImage == "https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com" ?  Center(child: Text(profileName??"",style:  ChatHelpers.instance.styleBold(ChatHelpers.fontSizeOverExtraLarge, textColor ?? ChatHelpers.white),))  : cachedNetworkImage(url: profileImage,isProfile: true)
+        child: profileImage.isEmpty || profileImage == "https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com" ?  Center(child: Text(profileName??"",style:  ChatHelpers.instance.styleBold(ChatHelpers.fontSizeOverExtraLarge, textColor ?? ChatHelpers.white),))  : cachedNetworkImage(url: profileImage,isProfile: true)
       ),
     );
   }

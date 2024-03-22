@@ -280,6 +280,18 @@ class FirebaseDataBase {
         .doc(id);
   }
 
+  Future<CallModel> readCall(String callId) async {
+    CallModel callModel = CallModel();
+    DocumentReference<Map<String, dynamic>> reference = FirebaseFirestore
+        .instance
+        .collection(ChatHelpers.instance.calls)
+        .doc(callId);
+    await reference.get().then((value) => callModel = CallModel.fromJson(value.data()??{}));
+    logPrint("Call fetch");
+    logPrint(callModel);
+    return callModel;
+  }
+
   /// recent message refernce of chat room messages
   DocumentReference<Map<String, dynamic>> recentMessageRef(String chatRoomId) {
     return FirebaseFirestore.instance

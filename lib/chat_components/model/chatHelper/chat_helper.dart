@@ -81,7 +81,10 @@ class ChatHelpers {
   String get chatRoomId => 'chatRoomId';
   String get userId => 'userId';
   String get isMicOn => 'isMicOn';
-  String get callArguments => 'callArguments';
+  String get agoraToken => 'agoraToken';
+  String get agoraChannelName => 'agoraChannelName';
+  String get agoraCertificate => 'agoraCertificate';
+  String get agoraAppId => 'agoraAppId';
 
   ///messages string
   String get noChatsMessage =>

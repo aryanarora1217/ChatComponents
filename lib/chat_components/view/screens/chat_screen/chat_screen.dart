@@ -1,4 +1,5 @@
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
+import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,10 +59,11 @@ class ChatScreen extends StatelessWidget {
                             ? controller.users.value.presence?.capitalizeFirst ?? "" : ""
                             : PresenceStatus.typing.name.capitalizeFirst ?? "",
                         backButtonTap: () => Get.back(),
-                        audioCallButtonTap: () => Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)),
-                        videoCallButtonTap: () => Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)), chatController: controller,
+                        audioCallButtonTap: () => controller.chatArguments.agoraAppId?.isNotEmpty ?? false ? Get.toNamed(ChatHelpers.outGoingScreen,
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
+                        videoCallButtonTap: () => controller.chatArguments.agoraAppId?.isNotEmpty ?? false ? Get.toNamed(ChatHelpers.outGoingScreen,
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
+                      chatController: controller,
                         )),
                     Expanded(
                       child: Obx(() => controller.isLoadingChats.isFalse
@@ -70,66 +72,69 @@ class ChatScreen extends StatelessWidget {
                           height: 300,
                           child: Lottie.asset(
                               ChatHelpers.instance.hello))
-                          : ListView(
-                        reverse: true,
-                        physics: const BouncingScrollPhysics(),
-                        children: List.generate(
-                            controller.messages.length,
-                                (index) {
-                              // logPrint("last meessage : ${controller.messages.lastWhere((p0) => p0.isSeen==true)}");
-                              // String seenLastId = controller.messages.isNotEmpty ? controller.messages.lastWhere((p0) => p0.isSeen==true).id ?? "" : "";
-                              return controller.messages[index].messageType == 'text' ? MessageView(
-                                index: index,
-                                chatController: controller,
-                                onLongTap: () {
-                                  controller.selectReactionIndex.value = index.toString();
-                                  controller.isReaction.value = !controller.isReaction.value;
-                                },
-                                message: controller.messages[index].message ?? '',
-                                time: DateTimeConvertor.timeExt(controller.messages[index].time ?? ''),
-                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
-                                isSeen: controller.messages[index].isSeen ?? false,
-                                visible: controller.messages[index].sender == controller.chatArguments.currentUserId
-                                    ? controller.messages.length -1 == index ? true : false
-                                    : false,
-                                isReaction: controller.isReaction.value,
-                                reactionList: controller.emoji,
-                              )
-                                  : controller.messages[index].file?.fileType == FileTypes.image.name ? ImageView(
-                                time: DateTimeConvertor.timeExt(controller.messages[index].time??""),
-                                image: controller.messages[index].file?.fileUrl ?? '',
-                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
-                                onTap: () => Get.to(
-                                  ViewImageAndPlayVideoScreen(
-                                    file: controller.messages[index].file?.fileUrl ??
-                                        '', chatController: controller,
+                          : Padding(
+                            padding: const EdgeInsets.only(bottom: ChatHelpers.marginSizeExtraSmall),
+                            child: ListView(
+                              reverse: true,
+                              physics: const BouncingScrollPhysics(),
+                              children: List.generate(
+                              controller.messages.length,
+                                  (index) {
+                                // logPrint("last meessage : ${controller.messages.lastWhere((p0) => p0.isSeen==true)}");
+                                // String seenLastId = controller.messages.isNotEmpty ? controller.messages.lastWhere((p0) => p0.isSeen==true).id ?? "" : "";
+                                return controller.messages[index].messageType == 'text' ? MessageView(
+                                  index: index,
+                                  chatController: controller,
+                                  onLongTap: () {
+                                    controller.selectReactionIndex.value = index.toString();
+                                    controller.isReaction.value = !controller.isReaction.value;
+                                  },
+                                  message: controller.messages[index].message ?? '',
+                                  time: DateTimeConvertor.timeExt(controller.messages[index].time ?? ''),
+                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                  isSeen: controller.messages[index].isSeen ?? false,
+                                  visible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                      ? controller.messages.length -1 == index ? true : false
+                                      : false,
+                                  isReaction: controller.isReaction.value,
+                                  reactionList: controller.emoji,
+                                )
+                                    : controller.messages[index].file?.fileType == FileTypes.image.name ? ImageView(
+                                  time: DateTimeConvertor.timeExt(controller.messages[index].time??""),
+                                  image: controller.messages[index].file?.fileUrl ?? '',
+                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                  onTap: () => Get.to(
+                                    ViewImageAndPlayVideoScreen(
+                                      file: controller.messages[index].file?.fileUrl ??
+                                          '', chatController: controller,
+                                    ),
                                   ),
-                                ),
-                                isSeen: controller.messages[index].isSeen ?? false,
-                                isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
-                                    ? controller.messages.length -1 == index ? true : false
-                                    : false, onLongPress: () { controller.selectReactionIndex
-                                  .value = index.toString();
-                              controller.isReaction.value = !controller.isReaction.value; },
-                                index: index, chatController: controller,
-                              )
-                                  : FileView(
-                                isSeen: controller.messages[index].isSeen ??
-                                    false,
-                                isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
-                                    ? controller.messages.length -1 == index ? true : false
-                                    : false,
-                                onLongPress: () { controller.selectReactionIndex.value = index.toString();
+                                  isSeen: controller.messages[index].isSeen ?? false,
+                                  isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                      ? controller.messages.length -1 == index ? true : false
+                                      : false, onLongPress: () { controller.selectReactionIndex
+                                    .value = index.toString();
                                 controller.isReaction.value = !controller.isReaction.value; },
-                                index: index, chatController: controller,
-                                time:
-                                DateTimeConvertor.timeExt(
-                                    controller.messages[index].time??""),
-                                fileName: controller.messages[index].file?.fileName ?? '',
-                                isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
-                              );
-                            }).reversed.toList(),
-                      )
+                                  index: index, chatController: controller,
+                                )
+                                    : FileView(
+                                  isSeen: controller.messages[index].isSeen ??
+                                      false,
+                                  isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                      ? controller.messages.length -1 == index ? true : false
+                                      : false,
+                                  onLongPress: () { controller.selectReactionIndex.value = index.toString();
+                                  controller.isReaction.value = !controller.isReaction.value; },
+                                  index: index, chatController: controller,
+                                  time:
+                                  DateTimeConvertor.timeExt(
+                                      controller.messages[index].time??""),
+                                  fileName: controller.messages[index].file?.fileName ?? '',
+                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                );
+                              }).reversed.toList(),
+                                                  ),
+                          )
                           : const Center(
                               child: CircularProgressIndicator(),
                       )),
