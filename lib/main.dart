@@ -26,17 +26,23 @@ Future<void> initServices() async {
 }
 
 Future<void> runChatServices() async {
-
   Get.putAsync(() => ChatServices().init(
-        imageBaseUrlFirebase: 'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
-        firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
-        imageArguments: ImageArguments(isImageFromCamera: true),
-        isAttachmentSendEnable: true,
-        isAudioCallEnable: true,agoraAppId:"ea835372061d44c9b99dda29f68b0a99",
-    agoraAppCertificate: "70354931b78c4ea08efe43d520c6548d",
-    suggestionsMessages: ['hello', "Whats", 'Hey there', 'how are you', 'What are you doing', "What's up"]
-      ));
-
+          imageBaseUrlFirebase:
+              'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
+          firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
+          imageArguments: ImageArguments(isImageFromCamera: true),
+          isAttachmentSendEnable: true,
+          isAudioCallEnable: true,
+          agoraAppId: "ea835372061d44c9b99dda29f68b0a99",
+          agoraAppCertificate: "70354931b78c4ea08efe43d520c6548d",
+          suggestionsMessages: [
+            'hello',
+            "Whats",
+            'Hey there',
+            'how are you',
+            'What are you doing',
+            "What's up"
+          ]));
 }
 
 class MyApp extends StatelessWidget {
@@ -67,16 +73,12 @@ class MyHomePage extends StatelessWidget {
       child: Center(
         child: MaterialButton(
           color: ChatHelpers.mainColor,
-          onPressed: () => Get.toNamed(
-            ChatHelpers.chatScreen,
-            arguments: {
-              ChatHelpers.instance.chatRoomId : "",
-              ChatHelpers.instance.otherUserID : "4BOKnOShPIe8JeeyZZbxRaufM3h1",
-              ChatHelpers.instance.currentUserID : "BdHleEqAmaVLcB1b60xoYU5ET6N2",
-              ChatHelpers.instance.agoraChannelName : "",
-              ChatHelpers.instance.agoraToken : "007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg=="
-            }
-          ),
+          onPressed: () => ChatHelpers.instance.chatScreenNavigation(
+              "",
+              "4BOKnOShPIe8JeeyZZbxRaufM3h1",
+              "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+              "DemoRoom",
+              "007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg=="),
           child: const Text(
             'Chat Screen',
             style: TextStyle(color: ChatHelpers.white),

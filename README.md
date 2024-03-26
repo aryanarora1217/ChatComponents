@@ -68,10 +68,9 @@ Both user IDs will be used when creating the chat room ID.
 
 # A example of code to add values to chat services
 
+for passing the arguments use this function 
 ``` 
 Get.putAsync(() => ChatServices().init(
-otherUserId: "other user Id ",
-currentUserId: "Current user Id ",
 imageBaseUrlFirebase: 'Add firebase storage baseUrl for file ',
 firebaseServerKey: 'Add firebase notification cloud server/Authorization key ',
 imageArguments: ImageArguments(isImageFromCamera: true),
@@ -83,3 +82,13 @@ styleArguments: StyleArguments(appbarNameStyle: TextStyle(color: Colors.white)),
 customWidgetsArguments: CustomWidgetsArguments(customSendIconButtonWidgets: CircleAvatar(
 backgroundColor: Colors.red,child: Icon(Icons.send_rounded,color: Colors.yellowAccent,),)))));
 ```
+
+for navigating to chat screen use this function 
+``` 
+ChatHelpers.instance.chatScreenNavigation(
+"",
+"4BOKnOShPIe8JeeyZZbxRaufM3h1",
+"BdHleEqAmaVLcB1b60xoYU5ET6N2",
+"DemoRoom",
+"007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg==")
+``` 
