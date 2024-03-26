@@ -27,11 +27,7 @@ class ChatScreen extends StatelessWidget {
     ChatController controller = Get.put(ChatController());
 
     return GestureDetector(
-      onTap: () {
-        controller.selectReactionIndex.value = "";
-        controller.isReaction.value = false;
-        controller.isDialogOpen.value = false;
-      },
+      onTap: () => controller.onScreenTap(),
       child: Scaffold(
         backgroundColor: controller.themeArguments?.colorArguments?.backgroundColor ?? ChatHelpers.white,
         body: SizedBox(
@@ -42,9 +38,10 @@ class ChatScreen extends StatelessWidget {
                  controller.isLoading.isFalse
                     ? const Center(child: CircularProgressIndicator())
                     : const SizedBox(),
-                controller.isError.isTrue ? EmptyDataView(title: ChatHelpers.instance.errorMissingData, isButton: false, image: ChatHelpers.instance.somethingWentWrong)
+                controller.isError.isTrue ?
+                EmptyDataView(title: ChatHelpers.instance.errorMissingData, isButton: false, image: ChatHelpers.instance.somethingWentWrong)
                     : Column(
-                  children: [
+                        children: [
                     Obx(() => UserViewChatScreen(
                         userName: controller.isUserId.isTrue
                             ? controller.users.value.profileName ?? ""
@@ -82,8 +79,6 @@ class ChatScreen extends StatelessWidget {
                               children: List.generate(
                               controller.messages.length,
                                   (index) {
-                                // logPrint("last meessage : ${controller.messages.lastWhere((p0) => p0.isSeen==true)}");
-                                // String seenLastId = controller.messages.isNotEmpty ? controller.messages.lastWhere((p0) => p0.isSeen==true).id ?? "" : "";
                                 return controller.messages[index].messageType == 'text' ? MessageView(
                                   index: index,
                                   chatController: controller,
@@ -144,9 +139,9 @@ class ChatScreen extends StatelessWidget {
                     Obx(() => controller.isLoadingChats.isFalse
                         ? controller.messages.isEmpty
                         ? Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        height: 55,
-                        child: ListView(
+                         margin: const EdgeInsets.only(left: 5),
+                         height: 55,
+                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: List.generate(
                               controller.suggestions.length,
@@ -245,45 +240,33 @@ class ChatScreen extends StatelessWidget {
                           children: [
                             controller.imageArguments?.isImageFromCamera ?? false ?
                             CommonIconVBtn(
-                              onPressed: () async {
-                                controller.cameraPermission();
-                                controller.isDialogOpen.value = false;
-                              },
+                              onPressed: () => controller.cameraPermission(),
                               title: 'Camera',
                               icons: Icons.camera_alt,
                               height: 70,
-                              width:
-                              MediaQuery.of(context).size.width * .25,
+                              width: MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
                               color: controller.themeArguments?.colorArguments?.attachmentCameraIconColor ?? ChatHelpers.mainColorLight,
                               iconSize: ChatHelpers.iconSizeLarge,
                             ) : const SizedBox(),
                             controller.imageArguments?.isImageFromGallery ?? false ?
                             CommonIconVBtn(
-                              onPressed: () async {
-                                controller.photoPermission();
-                                controller.isDialogOpen.value = false;
-                              },
+                              onPressed: () => controller.photoPermission(),
                               title: 'Gallery',
                               icons: Icons.photo_album,
                               height: 70,
-                              width:
-                              MediaQuery.of(context).size.width * .25,
+                              width: MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
                               color: controller.themeArguments?.colorArguments?.attachmentGalleryIconColor ?? ChatHelpers.red,
                               iconSize: ChatHelpers.iconSizeLarge,
                             ) : const SizedBox(),
                             controller.imageArguments?.isDocumentsSendEnable ?? false ?
                             CommonIconVBtn(
-                              onPressed: () async {
-                                controller.pickFile();
-                                controller.isDialogOpen.value = false;
-                              },
+                              onPressed: () => controller.pickFile(),
                               title: 'Documents',
                               icons: Icons.folder,
                               height: 70,
-                              width:
-                              MediaQuery.of(context).size.width * .25,
+                              width: MediaQuery.of(context).size.width * .25,
                               fontSize: ChatHelpers.marginSizeLarge,
                               color: controller.themeArguments?.colorArguments?.attachmentDocumentsIconColor ?? ChatHelpers.green,
                               iconSize: ChatHelpers.iconSizeLarge,

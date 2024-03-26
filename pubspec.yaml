@@ -83,12 +83,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/icons/
-    - assets/images/gif/
-    - assets/images/image/
-    - assets/images/logo/
-    - assets/lottie/
-    - assets/sounds/
+    - lib/assets/images/icons/
+    - lib/assets/images/gif/
+    - lib/assets/images/image/
+    - lib/assets/images/logo/
+    - lib/assets/lottie/
+    - lib/assets/sounds/
 
 
   fonts:

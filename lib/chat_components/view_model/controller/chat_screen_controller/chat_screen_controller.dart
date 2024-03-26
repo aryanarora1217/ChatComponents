@@ -119,6 +119,12 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  void onScreenTap(){
+    selectReactionIndex.value = "";
+    isReaction.value = false;
+    isDialogOpen.value = false;
+  }
+
   /// send messages form message box( textfield) and updating message chatroom and messages list
   Future<void> sendMessage() async {
     if (messageController.text.isNotEmpty) {
@@ -234,6 +240,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     /// pick up file for storage
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
     isLoading.value = false;
+    isDialogOpen.value = false;
 
     if (result == null) {
       isLoading.value = true;
@@ -292,6 +299,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// pick up image form camera and upload  send in chats
   Future<void> cameraPermission() async {
     PermissionStatus cameraStatus = await Permission.camera.status;
+    isDialogOpen.value = false;
     if (cameraStatus.isGranted) {
       isLoading.value = false;
       isPermissionCameraGranted.value = true;
@@ -361,6 +369,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// pick photo form gallery send photo in chats function
   Future<void> photoPermission() async {
     PermissionStatus photosStatus = await Permission.photos.status;
+    isDialogOpen.value = false;
     if (photosStatus.isGranted) {
       isLoading.value = false;
 
@@ -633,6 +642,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       agoraChannelName.value = Get.arguments[ChatHelpers.instance.agoraChannelName];
 
       isScreenOn.value = true;
+
 
       updatePresence(PresenceStatus.online.name);
 
