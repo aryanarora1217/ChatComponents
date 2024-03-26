@@ -86,9 +86,9 @@ backgroundColor: Colors.red,child: Icon(Icons.send_rounded,color: Colors.yellowA
 for navigating to chat screen use this function 
 ``` 
 ChatHelpers.instance.chatScreenNavigation(
-"",
-"4BOKnOShPIe8JeeyZZbxRaufM3h1",
-"BdHleEqAmaVLcB1b60xoYU5ET6N2",
-"DemoRoom",
-"007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg==")
+"Chat Room ID",
+"other user Id",
+"current user Id ",
+"agroa chanel name ",
+"agora Token")
 ``` 
