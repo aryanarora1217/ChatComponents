@@ -12,7 +12,7 @@ CachedNetworkImage cachedNetworkImage({required String url,BoxFit fit = BoxFit.f
     color: color,
     placeholder: (context, url) => Padding(
       padding:EdgeInsets.all(isProfile?0:ChatHelpers.marginSizeExtraLarge),
-      child: Image.asset(ChatHelpers.instance.loadingGIF,fit: BoxFit.cover,height: 50,width: 50,),
+      child: Image.asset(ChatHelpers.instance.loadingGIF,fit: BoxFit.cover,height: 50,width: 50,package: "chatcomponent",),
     ),
     errorWidget: (context, url, error) => Padding(
       padding: const EdgeInsets.all(ChatHelpers.marginSizeSmall),

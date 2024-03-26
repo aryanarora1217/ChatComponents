@@ -27,7 +27,7 @@ toastShow({required String massage,required bool error}){
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(ChatHelpers.instance.logo,height: ChatHelpers.iconSizeSmall,),
+                Image.asset(ChatHelpers.instance.logo,height: ChatHelpers.iconSizeSmall,package: "",),
                 const SizedBox(width: 10,),
                 Text(
                   massage ,
