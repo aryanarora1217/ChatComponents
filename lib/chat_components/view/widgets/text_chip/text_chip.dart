@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../model/chatHelper/chat_helper.dart';
 
 class TextChip extends StatelessWidget {
@@ -17,7 +18,7 @@ class TextChip extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(ChatHelpers.marginSizeSmall),
             child: Center(
-              child: Text(message,
+              child: Text(message.capitalizeFirst ?? "",
                   style: ChatHelpers.instance.styleRegular(
                       ChatHelpers.fontSizeDefault, ChatHelpers.black)),
             ),

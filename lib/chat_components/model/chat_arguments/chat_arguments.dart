@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 
 /// Chat screen Arguments
 class ChatArguments {
-  String otherUserId;
-  String currentUserId;
-  String chatRoomId;
   String firebaseServerKey;
   String imageBaseUrlFirebase;
   String? agoraAppId;
-  String? agoraChannelName;
-  String? agoraToken;
   String? agoraAppCertificate;
   bool isVideoCallEnable;
   bool isAudioCallEnable;
@@ -18,22 +13,21 @@ class ChatArguments {
   ImageArguments? imageArguments;
   ThemeArguments? themeArguments;
   bool isCameraImageSendEnable;
+  List<String>? suggestionsMessages;
+  List<String>? reactionsEmojisIcons;
 
   ChatArguments(
       {this.imageArguments,
       this.themeArguments,
-      this.agoraChannelName,
-      this.agoraToken,
+        this.suggestionsMessages,
+        this.reactionsEmojisIcons,
       required this.isVideoCallEnable,
       required this.isAudioCallEnable,
       required this.isAttachmentSendEnable,
       required this.isCameraImageSendEnable,
-      required this.chatRoomId,
       required this.imageBaseUrlFirebase,
       required this.agoraAppId,
       required this.agoraAppCertificate,
-      required this.otherUserId,
-      required this.currentUserId,
       required this.firebaseServerKey});
 }
 

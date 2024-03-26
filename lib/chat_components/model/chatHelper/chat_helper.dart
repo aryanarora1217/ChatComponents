@@ -67,6 +67,7 @@ class ChatHelpers {
   String get currentUser => 'currentUser';
 
   String get currentUserID => 'currentUserID';
+  String get otherUserID => 'otherUserId';
 
   String get appState => 'appState';
 
@@ -89,6 +90,7 @@ class ChatHelpers {
   ///messages string
   String get noChatsMessage =>
       "There are no chats available since you haven't chatted with anyone";
+  String get errorMissingData => "required details are missing";
 
 
   /// Image Resources
@@ -107,6 +109,7 @@ class ChatHelpers {
   String get speakerOff => icons("speakerOff.png");
   String get groupIcon => icons("groupIcon.png");
   String get noChatFound => icons("nochatFound.png");
+  String get somethingWentWrong => icons("somethingWentWrong.jpg");
   String get loginBanner => image("login_banner.png");
   String get facebookLogo => logoIcons("facebookLogo.png");
   String get googleLogo => logoIcons("googleLogo.png");

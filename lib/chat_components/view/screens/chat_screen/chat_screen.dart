@@ -1,4 +1,5 @@
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
+import 'package:chatcomponent/chat_components/view/widgets/empty_data_view/empty_data_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -38,10 +39,11 @@ class ChatScreen extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: Stack(
               children: [
-                controller.isLoading.isFalse
+                 controller.isLoading.isFalse
                     ? const Center(child: CircularProgressIndicator())
                     : const SizedBox(),
-                Column(
+                controller.isError.isTrue ? EmptyDataView(title: ChatHelpers.instance.errorMissingData, isButton: false, image: ChatHelpers.instance.somethingWentWrong)
+                    : Column(
                   children: [
                     Obx(() => UserViewChatScreen(
                         userName: controller.isUserId.isTrue
@@ -59,10 +61,10 @@ class ChatScreen extends StatelessWidget {
                             ? controller.users.value.presence?.capitalizeFirst ?? "" : ""
                             : PresenceStatus.typing.name.capitalizeFirst ?? "",
                         backButtonTap: () => Get.back(),
-                        audioCallButtonTap: () => controller.chatArguments.agoraAppId?.isNotEmpty ?? false ? Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
-                        videoCallButtonTap: () => controller.chatArguments.agoraAppId?.isNotEmpty ?? false ? Get.toNamed(ChatHelpers.outGoingScreen,
-                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.chatArguments.currentUserId, firebaseServerKey: controller.chatArguments.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.chatArguments.agoraChannelName??"", agoraToken: controller.chatArguments.agoraToken??"",themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
+                        audioCallButtonTap: () => (controller.chatArguments.agoraAppId?.isNotEmpty ?? false) && controller.agoraChannelName.isNotEmpty  ? Get.toNamed(ChatHelpers.outGoingScreen,
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.audioCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.currentUser.value.id??"", firebaseServerKey: controller.chatArguments.firebaseServerKey, currentUser: controller.currentUser.value, agoraChannelName: controller.agoraChannelName.value, agoraToken: controller.agoraToken.value,themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
+                        videoCallButtonTap: () => (controller.chatArguments.agoraAppId?.isNotEmpty ?? false) && controller.agoraChannelName.isNotEmpty ? Get.toNamed(ChatHelpers.outGoingScreen,
+                                                  arguments: CallArguments(user: controller.users.value, callType: CallType.videoCall.name, callId: "", imageBaseUrl: controller.chatArguments.imageBaseUrlFirebase, agoraAppId: controller.chatArguments.agoraAppId??"", agoraAppCertificate: controller.chatArguments.agoraAppCertificate??"", userId: controller.users.value.id??"", currentUserId: controller.currentUser.value.id??"", firebaseServerKey: controller.chatArguments.firebaseServerKey,currentUser: controller.currentUser.value, agoraChannelName: controller.agoraChannelName.value, agoraToken: controller.agoraToken.value,themeArguments: controller.themeArguments)) : toastShow(massage: "Please give agora Details to use this ",error:  true),
                       chatController: controller,
                         )),
                     Expanded(
@@ -91,9 +93,9 @@ class ChatScreen extends StatelessWidget {
                                   },
                                   message: controller.messages[index].message ?? '',
                                   time: DateTimeConvertor.timeExt(controller.messages[index].time ?? ''),
-                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                  isSender: controller.messages[index].sender == controller.currentUserId.value,
                                   isSeen: controller.messages[index].isSeen ?? false,
-                                  visible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                  visible: controller.messages[index].sender == controller.currentUserId.value
                                       ? controller.messages.length -1 == index ? true : false
                                       : false,
                                   isReaction: controller.isReaction.value,
@@ -102,7 +104,7 @@ class ChatScreen extends StatelessWidget {
                                     : controller.messages[index].file?.fileType == FileTypes.image.name ? ImageView(
                                   time: DateTimeConvertor.timeExt(controller.messages[index].time??""),
                                   image: controller.messages[index].file?.fileUrl ?? '',
-                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                  isSender: controller.messages[index].sender == controller.currentUserId.value,
                                   onTap: () => Get.to(
                                     ViewImageAndPlayVideoScreen(
                                       file: controller.messages[index].file?.fileUrl ??
@@ -110,7 +112,7 @@ class ChatScreen extends StatelessWidget {
                                     ),
                                   ),
                                   isSeen: controller.messages[index].isSeen ?? false,
-                                  isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                  isVisible: controller.messages[index].sender == controller.currentUserId.value
                                       ? controller.messages.length -1 == index ? true : false
                                       : false, onLongPress: () { controller.selectReactionIndex
                                     .value = index.toString();
@@ -120,7 +122,7 @@ class ChatScreen extends StatelessWidget {
                                     : FileView(
                                   isSeen: controller.messages[index].isSeen ??
                                       false,
-                                  isVisible: controller.messages[index].sender == controller.chatArguments.currentUserId
+                                  isVisible: controller.messages[index].sender == controller.currentUserId.value
                                       ? controller.messages.length -1 == index ? true : false
                                       : false,
                                   onLongPress: () { controller.selectReactionIndex.value = index.toString();
@@ -130,7 +132,7 @@ class ChatScreen extends StatelessWidget {
                                   DateTimeConvertor.timeExt(
                                       controller.messages[index].time??""),
                                   fileName: controller.messages[index].file?.fileName ?? '',
-                                  isSender: controller.messages[index].sender == controller.chatArguments.currentUserId,
+                                  isSender: controller.messages[index].sender == controller.currentUserId.value,
                                 );
                               }).reversed.toList(),
                                                   ),
@@ -171,9 +173,7 @@ class ChatScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.80,
                             controller: controller.messageController,
                             hintText: 'Enter Message',
-                            onValidators: (String? value) {
-                              return null;
-                            },
+                            onValidators: (String? value)=>null,
                             unFocusedColor: controller.themeArguments?.colorArguments?.messageTextFieldColor ,
                             focusedColors: controller.themeArguments?.colorArguments?.messageTextFieldColor ,
                             focusedRadius: controller.themeArguments?.borderRadiusArguments?.messageTextFieldRadius,

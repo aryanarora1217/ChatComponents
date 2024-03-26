@@ -22,7 +22,7 @@ import '../../../view/widgets/toast_view/toast_view.dart';
 
 class ChatController extends GetxController with WidgetsBindingObserver {
   /// emojis list for reaction
-  List<String> emoji = ["❤️", "😀", "😁", "😎", "👆"];
+  List<String> emoji = Get.find<ChatServices>().chatArguments.reactionsEmojisIcons ?? ["❤️", "😀", "😁", "😎", "👆"];
 
   /// inital index for reaction list when diplay in chats
   RxInt reactionIndex = 7.obs;
@@ -78,6 +78,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   /// loading values
   RxBool isLoading = true.obs;
+  RxBool isError = false.obs;
   RxBool isLoadingChats = true.obs;
   RxBool isScreenOn = false.obs;
 
@@ -88,30 +89,28 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   DocumentReference<Map<String, dynamic>>? reference;
 
   /// chip messages list text
-  List<String> suggestions = <String>[
-    'Hii',
-    "Hello",
-    'Hey there',
-    'how are you',
-    'kya kar rhe ho',
-    'Jai shri ram'
-  ];
+  List<String> suggestions = Get.find<ChatServices>().chatArguments.suggestionsMessages ?? <String>['Hii', "Hello", 'Hey there', 'how are you', 'What are you doing', "What's up"];
 
   /// arguments get
   late ChatArguments chatArguments;
   ImageArguments? imageArguments;
   ThemeArguments? themeArguments;
+  RxString chatRoomID = "".obs;
+  RxString currentUserId = "".obs;
+  RxString otherUserId = "".obs;
+  RxString agoraChannelName = "".obs;
+  RxString agoraToken = "".obs;
 
   /// for generating chatroom Id
   getChatRoomId(String a, String b) {
     if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      chatArguments.chatRoomId = "${b}_$a";
+      chatRoomID.value = "${b}_$a";
     } else {
-      chatArguments.chatRoomId = "${a}_$b";
+      chatRoomID.value = "${a}_$b";
     }
   }
 
-  /// open attachments dialog from  message box( textfield)
+  /// open attachments dialog from  message box(textfield)
   void openDialog() {
     if (isDialogOpen.isTrue) {
       isDialogOpen.value = false;
@@ -128,7 +127,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           id: id,
           message: messageController.text,
           messageType: MessageType.text.name,
-          sender: chatArguments.currentUserId,
+          sender: currentUserId.value,
           isSeen: false,
           time: DateTime.now().toUtc().toString());
       messageController.clear();
@@ -150,7 +149,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: '')
         );
 
-        if (chatArguments.otherUserId != ChatHelpers.instance.userId) {
+        if (otherUserId.value != ChatHelpers.instance.userId) {
           await chatroomUpdates();
         }
       } catch (e) {
@@ -164,7 +163,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// update chatroom model when sending messages or files
   ChatRoomModel addChatRoomModel(MessageModel message) {
     return ChatRoomModel(
-        chatRoomId: chatArguments.chatRoomId,
+        chatRoomId: chatRoomID.value,
         userFirst: UserDetails(
           userToken: users.value.deviceToken,
           userId: users.value.id,
@@ -173,14 +172,14 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           userEmail: users.value.email,
           userSignType: users.value.signInType,
           userActiveStatus:
-              chatRoomModel.value.userFirstId == chatArguments.currentUserId
+              chatRoomModel.value.userFirstId == currentUserId.value
                   ? chatRoomModel.value.userSecond?.userActiveStatus
                   : chatRoomModel.value.userFirst?.userActiveStatus ?? false,
           userTypingStatus: false,
         ),
         userSecond: UserDetails(
           userToken: currentUser.value.deviceToken,
-          userId: chatArguments.currentUserId,
+          userId: currentUserId.value,
           userSignType: currentUser.value.signInType,
           userEmail: currentUser.value.email,
           userName: currentUser.value.profileName,
@@ -189,9 +188,9 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           userTypingStatus: false,
         ),
         userFirstId: users.value.id,
-        userSecondId: chatArguments.currentUserId,
+        userSecondId: currentUserId.value,
         recentMessage: message,
-        chatMembers: [users.value.id ?? "", chatArguments.currentUserId]);
+        chatMembers: [users.value.id ?? "", currentUserId.value]);
   }
 
   /// chip message send update message chatroom and messages list
@@ -201,7 +200,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         id: id,
         message: suggestions[index],
         messageType: MessageType.text.name,
-        sender: chatArguments.currentUserId,
+        sender: currentUserId.value,
         isSeen: false,
         time: DateTime.now().toUtc().toString());
 
@@ -225,7 +224,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: '')
     );
 
-    if (chatArguments.otherUserId != ChatHelpers.instance.userId) {
+    if (otherUserId.value != ChatHelpers.instance.userId) {
       await chatroomUpdates();
     }
   }
@@ -259,7 +258,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
                 fileType: FileTypes.document.name,
                 fileUrl: storagePath[1]),
             messageType: MessageType.file.name,
-            sender: chatArguments.currentUserId,
+            sender: currentUserId.value,
             isSeen: false,
             time: DateTime.now().toUtc().toString());
         messageController.clear();
@@ -279,7 +278,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             users.value,
             CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: '')
         );
-        if (chatArguments.otherUserId != ChatHelpers.instance.userId) {
+        if (otherUserId.value != ChatHelpers.instance.userId) {
           await chatroomUpdates();
         }
       } catch (e) {
@@ -324,7 +323,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
                   fileType: FileTypes.image.name,
                   fileUrl: storagePath[1]),
               messageType: MessageType.file.name,
-              sender: chatArguments.currentUserId,
+              sender: currentUserId.value,
               isSeen: false,
               time: DateTime.now().toUtc().toString());
 
@@ -344,7 +343,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           );
           messages.add(message);
           messageController.clear();
-          if (chatArguments.otherUserId != ChatHelpers.instance.userId) {
+          if (otherUserId.value != ChatHelpers.instance.userId) {
             await chatroomUpdates();
           }
         } catch (e) {
@@ -395,7 +394,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
                   fileType: FileTypes.image.name,
                   fileUrl: storagePath[1]),
               messageType: MessageType.file.name,
-              sender: chatArguments.currentUserId,
+              sender: currentUserId.value,
               isSeen: false,
               time: DateTime.now().toUtc().toString());
 
@@ -417,7 +416,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           messages.add(message);
           messageController.clear();
 
-          if (chatArguments.otherUserId != ChatHelpers.instance.userId) {
+          if (otherUserId.value != ChatHelpers.instance.userId) {
             await chatroomUpdates();
           }
         } catch (e) {
@@ -433,14 +432,14 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// update typing status in chatroom
   void typingStatus(bool status) {
     firebase.userTypingStatus(
-        chatArguments.chatRoomId, status, chatArguments.currentUserId);
+        chatRoomID.value, status, currentUserId.value);
   }
 
   /// read all messages of chat room
   Future<void> updateChats() async {
     try {
       Query<Map<String, dynamic>>? reference =
-          firebase.updateChatRoom(chatArguments.chatRoomId, 20, true);
+          firebase.updateChatRoom(chatRoomID.value, 20, true);
       QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
       messages.clear();
       for (var element in data.docs) {
@@ -457,19 +456,19 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void recentMessage() async {
     try {
       Query<Map<String, dynamic>>? reference =
-          firebase.updateChatRoom(chatArguments.chatRoomId, 1, true);
+          firebase.updateChatRoom(chatRoomID.value, 1, true);
       messageListener = reference!.snapshots().listen((event) {
         for (var element in event.docs) {
           MessageModel messageModel = MessageModel.fromJson(element.data());
           messages.removeWhere((message) => message.id == messageModel.id);
           messages.add(messageModel);
         }
-        if (messages.last.sender != chatArguments.currentUserId) {
+        if (messages.last.sender != currentUserId.value) {
           MessageModel message = messages.last;
           message.isSeen = true;
           FirebaseFirestore.instance
               .collection(ChatHelpers.instance.chats)
-              .doc(chatArguments.chatRoomId)
+              .doc(chatRoomID.value)
               .collection("messages")
               .doc(message.id)
               .update(message.toJson());
@@ -484,12 +483,12 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> readingTypingPresence() async {
     try {
       DocumentReference<Map<String, dynamic>>? typingPresence =
-          await firebase.readTypingStatus(chatArguments.chatRoomId);
+          await firebase.readTypingStatus(chatRoomID.value);
       typingListener = typingPresence!.snapshots().listen((event) async {
         if (event.exists) {
           ChatRoomModel chatRoomModel =
               ChatRoomModel.fromJson(event.data() ?? {});
-          if (chatRoomModel.userFirstId == chatArguments.currentUserId) {
+          if (chatRoomModel.userFirstId == currentUserId.value) {
             userTypingStatus.value =
                 chatRoomModel.userSecond?.userTypingStatus ?? false;
           } else {
@@ -516,7 +515,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   }
 
   void updatePresence(String presence) {
-    firebase.updatePresence(presence, chatArguments.currentUserId);
+    firebase.updatePresence(presence, currentUserId.value);
   }
 
   /// destroy or close method controller
@@ -524,8 +523,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void onClose() {
     isScreenOn.value = false;
     updatePresence(PresenceStatus.offline.name);
-    firebase.userActiveChatroom(chatArguments.chatRoomId, isScreenOn.value,
-        isFirstUser.call, chatArguments.currentUserId);
+    firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+        isFirstUser.call, currentUserId.value);
     messageListener?.cancel();
     typingListener?.cancel();
     presenceListener?.cancel();
@@ -546,16 +545,16 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.detached:
-        firebase.userActiveChatroom(chatArguments.chatRoomId, isScreenOn.value,
-            isFirstUser.call, chatArguments.currentUserId);
+        firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+            isFirstUser.call, currentUserId.value);
         updatePresence(PresenceStatus.offline.name);
       case AppLifecycleState.resumed:
-        firebase.userActiveChatroom(chatArguments.chatRoomId, isScreenOn.value,
-            isFirstUser.call, chatArguments.currentUserId);
+        firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+            isFirstUser.call, currentUserId.value);
         updatePresence(PresenceStatus.online.name);
       case AppLifecycleState.paused:
-        firebase.userActiveChatroom(chatArguments.chatRoomId, isScreenOn.value,
-            isFirstUser.call, chatArguments.currentUserId);
+        firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+            isFirstUser.call, currentUserId.value);
         updatePresence(PresenceStatus.offline.name);
       case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
@@ -565,12 +564,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   ///  chat room updates all functions of chatroom call here
   Future<void> chatroomUpdates() async {
     /// fetch chat room detail
-    chatRoomModel.value =
-        await firebase.fetchChatRoom(chatArguments.chatRoomId);
+    chatRoomModel.value = await firebase.fetchChatRoom(chatRoomID.value);
 
     /// chatroom reference
-    reference =
-        await firebase.userActiveChatroomReference(chatArguments.chatRoomId);
+    reference = await firebase.userActiveChatroomReference(chatRoomID.value);
 
     /// call fetch all messages
     updateChats();
@@ -579,25 +576,17 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     recentMessage();
 
     /// check current user is first or not in chatroom
-    isFirstCurrent.value =
-        chatRoomModel.value.userFirstId == chatArguments.currentUserId
-            ? true
-            : false;
+    isFirstCurrent.value = chatRoomModel.value.userFirstId == currentUserId.value ? true : false;
 
     /// fetch other user details
-    users.value = (isFirstCurrent.isTrue
-            ? await firebase
-                .fetchUser(chatRoomModel.value.userSecond?.userId ?? "")
-            : await firebase
-                .fetchUser(chatRoomModel.value.userFirst?.userId ?? "")) ??
-        Users();
+    users.value = (isFirstCurrent.isTrue ? await firebase.fetchUser(chatRoomModel.value.userSecond?.userId ?? "") : await firebase.fetchUser(chatRoomModel.value.userFirst?.userId ?? "")) ?? Users();
 
     /// call read typing status
     await readingTypingPresence();
 
     /// update active status of current user in chat room
-    firebase.userActiveChatroom(chatArguments.chatRoomId, isScreenOn.value,
-        isFirstUser.call, chatArguments.currentUserId);
+    firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+        isFirstUser.call, currentUserId.value);
 
     /// read active status of users with listner
     await updateActiveStatus();
@@ -625,33 +614,49 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   /// call in init method
   Future<void> initServices() async {
     /// get all details with arguments
-    chatArguments = Get.find<ChatServices>().chatArguments ;
+    chatArguments = Get.find<ChatServices>().chatArguments;
 
     imageArguments = chatArguments.imageArguments;
     themeArguments = chatArguments.themeArguments;
 
-    isScreenOn.value = true;
-
-    updatePresence(PresenceStatus.online.name);
-
-    if (chatArguments.otherUserId != "" || chatArguments.currentUserId != "") {
-      users.value = (await firebase.fetchUser(chatArguments.otherUserId)) ?? Users();
-      currentUser.value = (await firebase.fetchUser(chatArguments.currentUserId)) ?? Users();
-      isUserId.value = true;
-      getChatRoomId(chatArguments.otherUserId, chatArguments.currentUserId);
-      chatRoomModel.value = await firebase.fetchChatRoom(chatArguments.chatRoomId);
-      chatRoomModel.value.chatRoomId?.isNotEmpty ?? false
-          ? chatroomUpdates()
-          : null;
+    if((Get.arguments[ChatHelpers.instance.currentUserID] == "" || Get.arguments[ChatHelpers.instance.otherUserID] == "") && Get.arguments[ChatHelpers.instance.chatRoomId] == ""){
+      isError.value = true;
       isLoadingChats.value = false;
-    } else {
-      try {
-        await chatroomUpdates();
-        isLoadingChats.value = false;
-      } catch (e) {
-        logPrint('error presence => $e');
-      }
-
+      // Future.delayed(const Duration(seconds: 5),toastShow(massage: "required details are missing", error: true));
     }
+    else {
+
+      currentUserId.value = Get.arguments[ChatHelpers.instance.currentUserID];
+      agoraToken.value = Get.arguments[ChatHelpers.instance.agoraToken];
+      otherUserId.value = Get.arguments[ChatHelpers.instance.otherUserID];
+      chatRoomID.value = Get.arguments[ChatHelpers.instance.chatRoomId];
+      agoraChannelName.value = Get.arguments[ChatHelpers.instance.agoraChannelName];
+
+      isScreenOn.value = true;
+
+      updatePresence(PresenceStatus.online.name);
+
+      if (otherUserId.value != "" || currentUserId.value != "") {
+        users.value = (await firebase.fetchUser(otherUserId.value)) ?? Users();
+        currentUser.value = (await firebase.fetchUser(currentUserId.value)) ?? Users();
+        isUserId.value = true;
+        getChatRoomId(otherUserId.value, currentUserId.value);
+        chatRoomModel.value = await firebase.fetchChatRoom(chatRoomID.value);
+        chatRoomModel.value.chatRoomId?.isNotEmpty ?? false
+            ? chatroomUpdates()
+            : null;
+        isLoadingChats.value = false;
+      } else {
+        try {
+          await chatroomUpdates();
+          isLoadingChats.value = false;
+        } catch (e) {
+          logPrint('error presence => $e');
+        }
+
+      }
+    }
+
+
   }
 }
