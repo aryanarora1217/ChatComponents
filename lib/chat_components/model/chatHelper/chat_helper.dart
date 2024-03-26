@@ -94,11 +94,11 @@ class ChatHelpers {
 
 
   /// Image Resources
-  String lottie(String name) => 'chat_assets/lottie/$name';
-  String icons(String name) => 'chat_assets/images/icons/$name';
-  String gif(String name) => 'chat_assets/images/gif/$name';
-  String logoIcons(String name) => 'chat_assets/images/logo/$name';
-  String image(String name) => 'chat_assets/images/image/$name';
+  String lottie(String name) => 'lib/chat_assets/lottie/$name';
+  String icons(String name) => 'lib/chat_assets/images/icons/$name';
+  String gif(String name) => 'lib/chat_assets/images/gif/$name';
+  String logoIcons(String name) => 'lib/chat_assets/images/logo/$name';
+  String image(String name) => 'lib/chat_assets/images/image/$name';
 
   String get logo => logoIcons("logo.png");
   String get user => icons("user.png");
@@ -121,7 +121,7 @@ class ChatHelpers {
 
   /// Audio Resources
 
-  String sounds(String name) => 'chat_assets/sounds/$name';
+  String sounds(String name) => 'lib/chat_assets/sounds/$name';
 
   String get ringingSound => sounds("cellphoneSound.mp3");
 
