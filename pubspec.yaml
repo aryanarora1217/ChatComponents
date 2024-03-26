@@ -94,15 +94,15 @@ flutter:
   fonts:
     - family: 'Inter'
       fonts:
-        - asset: chat_assets/fonts/Inter-Black.otf
-        - asset: chat_assets/fonts/Inter-Bold.otf
-        - asset: chat_assets/fonts/Inter-ExtraBold.otf
-        - asset: chat_assets/fonts/Inter-ExtraLight.otf
-        - asset: chat_assets/fonts/Inter-Light.otf
-        - asset: chat_assets/fonts/Inter-Medium.otf
-        - asset: chat_assets/fonts/Inter-Regular.otf
-        - asset: chat_assets/fonts/Inter-SemiBold.otf
-        - asset: chat_assets/fonts/Inter-Thin.otf
+        - asset: lib/chat_assets/fonts/Inter-Black.otf
+        - asset: lib/chat_assets/fonts/Inter-Bold.otf
+        - asset: lib/chat_assets/fonts/Inter-ExtraBold.otf
+        - asset: lib/chat_assets/fonts/Inter-ExtraLight.otf
+        - asset: lib/chat_assets/fonts/Inter-Light.otf
+        - asset: lib/chat_assets/fonts/Inter-Medium.otf
+        - asset: lib/chat_assets/fonts/Inter-Regular.otf
+        - asset: lib/chat_assets/fonts/Inter-SemiBold.otf
+        - asset: lib/chat_assets/fonts/Inter-Thin.otf
 
   # To add chat_assets to your application, add an chat_assets section, like this:
   # chat_assets:
