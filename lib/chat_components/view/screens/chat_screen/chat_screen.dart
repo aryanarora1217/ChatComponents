@@ -70,7 +70,7 @@ class ChatScreen extends StatelessWidget {
                           ? SizedBox(
                           height: 300,
                           child: Lottie.asset(
-                              ChatHelpers.instance.hello,package: 'chatcomponent'))
+                              ChatHelpers.instance.hello,))
                           : Padding(
                             padding: const EdgeInsets.only(bottom: ChatHelpers.marginSizeExtraSmall),
                             child: ListView(
