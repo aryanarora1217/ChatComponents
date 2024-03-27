@@ -94,9 +94,10 @@ class ChatScreen extends StatelessWidget {
                                       ? controller.messages.length -1 == index ? true : false
                                       : false,
                                   isReaction: controller.isReaction.value,
-                                  reactionList: controller.emoji,
+                                  reactionList: controller.emoji, reaction: controller.messages[index].reaction ?? 7,
                                 )
                                     : controller.messages[index].file?.fileType == FileTypes.image.name ? ImageView(
+                                    reaction: controller.messages[index].reaction ?? 7,
                                   time: DateTimeConvertor.timeExt(controller.messages[index].time??""),
                                   image: controller.messages[index].file?.fileUrl ?? '',
                                   isSender: controller.messages[index].sender == controller.currentUserId.value,
@@ -115,6 +116,7 @@ class ChatScreen extends StatelessWidget {
                                   index: index, chatController: controller,
                                 )
                                     : FileView(
+                                  reaction: controller.messages[index].reaction ?? 7,
                                   isSeen: controller.messages[index].isSeen ??
                                       false,
                                   isVisible: controller.messages[index].sender == controller.currentUserId.value

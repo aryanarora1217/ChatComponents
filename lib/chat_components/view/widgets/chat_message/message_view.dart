@@ -1,5 +1,6 @@
 import 'package:chatcomponent/chat_components/view_model/controller/chat_screen_controller/chat_screen_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../model/chatHelper/chat_helper.dart';
 import '../reaction_view/reaction_view.dart';
 
@@ -7,6 +8,7 @@ class MessageView extends StatelessWidget {
   final String message;
   final String time;
   final int index;
+  final int reaction;
   final bool isSender;
   final bool isSeen;
   final bool visible;
@@ -21,6 +23,7 @@ class MessageView extends StatelessWidget {
       required this.time,
       required this.isSender,
       required this.index,
+      required this.reaction ,
       required this.isSeen,
       required this.onLongTap,
       required this.visible,
@@ -30,11 +33,11 @@ class MessageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Obx(() => GestureDetector(
       onLongPress: onLongTap,
       child: Align(
         alignment:
-            isSender == true ? Alignment.centerRight : Alignment.centerLeft,
+        isSender == true ? Alignment.centerRight : Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: isSender == true ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -48,25 +51,25 @@ class MessageView extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.only(left: isSender == true ? ChatHelpers.marginSizeDefault : 0,top: ChatHelpers.marginSizeExtraSmall) ,
                     padding:
-                        const EdgeInsets.all(ChatHelpers.paddingSizeSmall),
+                    const EdgeInsets.all(ChatHelpers.paddingSizeSmall),
                     decoration: BoxDecoration(
-                        color: isSender == true
-                            ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
-                            : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: isSender == true
-                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomLeftRadius ?? ChatHelpers.cornerRadius)
-                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomLeftRadius ?? ChatHelpers.cornerRadius),
-                            topRight: isSender == true
-                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopRightRadius ?? ChatHelpers.cornerRadius)
-                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopRightRadius ?? ChatHelpers.cornerRadius),
-                            topLeft: isSender == true
-                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopLeftRadius ?? ChatHelpers.cornerRadius)
-                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopLeftRadius ?? ChatHelpers.cornerRadius),
-                            bottomRight: isSender == true
-                                ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomRightRadius ?? ChatHelpers.cornerRadius)
-                                : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomRightRadius ?? ChatHelpers.cornerRadius),
-                        ),
+                      color: isSender == true
+                          ? chatController.themeArguments?.colorArguments?.senderMessageBoxColor ?? ChatHelpers.mainColor
+                          : chatController.themeArguments?.colorArguments?.receiverMessageBoxColor ?? ChatHelpers.backcolor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: isSender == true
+                            ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomLeftRadius ?? ChatHelpers.cornerRadius)
+                            : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomLeftRadius ?? ChatHelpers.cornerRadius),
+                        topRight: isSender == true
+                            ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopRightRadius ?? ChatHelpers.cornerRadius)
+                            : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopRightRadius ?? ChatHelpers.cornerRadius),
+                        topLeft: isSender == true
+                            ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderTopLeftRadius ?? ChatHelpers.cornerRadius)
+                            : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverTopLeftRadius ?? ChatHelpers.cornerRadius),
+                        bottomRight: isSender == true
+                            ? Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxSenderBottomRightRadius ?? ChatHelpers.cornerRadius)
+                            : Radius.circular(chatController.themeArguments?.borderRadiusArguments?.messageBoxReceiverBottomRightRadius ?? ChatHelpers.cornerRadius),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -90,25 +93,26 @@ class MessageView extends StatelessWidget {
                           time,
                           style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??
                               ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
-                              isSender == true
-                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
+                                  isSender == true
+                                      ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                      : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
                         )
                       ],
                     ),
                   ),
                 ),
-                chatController.reactionIndex.value != 7
+                reaction != 7
                     ? Positioned(
-                        bottom: -4,
-                        left: 7,
-                        child: Text(
-                          reactionList[chatController.reactionIndex.value],
-                          style: const TextStyle(
-                              fontSize: ChatHelpers.fontSizeExtraLarge),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
+                  bottom: -4,
+                  left: 7,
+                  child: Text(
+                    reactionList[reaction],
+                    style: const TextStyle(
+                        fontSize: ChatHelpers.fontSizeExtraLarge),
+                    textAlign: TextAlign.center,
+
+                  ),
+                )
                     : const SizedBox()
               ],
             ),
@@ -119,25 +123,25 @@ class MessageView extends StatelessWidget {
                   isSender: isSender,
                   isChange: isReaction,
                   reactionList: reactionList,
-                  chatController: chatController,
+                  chatController: chatController, messageIndex: index,
                 ),
               ),
             visible
                 ? Padding(
-                    padding: const EdgeInsets.only(
-                        right: ChatHelpers.marginSizeSmall),
-                    child: Text(
-                      isSeen == false ? "Delivered" : "Seen",
-                      style: ChatHelpers.instance.styleRegular(
-                          ChatHelpers.fontSizeSmall, ChatHelpers.black),
-                      textAlign: TextAlign.right,
-                    ),
-                  )
+              padding: const EdgeInsets.only(
+                  right: ChatHelpers.marginSizeSmall),
+              child: Text(
+                isSeen == false ? "Delivered" : "Seen",
+                style: ChatHelpers.instance.styleRegular(
+                    ChatHelpers.fontSizeSmall, ChatHelpers.black),
+                textAlign: TextAlign.right,
+              ),
+            )
                 : const SizedBox(),
 
           ],
         ),
       ),
-    );
+    ));
   }
 }

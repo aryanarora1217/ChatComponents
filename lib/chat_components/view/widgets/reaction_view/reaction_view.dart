@@ -6,6 +6,7 @@ import '../icon_button/icon_button.dart';
 class ReactionView extends StatelessWidget {
   final bool isChange;
   final bool isSender;
+  final int messageIndex;
   final List<String> reactionList;
   final ChatController chatController;
 
@@ -14,7 +15,7 @@ class ReactionView extends StatelessWidget {
       required this.isChange,
       required this.isSender,
       required this.reactionList,
-      required this.chatController});
+      required this.chatController, required this.messageIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +37,7 @@ class ReactionView extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
                     alignment: Alignment.center,
                     child: CircleIconButton(
-                      onTap: () {
-                        chatController.isReaction.value =
-                            !chatController.isReaction.value;
-                        chatController.reactionIndex.value = index;
-                        chatController.selectReactionIndex.value = "";
-                      },
+                      onTap: () => chatController.addReaction(index, messageIndex),
                       boxColor: chatController.themeArguments?.colorArguments?.reactionBoxColor ?? ChatHelpers.white,
                       isImage: true,
                       isImageText: true,

@@ -11,6 +11,7 @@ class ImageView extends StatelessWidget {
   final String time;
   final String image;
   final int index;
+  final int reaction;
   final bool isSender;
   final bool isSeen;
   final bool isVisible;
@@ -28,7 +29,7 @@ class ImageView extends StatelessWidget {
       required this.isSeen,
       required this.isVisible,
       required this.onLongPress,
-      required this.chatController, required this.index
+      required this.chatController, required this.index, required this.reaction
       });
 
   @override
@@ -102,12 +103,12 @@ class ImageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    chatController.reactionIndex.value != 7
+                    reaction != 7
                         ? Positioned(
                       bottom: -5,
                       left: 0,
                       child: Text(
-                        chatController.emoji[chatController.reactionIndex.value],
+                        chatController.emoji[reaction],
                         style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
                         textAlign: TextAlign.center,
                       ),
@@ -121,6 +122,7 @@ class ImageView extends StatelessWidget {
               Padding(
                 padding: chatController.isReaction.isTrue ? const EdgeInsets.symmetric(vertical:ChatHelpers.marginSizeExtraSmall) : const EdgeInsets.all(0),
                 child: ReactionView(
+                  messageIndex: index,
                   isSender:isSender,
                   isChange: chatController.isReaction.value,
                   reactionList: chatController.emoji,

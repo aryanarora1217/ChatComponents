@@ -6,6 +6,7 @@ class MessageModel {
   Files? file;
   String? sender;
   String? time;
+  int? reaction;
   bool? isSeen;
 
   MessageModel({
@@ -16,6 +17,7 @@ class MessageModel {
     this.sender,
     this.time,
     this.isSeen,
+    this.reaction,
   });
 
 
@@ -27,6 +29,7 @@ class MessageModel {
     sender: json["sender"],
     time: json["time"],
     isSeen: json["isSeen"],
+    reaction: json["reaction"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -37,6 +40,7 @@ class MessageModel {
     "sender": sender,
     "time": time,
     "isSeen": isSeen,
+    "reaction": reaction,
   };
 }
 

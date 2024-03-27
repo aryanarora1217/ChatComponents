@@ -8,6 +8,7 @@ class FileView extends StatelessWidget {
   final String fileName;
   final String time;
   final int index;
+  final int reaction;
   final bool isSender;
   final bool isSeen;
   final bool isVisible;
@@ -20,6 +21,7 @@ class FileView extends StatelessWidget {
       required this.isSender,
       required this.time,
       required this.index,
+      required this.reaction,
       required this.isSeen,
       required this.isVisible,
       required this.onLongPress,
@@ -142,13 +144,13 @@ class FileView extends StatelessWidget {
                         ],
                       )),
                 ),
-                chatController.reactionIndex.value != 7
+                reaction != 7
                     ? Positioned(
                         bottom: -5,
                         left: 0,
                         child: Text(
                           chatController
-                              .emoji[chatController.reactionIndex.value],
+                              .emoji[reaction],
                           style: const TextStyle(
                               fontSize: ChatHelpers.fontSizeExtraLarge),
                           textAlign: TextAlign.center,
@@ -164,6 +166,7 @@ class FileView extends StatelessWidget {
                         vertical: ChatHelpers.marginSizeExtraSmall)
                     : const EdgeInsets.all(0),
                 child: ReactionView(
+                  messageIndex: index,
                   isSender: isSender,
                   isChange: chatController.isReaction.value,
                   reactionList: chatController.emoji,
