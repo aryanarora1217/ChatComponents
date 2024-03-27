@@ -39,10 +39,15 @@ class OutGoingController extends GetxController {
 
   /// end call on tap
   Future<void> onEndCall() async {
-    logPrint(callDetails.value.callId);
-    callDetails.value.callStatus =
-        isIncoming.isTrue ? CallStatus.rejected.name : CallStatus.ended.name;
-    await firebase.updateCallStatus(callDetails.value);
+    try{
+      logPrint(callDetails.value.callId);
+      callDetails.value.callStatus = isIncoming.isTrue ? CallStatus.rejected.name : CallStatus.ended.name;
+      await firebase.updateCallStatus(callDetails.value);
+    }catch (e){
+      logPrint("Error in Calling Screen : $e");
+      toastShow(massage: "Error Making call ", error: true);
+      DebounceHelper.instance.debounceFunction(onDebounceCall: () => Get.back(), duration: const Duration(milliseconds: 500));
+    }
   }
 
   /// on off mic onClick
@@ -171,19 +176,9 @@ catch(e){
       /// call arguments
       callArguments = Get.arguments;
 
-      // userDetails.value = callArguments.user;
-      // callType = callArguments.callType;
-      // callId = callArguments.callId;
-      // userId.value = callArguments.userId;
-      // currentUserId.value = callArguments.currentUserId;
-      // currentUser.value = callArguments.currentUser;
-      // firebaseServerKey = callArguments.firebaseServerKey;
-      // imageBaseUrl.value = callArguments.imageBaseUrl;
-      // agoraAppId.value = callArguments.agoraAppId;
-      // agoraAppCertificate = callArguments.agoraAppCertificate;
 
 /// play sound when screen open
-      await player.setAsset(ChatHelpers.instance.ringingSound);
+      await player.setAsset(ChatHelpers.instance.ringingSound,package: "chatcomponent",);
       player.play();
       player.setLoopMode(LoopMode.all);
 
@@ -203,6 +198,15 @@ catch(e){
       streamListener();
     } catch (e) {
       logPrint("Error in Calling Screen : $e");
+      onEndCall();
+      toastShow(massage: "Error Making call ", error: true);
+      callDetails.value = await firebase.readCall(callDetails.value.callId??"");
+      if(callDetails.value.callStatus == CallStatus.ringing.name || callDetails.value.callStatus == CallStatus.calling.name ){
+        DebounceHelper.instance.debounceFunction(onDebounceCall: () => Get.back(), duration: const Duration(milliseconds: 500));
+      }
+      else if(callDetails.value.callStatus?.isEmpty ?? false){
+        DebounceHelper.instance.debounceFunction(onDebounceCall: () => Get.back(), duration: const Duration(milliseconds: 500));
+      }
     }
   }
 
