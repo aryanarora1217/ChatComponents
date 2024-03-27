@@ -15,12 +15,8 @@ import '../../../../model/randomkey/randomkey.dart';
 import '../../../../view/widgets/log_print/log_print_condition.dart';
 
 class OutGoingController extends GetxController {
-  /// user details of current and other user
-  // Rx<Users> userDetails = Users().obs;
-  // Rx<Users> currentUser = Users().obs;
+
   /// call details
-  // String callType = "";
-  // String callId = "";
   Rx<CallModel> callDetails = CallModel().obs;
   RxBool isIncoming = false.obs;
   RxBool isMicOn = true.obs;

@@ -74,11 +74,10 @@ class MyHomePage extends StatelessWidget {
         child: MaterialButton(
           color: ChatHelpers.mainColor,
           onPressed: () => ChatHelpers.instance.chatScreenNavigation(
-              "",
-              "BdHleEqAmaVLcB1b60xoYU5ET6N2",
-              "4BOKnOShPIe8JeeyZZbxRaufM3h1",
-              "DemoRoom",
-              "007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg=="),
+              otherUserID: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+              currentUserID: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
+              agoraChannelName: "DemoRoom",
+              agoraToken: "007eJxTYAgXeXI+bb7kuguyvFY9NtN9+guNF5z++tXh1OUTaV/9Cy8oMKQmWhibGpsbGZgZppiYJFsmWVqmpCQaWaaZWSQZJFpaZsUzpTUEMjIc2XOcgREKQXwOBpfU3Pyg/PxcBgYAFhsiDg=="),
           child: const Text(
             'Chat Screen',
             style: TextStyle(color: ChatHelpers.white),

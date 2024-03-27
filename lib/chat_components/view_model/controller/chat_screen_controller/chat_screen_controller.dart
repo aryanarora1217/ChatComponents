@@ -628,7 +628,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     imageArguments = chatArguments.imageArguments;
     themeArguments = chatArguments.themeArguments;
 
-    if((Get.arguments[ChatHelpers.instance.currentUserID] == "" || Get.arguments[ChatHelpers.instance.otherUserID] == "") && Get.arguments[ChatHelpers.instance.chatRoomId] == ""){
+    if((Get.arguments[ChatHelpers.instance.currentUserID] == "" && Get.arguments[ChatHelpers.instance.otherUserID] == "")){
       isError.value = true;
       isLoadingChats.value = false;
       // Future.delayed(const Duration(seconds: 5),toastShow(massage: "required details are missing", error: true));
@@ -638,7 +638,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       currentUserId.value = Get.arguments[ChatHelpers.instance.currentUserID];
       agoraToken.value = Get.arguments[ChatHelpers.instance.agoraToken];
       otherUserId.value = Get.arguments[ChatHelpers.instance.otherUserID];
-      chatRoomID.value = Get.arguments[ChatHelpers.instance.chatRoomId];
       agoraChannelName.value = Get.arguments[ChatHelpers.instance.agoraChannelName];
 
       isScreenOn.value = true;
@@ -656,14 +655,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             ? chatroomUpdates()
             : null;
         isLoadingChats.value = false;
-      } else {
-        try {
-          await chatroomUpdates();
-          isLoadingChats.value = false;
-        } catch (e) {
-          logPrint('error presence => $e');
-        }
-
       }
     }
 

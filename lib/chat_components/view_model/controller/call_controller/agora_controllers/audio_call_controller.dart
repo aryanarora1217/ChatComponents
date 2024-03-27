@@ -17,10 +17,7 @@ class AudioCallController extends GetxController {
   /// user details current and other user
   Rx<Users> currentUser = Users().obs;
   Rx<Users> user = Users().obs;
-  // final expirationInSeconds = 3600;
-  // final currentTimestamp = DateTime
-  //     .now()
-  //     .millisecondsSinceEpoch ~/ 1000;
+
   RxBool localUserJoined = false.obs;
   int localUserId = 0;
   RxInt remoteUid = 0.obs;
@@ -33,9 +30,6 @@ class AudioCallController extends GetxController {
 
   /// call details
   CallModel callDetails = CallModel();
-  // String callId = "";
-  // String channelName = '';
-  // String token = '';
 
   /// firebase methods call variable
   var firebase = FirebaseDataBase();
@@ -45,12 +39,6 @@ class AudioCallController extends GetxController {
   /// call agruments
   late CallArguments callArguments;
 
-  // RxString userId = "".obs;
-  // RxString currentUserId ="".obs;
-  // String firebaseServerKey = "";
-  // RxString imageBaseUrl="".obs;
-  // RxString agoraAppId="".obs;
-  // String? agoraAppCertificate="";
 
 /// timer for display time on screen
   void startTimer() {
@@ -85,13 +73,6 @@ class AudioCallController extends GetxController {
     }
   }
 
-  /// fetch user details
-  // Future<void> fetchUsers() async {
-  //   callArguments.currentUser = await firebase.fetchUser(callDetails.receiverId??"") ?? Users();
-  //   callArguments.user = (callDetails.callerId == currentUser.value.id ?  await firebase.fetchUser(callDetails.receiverId??"") : await firebase.fetchUser(callDetails.callerId??"")) ?? Users();
-  //   logPrint("user joined details");
-  //   logPrint(user.value.id);
-  // }
 
   /// fetch call details functions
   fetchCallDetails() async {
@@ -100,7 +81,6 @@ class AudioCallController extends GetxController {
       DocumentReference<Map<String, dynamic>> reference = firebase.callReferenceById(callArguments.callId);
       await reference.get().then((value) {
         callDetails = CallModel.fromJson(value.data()??{});
-        // fetchUsers();
         logPrint("user details in call");
         logPrint(callArguments.currentUser);
         logPrint(callArguments.user);
@@ -175,16 +155,9 @@ class AudioCallController extends GetxController {
     callArguments = Get.arguments;
 
     user.value = callArguments.user;
-    // callId = callArguments.callId;
-    // userId.value = callArguments.userId;
-    // currentUserId.value = callArguments.currentUserId;
+
     currentUser.value = callArguments.currentUser;
-    // firebaseServerKey = callArguments.firebaseServerKey;
-    // imageBaseUrl.value = callArguments.imageBaseUrl;
-    // agoraAppId.value = callArguments.agoraAppId;
-    // agoraAppCertificate = callArguments.agoraAppCertificate;
-    // channelName = callArguments.agoraChannelName;
-    // token = callArguments.agoraToken;
+
 
     isMicOn.value = callArguments.isMicOn??false;
 

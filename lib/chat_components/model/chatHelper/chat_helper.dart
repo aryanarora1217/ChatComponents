@@ -330,11 +330,10 @@ class ChatHelpers {
 
   /// Chat Screen navigation routes functions for navigation
 
-  void chatScreenNavigation(String? chatRoomId ,String? otherUserID ,String? currentUserID ,String? agoraChannelName ,String? agoraToken){
+  void chatScreenNavigation({String? otherUserID ,String? currentUserID ,String? agoraChannelName ,String? agoraToken}){
     Get.toNamed(
         ChatHelpers.chatScreen,
         arguments: {
-          ChatHelpers.instance.chatRoomId : chatRoomId??"",
           ChatHelpers.instance.otherUserID : otherUserID??"",
           ChatHelpers.instance.currentUserID : currentUserID??"",
           ChatHelpers.instance.agoraChannelName : agoraChannelName??"",
