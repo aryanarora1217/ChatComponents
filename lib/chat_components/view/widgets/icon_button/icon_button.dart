@@ -63,6 +63,7 @@ class CircleIconButton extends StatelessWidget {
                                 image ?? "",
                                 color: colors,
                                 fit: BoxFit.fill,
+                                package: "chatcomponent",
                               ),
                             )
                       : Icon(
@@ -102,6 +103,7 @@ class CircleIconButton extends StatelessWidget {
                               height: 10,
                               width: 10,
                               color: colors,
+                    package: "chatcomponent",
                             )
                       : Icon(
                           icons,

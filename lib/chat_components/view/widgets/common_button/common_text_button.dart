@@ -82,7 +82,7 @@ class CommonButton extends StatelessWidget {
                           children: [
                             isIcon == true
                                 ? Image.asset(
-                                    image ?? '',
+                                    image ?? '',package: "chatcomponent",
                                   )
                                 : const SizedBox(),
                             const SizedBox(
@@ -165,6 +165,7 @@ class CommonButtonIcon extends StatelessWidget {
                             ? Image.asset(
                                 image ?? '',
                                 height: 30,
+                          package: "chatcomponent",
                               )
                             : const SizedBox(),
                         const SizedBox(

@@ -16,7 +16,7 @@ CachedNetworkImage cachedNetworkImage({required String url,BoxFit fit = BoxFit.f
     ),
     errorWidget: (context, url, error) => Padding(
       padding: const EdgeInsets.all(ChatHelpers.marginSizeSmall),
-      child: Image.asset(ChatHelpers.instance.errorImage,fit: BoxFit.cover,),
+      child: Image.asset(ChatHelpers.instance.errorImage,fit: BoxFit.cover,package: "chatcomponent",),
     ),
   );
 }

@@ -18,7 +18,7 @@ class EmptyDataView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(image,fit: BoxFit.fill,height: MediaQuery.of(context).size.width * .7,),
+          Image.asset(image,fit: BoxFit.fill,height: MediaQuery.of(context).size.width * .7,package: "chatcomponent",),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraLarge),
             child: Text(title,style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.textColor_4),textAlign: TextAlign.center,),
