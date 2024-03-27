@@ -320,7 +320,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
           logPrint("url : - $url");
 
-          List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
+          List storagePath = url?.split(chatArguments.imageBaseUrlFirebase)??[""];
 
           /// update chatroom and messages list
           MessageModel message = MessageModel(
@@ -355,6 +355,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             await chatroomUpdates();
           }
         } catch (e) {
+          logPrint("error sending image camera : $e");
           toastShow(massage: "Error sending image", error: true);
         }
       }

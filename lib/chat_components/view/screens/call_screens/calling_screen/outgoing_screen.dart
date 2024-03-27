@@ -83,8 +83,7 @@ class OutGoingScreen extends StatelessWidget {
                       children: [
                         SizedBox(
                             height: 200,
-                            child: Lottie.asset(ChatHelpers
-                                .instance.soundEffectLottie,package: "chatcomponent",)),
+                            child: Lottie.asset(ChatHelpers.instance.soundEffectLottie,package: "chatcomponent",)),
                         ProfileImageView(
                           textColor: controller.callArguments.themeArguments?.colorArguments?.textColor,
                           boxColor: controller.callArguments.themeArguments?.colorArguments?.mainColorLight,
