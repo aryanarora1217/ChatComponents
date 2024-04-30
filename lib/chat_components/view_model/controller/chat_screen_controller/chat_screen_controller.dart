@@ -167,13 +167,17 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   }
 
   void addReaction (int index , int messageIndex) {
-   isReaction.value = isReaction.value;
-   messages[messageIndex].reaction = index;
-   selectReactionIndex.value = "";
+   try{
+     isReaction.value = isReaction.value;
+     messages[messageIndex].reaction = index;
+     selectReactionIndex.value = "";
+     logPrint("select value is : ${selectReactionIndex.value} , ${messages[messageIndex]}");
+     ChatRoomModel chatRoomModel = addChatRoomModel(messages[messageIndex]);
 
-   ChatRoomModel chatRoomModel = addChatRoomModel(messages[messageIndex]);
-
-   firebase.addMessage(messages[messageIndex], chatRoomModel);
+     firebase.addMessage(messages[messageIndex], chatRoomModel);
+   }catch(e){
+     logPrint("error in updating reactions : $e ");
+   }
 
   }
 

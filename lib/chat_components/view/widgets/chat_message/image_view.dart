@@ -34,7 +34,7 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Obx(() => GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
       child: Align(
@@ -95,11 +95,11 @@ class ImageView extends StatelessWidget {
                             bottom: ChatHelpers.marginSizeSmall),
                         alignment: Alignment.bottomRight,
                         child: Text(
-                          time,
-                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
-                              isSender == true
-                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                            time,
+                            style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                                isSender == true
+                                    ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                    : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
                         ),
                       ),
                     ),
@@ -143,6 +143,6 @@ class ImageView extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

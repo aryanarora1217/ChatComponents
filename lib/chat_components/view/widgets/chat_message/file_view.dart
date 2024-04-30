@@ -29,11 +29,11 @@ class FileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Obx(() => GestureDetector(
       onLongPress: onLongPress,
       child: Align(
         alignment:
-            isSender == true ? Alignment.centerRight : Alignment.centerLeft,
+        isSender == true ? Alignment.centerRight : Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: isSender == true ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -146,16 +146,16 @@ class FileView extends StatelessWidget {
                 ),
                 reaction != 7
                     ? Positioned(
-                        bottom: -5,
-                        left: 0,
-                        child: Text(
-                          chatController
-                              .emoji[reaction],
-                          style: const TextStyle(
-                              fontSize: ChatHelpers.fontSizeExtraLarge),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
+                  bottom: -5,
+                  left: 0,
+                  child: Text(
+                    chatController
+                        .emoji[reaction],
+                    style: const TextStyle(
+                        fontSize: ChatHelpers.fontSizeExtraLarge),
+                    textAlign: TextAlign.center,
+                  ),
+                )
                     : const SizedBox()
               ],
             ),
@@ -163,7 +163,7 @@ class FileView extends StatelessWidget {
               Padding(
                 padding: chatController.isReaction.isTrue
                     ? const EdgeInsets.symmetric(
-                        vertical: ChatHelpers.marginSizeExtraSmall)
+                    vertical: ChatHelpers.marginSizeExtraSmall)
                     : const EdgeInsets.all(0),
                 child: ReactionView(
                   messageIndex: index,
@@ -175,19 +175,19 @@ class FileView extends StatelessWidget {
               ),
             isVisible
                 ? Padding(
-                    padding: const EdgeInsets.only(
-                        right: ChatHelpers.marginSizeSmall),
-                    child: Text(
-                      isSeen == false ? "Delivered" : "Seen",
-                      style: ChatHelpers.instance.styleRegular(
-                          ChatHelpers.fontSizeSmall, ChatHelpers.black),
-                      textAlign: TextAlign.right,
-                    ),
-                  )
+              padding: const EdgeInsets.only(
+                  right: ChatHelpers.marginSizeSmall),
+              child: Text(
+                isSeen == false ? "Delivered" : "Seen",
+                style: ChatHelpers.instance.styleRegular(
+                    ChatHelpers.fontSizeSmall, ChatHelpers.black),
+                textAlign: TextAlign.right,
+              ),
+            )
                 : const SizedBox(),
           ],
         ),
       ),
-    );
+    ));
   }
 }
