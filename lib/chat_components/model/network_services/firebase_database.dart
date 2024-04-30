@@ -41,6 +41,30 @@ class FirebaseDataBase {
     return users;
   }
 
+/// fetch all the user form firebase user list
+  Future<List<Users>> fetchUsers(String id) async {
+    List<Users> users = <Users>[];
+    try {
+      QuerySnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection(ChatHelpers.instance.users)
+          .where('id', isNotEqualTo: id)
+          .get();
+      logPrint(documentSnapshot.docs.map((e) => e.data()));
+
+      for (QueryDocumentSnapshot doc in documentSnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        if (data.isNotEmpty) {
+          users.add(Users.fromJson(data));
+          logPrint(users);
+        }
+      }
+    } catch (e) {
+      logPrint(e);
+    }
+    return users;
+  }
+
+
 /// upload file o firebase storage and get url of file
   Future<String?> addChatFiles(String messageId, String file) async {
     try {
