@@ -19,8 +19,8 @@ class ChatArguments {
   ChatArguments(
       {this.imageArguments,
       this.themeArguments,
-        this.suggestionsMessages,
-        this.reactionsEmojisIcons,
+      this.suggestionsMessages,
+      this.reactionsEmojisIcons,
       required this.isVideoCallEnable,
       required this.isAudioCallEnable,
       required this.isAttachmentSendEnable,

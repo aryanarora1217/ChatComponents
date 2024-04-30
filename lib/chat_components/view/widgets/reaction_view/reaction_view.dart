@@ -29,22 +29,25 @@ class ReactionView extends StatelessWidget {
             color: chatController.themeArguments?.colorArguments?.reactionViewBoxColor ?? chatController.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor),
         curve: Curves.bounceInOut,
         duration: const Duration(milliseconds: 200),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: List.generate(
-              reactionList.length,
-              (index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
-                    alignment: Alignment.center,
-                    child: CircleIconButton(
-                      onTap: () => chatController.addReaction(index, messageIndex),
-                      boxColor: chatController.themeArguments?.colorArguments?.reactionBoxColor ?? ChatHelpers.white,
-                      isImage: true,
-                      isImageText: true,
-                      shapeRec: false,
-                      image: reactionList[index],
-                    ),
-                  )),
+        child: ClipRRect(
+          borderRadius: isChange ? BorderRadius.circular(ChatHelpers.cornerRadius) : BorderRadius.circular(ChatHelpers.circularImage),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: List.generate(
+                reactionList.length,
+                (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
+                      alignment: Alignment.center,
+                      child: CircleIconButton(
+                        onTap: () => chatController.addReaction(index, messageIndex),
+                        boxColor: chatController.themeArguments?.colorArguments?.reactionBoxColor ?? ChatHelpers.white,
+                        isImage: true,
+                        isImageText: true,
+                        shapeRec: false,
+                        image: reactionList[index],
+                      ),
+                    )),
+          ),
         ),
       ),
     );

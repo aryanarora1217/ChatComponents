@@ -11,6 +11,16 @@ import '../models/message_model/message_model.dart';
 
 class FirebaseDataBase {
 
+  void addUser(Users users) {
+    try {
+      FirebaseFirestore.instance
+          .collection(ChatHelpers.instance.users)
+          .doc(users.id)
+          .set(users.toJson());
+    } catch (e) {
+      logPrint("error adding user : $e");
+    }
+  }
 
 /// firebase method for fetching user details
   Future<Users?> fetchUser(String id) async {
