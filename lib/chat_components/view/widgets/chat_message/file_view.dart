@@ -143,7 +143,7 @@ class FileView extends StatelessWidget {
                                     width: ChatHelpers.marginSizeExtraSmall,
                                   ),
                                   isSender == true
-                                      ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,)
+                                      ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,package: 'chatcomponent')
                                       : const SizedBox()
                                 ],
                               ),

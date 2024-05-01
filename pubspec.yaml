@@ -56,7 +56,7 @@ dependencies:
   path_provider: ^2.1.1
   file_picker: ^6.1.1
   just_audio: ^0.9.36
-
+  percent_indicator: ^4.2.3
 
 
 
