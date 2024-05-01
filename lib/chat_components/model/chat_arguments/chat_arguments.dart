@@ -85,9 +85,13 @@ class ColorArguments {
   final Color? reactionViewBoxColor;
   final Color? reactionBoxColor;
   final Color? messageTextFieldColor;
+  final Color? tickSeenColor;
+  final Color? tickUnSeenColor;
 
   ColorArguments(
-      {this.messageTextFieldColor,
+      {this.tickSeenColor,
+      this.tickUnSeenColor,
+      this.messageTextFieldColor,
       this.iconColor,
       this.sendIconColor,
       this.reactionViewBoxColor,

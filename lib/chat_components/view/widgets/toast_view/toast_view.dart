@@ -12,22 +12,22 @@ toastShow({required String massage,required bool error}){
       return Flash(
         controller: c,
         barrierDismissible: false,
-        alignment: Alignment.bottomCenter,
-        borderRadius: BorderRadius.circular(ChatHelpers.marginSizeExtraLarge),
+        alignment: Alignment.topCenter,
+        borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius),
         backgroundColor: error? ChatHelpers.red : ChatHelpers.mainColor,
-        margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.cornerRadius, vertical: ChatHelpers.marginSizeExtraLarge),
+        margin: const EdgeInsets.only(top: ChatHelpers.marginSizeExtraLarge+35,left: ChatHelpers.marginSizeLarge,right: ChatHelpers.marginSizeLarge),
         child: FlashBar(
           padding: const EdgeInsets.symmetric(vertical: ChatHelpers.marginSizeSmall-2),
           content: Container(
             width: double.infinity,
             margin: const EdgeInsets.only(left: ChatHelpers.marginSizeDefault),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(ChatHelpers.cornerRadius),
+                borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius),
                 color:error?ChatHelpers.red: ChatHelpers.mainColor),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(ChatHelpers.instance.logo,height: ChatHelpers.iconSizeSmall,package: "chatcomponent",),
+                Image.asset(ChatHelpers.instance.logo,height: ChatHelpers.iconSizeSmall,),
                 const SizedBox(width: 10,),
                 Text(
                   massage ,

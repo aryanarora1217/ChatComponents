@@ -76,26 +76,43 @@ class MessageView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Flexible(
-                          child: Text(
-                            message,
-                            style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
-                                ChatHelpers.fontSizeDefault,
-                                isSender == true
-                                    ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                    : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
-                            softWrap: true,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        Text(
-                          time,
-                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??
-                              ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: isSender ? ChatHelpers.marginSizeSmall : ChatHelpers.marginSizeDefault),
+                            child: Text(
+                              message,
+                              style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
+                                  ChatHelpers.fontSizeDefault,
                                   isSender == true
                                       ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
                                       : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
+                              softWrap: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: ChatHelpers.marginSizeExtraSmall,
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: ChatHelpers.marginSizeSmall,
+                            ),
+                            Text(
+                              time,
+                              style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??
+                                  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                                      isSender == true
+                                          ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                          : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
+                            ),
+                            const SizedBox(
+                              width: ChatHelpers.marginSizeExtraSmall,
+                            ),
+                            isSender == true
+                                ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,)
+                                : const SizedBox()
+                          ],
                         )
                       ],
                     ),
@@ -103,14 +120,18 @@ class MessageView extends StatelessWidget {
                 ),
                 reaction != 7
                     ? Positioned(
-                  bottom: -4,
-                  left: 7,
-                  child: Text(
-                    reactionList[reaction],
-                    style: const TextStyle(
-                        fontSize: ChatHelpers.fontSizeExtraLarge),
-                    textAlign: TextAlign.center,
-
+                     bottom: 0,
+                      left: ChatHelpers.marginSizeExtraSmall,
+                      child: Align(
+                        child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                         child: Text(
+                          reactionList[reaction],
+                          style: const TextStyle(
+                              fontSize: ChatHelpers.fontSizeExtraLarge),
+                          textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 )
                     : const SizedBox()
@@ -126,19 +147,6 @@ class MessageView extends StatelessWidget {
                   chatController: chatController, messageIndex: index,
                 ),
               ),
-            visible
-                ? Padding(
-              padding: const EdgeInsets.only(
-                  right: ChatHelpers.marginSizeSmall),
-              child: Text(
-                isSeen == false ? "Delivered" : "Seen",
-                style: ChatHelpers.instance.styleRegular(
-                    ChatHelpers.fontSizeSmall, ChatHelpers.black),
-                textAlign: TextAlign.right,
-              ),
-            )
-                : const SizedBox(),
-
           ],
         ),
       ),

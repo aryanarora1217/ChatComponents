@@ -128,13 +128,24 @@ class FileView extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(
                                   ChatHelpers.marginSizeExtraSmall),
-                              child: Text(
-                                time,
-                                style: ChatHelpers.instance.styleRegular(
-                                    ChatHelpers.fontSizeSmall,
-                                    isSender == true
-                                        ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                        : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ??ChatHelpers.black),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    time,
+                                    style: ChatHelpers.instance.styleRegular(
+                                        ChatHelpers.fontSizeSmall,
+                                        isSender == true
+                                            ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                            : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ??ChatHelpers.black),
+                                  ),
+                                  const SizedBox(
+                                    width: ChatHelpers.marginSizeExtraSmall,
+                                  ),
+                                  isSender == true
+                                      ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,)
+                                      : const SizedBox()
+                                ],
                               ),
                             ),
                           ),
@@ -146,8 +157,8 @@ class FileView extends StatelessWidget {
                 ),
                 reaction != 7
                     ? Positioned(
-                  bottom: -5,
-                  left: 0,
+                  bottom: 0,
+                  left: ChatHelpers.marginSizeExtraSmall,
                   child: Text(
                     chatController
                         .emoji[reaction],
@@ -173,18 +184,6 @@ class FileView extends StatelessWidget {
                   chatController: chatController,
                 ),
               ),
-            isVisible
-                ? Padding(
-              padding: const EdgeInsets.only(
-                  right: ChatHelpers.marginSizeSmall),
-              child: Text(
-                isSeen == false ? "Delivered" : "Seen",
-                style: ChatHelpers.instance.styleRegular(
-                    ChatHelpers.fontSizeSmall, ChatHelpers.black),
-                textAlign: TextAlign.right,
-              ),
-            )
-                : const SizedBox(),
           ],
         ),
       ),

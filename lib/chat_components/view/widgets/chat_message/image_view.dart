@@ -46,7 +46,7 @@ class ImageView extends StatelessWidget {
             Hero(
               tag: image,
               child: Container(
-                height: 180,
+                height: 210,
                 width: 220,
                 margin: const EdgeInsets.only(top:ChatHelpers.marginSizeExtraSmall),
                 decoration: BoxDecoration(
@@ -92,21 +92,32 @@ class ImageView extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.only(
                             right: ChatHelpers.marginSizeDefault,
-                            bottom: ChatHelpers.marginSizeSmall),
+                            bottom: ChatHelpers.marginSizeExtraSmall),
                         alignment: Alignment.bottomRight,
-                        child: Text(
-                            time,
-                            style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
-                                isSender == true
-                                    ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                    : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                                time,
+                                style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                                    isSender == true
+                                        ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                        : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                            ),
+                            const SizedBox(
+                              width: ChatHelpers.marginSizeExtraSmall,
+                            ),
+                            isSender == true
+                                ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,)
+                                : const SizedBox()
+                          ],
                         ),
                       ),
                     ),
                     reaction != 7
                         ? Positioned(
-                      bottom: -5,
-                      left: 0,
+                      bottom: 0,
+                      left: ChatHelpers.marginSizeExtraSmall,
                       child: Text(
                         chatController.emoji[reaction],
                         style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
@@ -129,17 +140,6 @@ class ImageView extends StatelessWidget {
                   chatController: chatController,
                 ),
               ),
-            isVisible
-                ? Padding(
-              padding: const EdgeInsets.only(
-                  right: ChatHelpers.marginSizeSmall),
-              child: Text(
-                isSeen == false ? "Delivered" : "Seen",
-                style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeSmall, ChatHelpers.black),
-                textAlign: TextAlign.right,
-              ),
-            )
-                : const SizedBox(),
           ],
         ),
       ),

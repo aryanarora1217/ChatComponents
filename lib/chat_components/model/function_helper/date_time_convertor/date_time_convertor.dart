@@ -13,6 +13,9 @@ class DateTimeConvertor {
   static String dateConvertor(String time){
     return DateFormat("yyyy-MM-dd").format(DateTime.parse(time).toLocal()).toString();
   }
+  static String dateConvertorDate(String time){
+    return DateFormat("dd-MM-yyyy").format(DateTime.parse(time).toLocal()).toString();
+  }
 
   static String formattedTime({required int timeInSecond}) {
    int sec = timeInSecond % 60;
@@ -33,13 +36,18 @@ class DateTimeConvertor {
    return dateTime;
  }
 
+ static DateTime dateTimeConvExt(String time) {
+   return DateFormat("yyyy-MM-dd hh:mm:ss").parse(time);
+ }
+
  static String dateTimeShowMessages(String time) {
-   if (DateTime.now().toUtc().difference(dateTimeExt(time)).inDays < 1) {
-     return timeExt(time);
+   String dateTime = dateConvertorDate(time);
+   if (DateTime.now().day == dateTimeConvExt(time).day) {
+     return 'Today';
    }
    else if(DateTime.now().toUtc().difference(dateTimeExt(time)).inDays == 1){
      return 'Yesterday';
    }
-   return dateConvertor(time);
+   return dateTime;
  }
 }

@@ -109,6 +109,7 @@ class ChatHelpers {
   String get speakerOff => icons("speakerOff.png");
   String get groupIcon => icons("groupIcon.png");
   String get noChatFound => icons("nochatFound.png");
+  String get doubleTickImage => icons("double_tick.png");
   String get somethingWentWrong => icons("somethingWentWrong.jpg");
   String get loginBanner => image("login_banner.png");
   String get facebookLogo => logoIcons("facebookLogo.png");
