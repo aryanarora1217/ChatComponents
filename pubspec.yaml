@@ -56,8 +56,10 @@ dependencies:
   path_provider: ^2.1.1
   file_picker: ^6.1.1
   just_audio: ^0.9.36
-  percent_indicator: ^4.2.3
-
+  package_info_plus: ^8.0.0
+  device_info_plus: ^10.1.0
+  open_filex: ^4.4.0
+  media_scanner: ^2.1.0
 
 
 dev_dependencies:
@@ -83,7 +85,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - ChatComponents-8a0c2b1839847e2b235f82c19200f7d744302f4b/lib/chat_assets/
     - lib/chat_assets/images/icons/
     - lib/chat_assets/images/gif/
     - lib/chat_assets/images/image/
