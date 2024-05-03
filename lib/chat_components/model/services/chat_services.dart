@@ -1,6 +1,5 @@
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
 import 'package:get/get.dart';
-import '../chatHelper/chat_helper.dart';
 
 /// get values form user and add to Chat Arguments to use in whole app
 

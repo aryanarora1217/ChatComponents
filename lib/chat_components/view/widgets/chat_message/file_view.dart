@@ -171,10 +171,11 @@ class FileView extends StatelessWidget {
                                       width: 10,
                                     ),
                                     chatController.isDownloadingStart.isTrue
-                                        ? const SizedBox(
+                                        ? Container(
                                             height: 30,
                                             width: 30,
-                                            child: CircularProgressIndicator(
+                                            padding: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
+                                            child: const CircularProgressIndicator(
                                               color: ChatHelpers.white,
                                             ))
                                         : IconButton(

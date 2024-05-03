@@ -55,6 +55,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   /// message model list
   RxList<MessageModel> messages = <MessageModel>[].obs;
+  List<MessageModel> oldMessages = <MessageModel>[];
 
   /// permissions for camera and photos
   RxBool isPermissionCameraGranted = false.obs;
@@ -81,6 +82,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   /// loading values
   RxBool isLoading = true.obs;
+  RxBool isLoadingPreviousChats = true.obs;
   RxBool isError = false.obs;
   RxBool isLoadingChats = true.obs;
   RxBool isScreenOn = false.obs;
@@ -138,7 +140,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     isDialogOpen.value = false;
   }
 
-  /// send messages form message box( textfield) and updating message chatroom and messages list
+  /// send messages form message box( text field ) and updating message chatroom and messages list
   Future<void> sendMessage() async {
     if (messageController.text.isNotEmpty) {
       String id = getRandomString();
@@ -155,17 +157,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         ChatRoomModel chatRoomModel = addChatRoomModel(message);
         firebase.addMessage(message, chatRoomModel);
 
-        firebaseNotification.sendNotification(
-            "",
-            currentUser.value,
-            users.value.deviceToken ?? "",
-            CallModel(),
-            true,
-            message,
-            chatRoomModel.chatRoomId,
-            chatArguments.firebaseServerKey,
-            users.value,
-            CallArguments(
+        firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
                 agoraChannelName: '',
                 agoraToken: '',
                 user: Users(),
@@ -256,17 +248,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     firebase.addMessage(message, chatRoomModel);
     messages.add(message);
 
-    firebaseNotification.sendNotification(
-        "",
-        currentUser.value,
-        users.value.deviceToken ?? "",
-        CallModel(),
-        true,
-        message,
-        chatRoomModel.chatRoomId,
-        chatArguments.firebaseServerKey,
-        users.value,
-        CallArguments(
+    firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
             agoraChannelName: '',
             agoraToken: '',
             user: Users(),
@@ -307,33 +289,13 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         messageController.clear();
 
         /// update chatroom and message list
-        MessageModel message = MessageModel(
-            id: id,
-            file: Files(
-                fileName: result.files.first.name,
-                fileMimeType: result.files.first.extension,
-                fileType: FileTypes.document.name,
-                fileUrl: storagePath[1]),
-            messageType: MessageType.file.name,
-            sender: currentUserId.value,
-            isSeen: false,
-            time: DateTime.now().toUtc().toString());
+        MessageModel message = MessageModel(id: id, file: Files(fileName: result.files.first.name, fileMimeType: result.files.first.extension, fileType: FileTypes.document.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
         messageController.clear();
         messages.add(message);
         ChatRoomModel chatRoomModel = addChatRoomModel(message);
 
         firebase.addMessage(message, chatRoomModel);
-        firebaseNotification.sendNotification(
-            "",
-            currentUser.value,
-            users.value.deviceToken ?? "",
-            CallModel(),
-            true,
-            message,
-            chatRoomModel.chatRoomId,
-            chatArguments.firebaseServerKey,
-            users.value,
-            CallArguments(
+        firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
                 agoraChannelName: '',
                 agoraToken: '',
                 user: Users(),
@@ -399,17 +361,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
           ChatRoomModel chatRoomModel = addChatRoomModel(message);
           firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification(
-              "",
-              currentUser.value,
-              users.value.deviceToken ?? "",
-              CallModel(),
-              true,
-              message,
-              chatRoomModel.chatRoomId,
-              chatArguments.firebaseServerKey,
-              users.value,
-              CallArguments(
+          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
                   agoraChannelName: '',
                   agoraToken: '',
                   user: Users(),
@@ -433,7 +385,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         }
       }
 
-      // FirebaseDataBase().addMessage(message, chatRoom!);
       isLoading.value = true;
     } else {
       Permission.camera.request();
@@ -469,31 +420,11 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
           /// update chatroom and messages list
 
-          MessageModel message = MessageModel(
-              id: id,
-              file: Files(
-                  fileName: fileName,
-                  fileMimeType: fileExt,
-                  fileType: FileTypes.image.name,
-                  fileUrl: storagePath[1]),
-              messageType: MessageType.file.name,
-              sender: currentUserId.value,
-              isSeen: false,
-              time: DateTime.now().toUtc().toString());
+          MessageModel message = MessageModel(id: id, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
 
           ChatRoomModel chatRoomModel = addChatRoomModel(message);
           firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification(
-              "",
-              currentUser.value,
-              users.value.deviceToken ?? "",
-              CallModel(),
-              true,
-              message,
-              chatRoomModel.chatRoomId,
-              chatArguments.firebaseServerKey,
-              users.value,
-              CallArguments(
+          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
                   agoraChannelName: '',
                   agoraToken: '',
                   user: Users(),
@@ -532,7 +463,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> updateChats() async {
     try {
       Query<Map<String, dynamic>>? reference =
-          firebase.updateChatRoom(chatRoomID.value, 20, true);
+          await firebase.updateChatRoom(chatRoomID.value, 5, true);
       QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
       messages.clear();
       for (var element in data.docs) {
@@ -540,6 +471,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       }
       isLoadingChats.value = false;
       messages.value = messages.reversed.toList();
+      oldMessages = messages.reversed.toList();
     } catch (e) {
       logPrint("error message fetch : $e");
     }
@@ -549,7 +481,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void recentMessage() async {
     try {
       Query<Map<String, dynamic>>? reference =
-          firebase.updateChatRoom(chatRoomID.value, 1, true);
+          await firebase.updateChatRoom(chatRoomID.value, 1, true);
       messageListener = reference!.snapshots().listen((event) {
         for (var element in event.docs) {
           MessageModel messageModel = MessageModel.fromJson(element.data());
@@ -559,12 +491,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         if (messages.last.sender != currentUserId.value) {
           MessageModel message = messages.last;
           message.isSeen = true;
-          FirebaseFirestore.instance
-              .collection(ChatHelpers.instance.chats)
-              .doc(chatRoomID.value)
-              .collection("messages")
-              .doc(message.id)
-              .update(message.toJson());
+          FirebaseFirestore.instance.collection(ChatHelpers.instance.chats).doc(chatRoomID.value).collection("messages").doc(message.id).update(message.toJson());
         }
       });
     } catch (e) {
@@ -618,6 +545,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     updatePresence(PresenceStatus.offline.name);
     firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
         isFirstUser.call, currentUserId.value);
+    scrollController.dispose();
     messageListener?.cancel();
     typingListener?.cancel();
     presenceListener?.cancel();
@@ -667,6 +595,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
     /// call last message updated
     recentMessage();
+
+    scrollerListener();
 
     /// check current user is first or not in chatroom
     isFirstCurrent.value =
@@ -728,6 +658,36 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       logPrint("error downloading file : $e");
       isDownloadingStart.value = false;
     }
+  }
+
+  void scrollerListener(){
+    scrollController.addListener(() async {
+      double maxScroll = scrollController.position.maxScrollExtent;
+      double currentScroll = scrollController.position.pixels;
+      if(oldMessages.isNotEmpty){
+        if (maxScroll == currentScroll) {
+          try {
+            oldMessages.clear();
+            isLoadingPreviousChats.value = false;
+            Query<Map<String, dynamic>>? reference =
+            await firebase.updateMessages(chatRoomID.value, 5, true,messages.first);
+            QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
+            for (var element in data.docs) {
+              oldMessages.add(MessageModel.fromJson(element.data()));
+            }
+            if(oldMessages.isNotEmpty){
+              messages.insertAll(0, oldMessages.reversed.toList());
+            }else{
+              toastShow(massage: "no previous Chats Available", error: false);
+            }
+            isLoadingPreviousChats.value = true;
+          } catch (e) {
+            isLoadingPreviousChats.value = true;
+            logPrint("error message fetch : $e");
+          }
+        }
+      }
+    });
   }
 
   /// call in init method

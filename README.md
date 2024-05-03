@@ -93,7 +93,3 @@ ChatHelpers.instance.chatScreenNavigation(
 "agora Token")
 ``` 
 
-have to add this line in pubspec yaml file then assets of this package will visible to screen
-```
-ChatComponents-8a0c2b1839847e2b235f82c19200f7d744302f4b/lib/chat_assets/
-```

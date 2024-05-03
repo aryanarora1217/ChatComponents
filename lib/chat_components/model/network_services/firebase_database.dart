@@ -101,13 +101,30 @@ class FirebaseDataBase {
   }
 
 /// chatroom message fetch
-  Query<Map<String, dynamic>>? updateChatRoom(String chatRooms, int limit, bool desc) {
+  Future<Query<Map<String, dynamic>>?> updateChatRoom(String chatRooms, int limit, bool desc) async {
     try {
       Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
           .collection(ChatHelpers.instance.chats)
           .doc(chatRooms)
           .collection("messages").limit(limit)
           .orderBy("time", descending: desc);
+      return reference;
+    } catch (e) {
+      logPrint("error fetching messages : $e");
+    }
+    return null;
+  }
+
+  /// update message fetch
+  Future<Query<Map<String, dynamic>>?> updateMessages(String chatRooms, int limit, bool desc,MessageModel? prevMessage) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> prevData = await FirebaseFirestore.instance.collection(ChatHelpers.instance.chats).doc(chatRooms).collection("messages").doc(prevMessage?.id).get();
+      logPrint("prevois data : ${prevData.data().toString()}");
+      Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
+          .collection(ChatHelpers.instance.chats)
+          .doc(chatRooms)
+          .collection("messages")
+          .orderBy("time", descending: desc).startAfterDocument(prevData).limit(limit);
       return reference;
     } catch (e) {
       logPrint("error fetching messages : $e");

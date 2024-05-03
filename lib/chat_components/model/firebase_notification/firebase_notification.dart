@@ -160,13 +160,13 @@ class FirebaseNotification {
     var initSetting = InitializationSettings(android: androiInit, iOS: iosInit);
     fltNotification.initialize(initSetting,
         onSelectNotification: (String? payload) {
-          if (payload != null) {
-            Get.toNamed(ChatHelpers.chatScreen, arguments: {
-              ChatHelpers.instance.chatRoomId: payload,
-              ChatHelpers.instance.userId:
-              ChatHelpers.instance.userId
-            });
-          }
+          // if (payload != null) {
+          //   Get.toNamed(ChatHelpers.chatScreen, arguments: {
+          //     ChatHelpers.instance.chatRoomId: payload,
+          //     ChatHelpers.instance.userId:
+          //     ChatHelpers.instance.userId
+          //   });
+          // }
         });
 
     /// notification listner form firebase

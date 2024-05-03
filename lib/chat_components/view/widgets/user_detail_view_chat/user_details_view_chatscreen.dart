@@ -1,6 +1,5 @@
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/view/widgets/icon_button/icon_button.dart';
-import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:flutter/material.dart';
 import '../../../view_model/controller/chat_screen_controller/chat_screen_controller.dart';
 import '../cricle_image_view/profile_image_view.dart';

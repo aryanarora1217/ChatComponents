@@ -167,194 +167,209 @@ class ChatScreen extends StatelessWidget {
                               child: Lottie.asset(
                                   ChatHelpers.instance.hello,
                                   package: 'chatcomponent'))
-                              : Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: ChatHelpers.marginSizeExtraSmall),
-                            child: ListView(
-                              reverse: true,
-                              physics: const BouncingScrollPhysics(),
-                              children: List
-                                  .generate(
-                                  controller.messages.length,
-                                      (index) {
-                                    return
-                                      controller.messages[index].messageType ==
-                                          'text' ?
-                                      Column(
-                                        children: [
-                                          index == 0 ?
-                                          DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index - 1]
-                                                  .time ?? "")
-                                              .day != DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index].time ??
-                                                  "")
-                                              .day
-                                              ? DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : const SizedBox(),
-                                          MessageView(
-                                            index: index,
-                                            chatController: controller,
-                                            onLongTap: () {
-                                              controller.selectReactionIndex
-                                                  .value = index.toString();
-                                              controller.isReaction.value =
-                                              !controller.isReaction.value;
-                                            },
-                                            message: controller.messages[index]
-                                                .message ?? '',
-                                            time: DateTimeConvertor.timeExt(
-                                                controller.messages[index]
-                                                    .time ?? ''),
-                                            isSender: controller.messages[index]
-                                                .sender ==
-                                                controller.currentUserId.value,
-                                            isSeen: controller.messages[index]
-                                                .isSeen ?? false,
-                                            visible: controller.messages[index]
-                                                .sender ==
-                                                controller.currentUserId.value
-                                                ? controller.messages.length -
-                                                1 == index ? true : false
-                                                : false,
-                                            isReaction: controller.isReaction
-                                                .value,
-                                            reactionList: controller.emoji,
-                                            reaction: controller.messages[index]
-                                                .reaction ?? 7,
-                                          ),
-                                        ],
-                                      )
-                                          : controller.messages[index].file
-                                          ?.fileType == FileTypes.image.name ?
-                                      Column(
-                                        children: [
-                                          index == 0 ?
-                                          DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index - 1]
-                                                  .time ?? "")
-                                              .day != DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index].time ??
-                                                  "")
-                                              .day
-                                              ? DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : const SizedBox(),
-                                          ImageView(
-                                            reaction: controller.messages[index]
-                                                .reaction ?? 7,
-                                            time: DateTimeConvertor.timeExt(
-                                                controller.messages[index]
-                                                    .time ?? ""),
-                                            image: controller.messages[index]
-                                                .file?.fileUrl ?? '',
-                                            isSender: controller.messages[index]
-                                                .sender ==
-                                                controller.currentUserId.value,
-                                            onTap: () =>
-                                                Get.to(
-                                                  ViewImageAndPlayVideoScreen(
-                                                    file: controller
-                                                        .messages[index].file
-                                                        ?.fileUrl ??
-                                                        '',
-                                                    chatController: controller,
-                                                  ),
+                              : 
+                          Column(
+                            children: [
+                              controller.isLoadingPreviousChats.isFalse ?
+                              const SizedBox(
+                                height: 100,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ): const SizedBox(),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only( top: controller.isLoadingPreviousChats.isFalse ? ChatHelpers.marginSizeExtraSmall : 0,
+                                      bottom: ChatHelpers.marginSizeExtraSmall),
+                                      child: ListView(
+                                      reverse: true,
+                                      controller: controller.scrollController,
+                                      physics: const BouncingScrollPhysics(),
+                                      children: List
+                                        .generate(
+                                        controller.messages.length,
+                                            (index) {
+                                          return
+                                            controller.messages[index].messageType ==
+                                                'text' ?
+                                            Column(
+                                              children: [
+                                                index == 0 ?
+                                                DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index - 1]
+                                                        .time ?? "")
+                                                    .day != DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index].time ??
+                                                        "")
+                                                    .day
+                                                    ? DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : const SizedBox(),
+                                                MessageView(
+                                                  index: index,
+                                                  chatController: controller,
+                                                  onLongTap: () {
+                                                    controller.selectReactionIndex
+                                                        .value = index.toString();
+                                                    controller.isReaction.value =
+                                                    !controller.isReaction.value;
+                                                  },
+                                                  message: controller.messages[index]
+                                                      .message ?? '',
+                                                  time: DateTimeConvertor.timeExt(
+                                                      controller.messages[index]
+                                                          .time ?? ''),
+                                                  isSender: controller.messages[index]
+                                                      .sender ==
+                                                      controller.currentUserId.value,
+                                                  isSeen: controller.messages[index]
+                                                      .isSeen ?? false,
+                                                  visible: controller.messages[index]
+                                                      .sender ==
+                                                      controller.currentUserId.value
+                                                      ? controller.messages.length -
+                                                      1 == index ? true : false
+                                                      : false,
+                                                  isReaction: controller.isReaction
+                                                      .value,
+                                                  reactionList: controller.emoji,
+                                                  reaction: controller.messages[index]
+                                                      .reaction ?? 7,
                                                 ),
-                                            isSeen: controller.messages[index]
-                                                .isSeen ?? false,
-                                            isVisible: controller
-                                                .messages[index].sender ==
-                                                controller.currentUserId.value
-                                                ? controller.messages.length -
-                                                1 == index ? true : false
-                                                : false,
-                                            onLongPress: () {
-                                              controller.selectReactionIndex
-                                                  .value = index.toString();
-                                              controller.isReaction.value =
-                                              !controller.isReaction.value;
-                                            },
-                                            index: index,
-                                            chatController: controller,
-                                          ),
-                                        ],
-                                      )
-                                          : Column(
-                                        children: [
-                                          index == 0 ?
-                                          DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index - 1]
-                                                  .time ?? "")
-                                              .day != DateTimeConvertor
-                                              .dateTimeExt(
-                                              controller.messages[index].time ??
-                                                  "")
-                                              .day
-                                              ? DateView(date: DateTimeConvertor
-                                              .dateTimeShowMessages(
-                                              controller.messages[index].time ??
-                                                  ""))
-                                              : const SizedBox(),
-                                          FileView(
-                                            reaction: controller.messages[index]
-                                                .reaction ?? 7,
-                                            isSeen: controller.messages[index]
-                                                .isSeen ??
-                                                false,
-                                            isVisible: controller
-                                                .messages[index].sender ==
-                                                controller.currentUserId.value
-                                                ? controller.messages.length -
-                                                1 == index ? true : false
-                                                : false,
-                                            onLongPress: () {
-                                              controller.selectReactionIndex
-                                                  .value = index.toString();
-                                              controller.isReaction.value =
-                                              !controller.isReaction.value;
-                                            },
-                                            index: index,
-                                            chatController: controller,
-                                            time:
-                                            DateTimeConvertor.timeExt(
-                                                controller.messages[index]
-                                                    .time ?? ""),
-                                            fileName: controller.messages[index]
-                                                .file?.fileName ?? '',
-                                            isSender: controller.messages[index]
-                                                .sender ==
-                                                controller.currentUserId.value,
-                                          ),
-                                        ],
-                                      );
-                                  }
-                              )
-                                  .reversed
-                                  .toList(),
-                            ),
+                                              ],
+                                            )
+                                                : controller.messages[index].file
+                                                ?.fileType == FileTypes.image.name ?
+                                            Column(
+                                              children: [
+                                                index == 0 ?
+                                                DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index - 1]
+                                                        .time ?? "")
+                                                    .day != DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index].time ??
+                                                        "")
+                                                    .day
+                                                    ? DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : const SizedBox(),
+                                                ImageView(
+                                                  reaction: controller.messages[index]
+                                                      .reaction ?? 7,
+                                                  time: DateTimeConvertor.timeExt(
+                                                      controller.messages[index]
+                                                          .time ?? ""),
+                                                  image: controller.messages[index]
+                                                      .file?.fileUrl ?? '',
+                                                  isSender: controller.messages[index]
+                                                      .sender ==
+                                                      controller.currentUserId.value,
+                                                  onTap: () =>
+                                                      Get.to(
+                                                        ViewImageAndPlayVideoScreen(
+                                                          file: controller
+                                                              .messages[index].file
+                                                              ?.fileUrl ??
+                                                              '',
+                                                          chatController: controller,
+                                                        ),
+                                                      ),
+                                                  isSeen: controller.messages[index]
+                                                      .isSeen ?? false,
+                                                  isVisible: controller
+                                                      .messages[index].sender ==
+                                                      controller.currentUserId.value
+                                                      ? controller.messages.length -
+                                                      1 == index ? true : false
+                                                      : false,
+                                                  onLongPress: () {
+                                                    controller.selectReactionIndex
+                                                        .value = index.toString();
+                                                    controller.isReaction.value =
+                                                    !controller.isReaction.value;
+                                                  },
+                                                  index: index,
+                                                  chatController: controller,
+                                                ),
+                                              ],
+                                            )
+                                                : Column(
+                                              children: [
+                                                index == 0 ?
+                                                DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index - 1]
+                                                        .time ?? "")
+                                                    .day != DateTimeConvertor
+                                                    .dateTimeExt(
+                                                    controller.messages[index].time ??
+                                                        "")
+                                                    .day
+                                                    ? DateView(date: DateTimeConvertor
+                                                    .dateTimeShowMessages(
+                                                    controller.messages[index].time ??
+                                                        ""))
+                                                    : const SizedBox(),
+                                                FileView(
+                                                  reaction: controller.messages[index]
+                                                      .reaction ?? 7,
+                                                  isSeen: controller.messages[index]
+                                                      .isSeen ??
+                                                      false,
+                                                  isVisible: controller
+                                                      .messages[index].sender ==
+                                                      controller.currentUserId.value
+                                                      ? controller.messages.length -
+                                                      1 == index ? true : false
+                                                      : false,
+                                                  onLongPress: () {
+                                                    controller.selectReactionIndex
+                                                        .value = index.toString();
+                                                    controller.isReaction.value =
+                                                    !controller.isReaction.value;
+                                                  },
+                                                  index: index,
+                                                  chatController: controller,
+                                                  time:
+                                                  DateTimeConvertor.timeExt(
+                                                      controller.messages[index]
+                                                          .time ?? ""),
+                                                  fileName: controller.messages[index]
+                                                      .file?.fileName ?? '',
+                                                  isSender: controller.messages[index]
+                                                      .sender ==
+                                                      controller.currentUserId.value,
+                                                ),
+                                              ],
+                                            );
+                                        }
+                                    )
+                                        .reversed
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
                           )
                               : const Center(
                             child: CircularProgressIndicator(),
