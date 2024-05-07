@@ -1,6 +1,6 @@
+import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../view/screens/call_screens/agora/audio_call_screen.dart';
 import '../../view/screens/call_screens/agora/video_call_screen.dart';
 import '../../view/screens/call_screens/calling_screen/outgoing_screen.dart';
@@ -154,6 +154,8 @@ class ChatHelpers {
   static String audioCall = '/AudioCall';
   static String outGoingScreen = '/OutGoingScreen';
   static String chatScreen = '/ChatScreen';
+  static String cameraScreen = '/CameraScreen';
+  // static String imagePreviewScreen = '/ImagePreviewScreen';
 
 
   /// style Resources
@@ -351,6 +353,9 @@ final getPages = [
   GetPage(
       name: ChatHelpers.chatScreen,
       page: () => const ChatScreen()),
+  GetPage(
+      name: ChatHelpers.cameraScreen,
+      page: () => const CameraScreen()),
   GetPage(
       name: ChatHelpers.videoCall,
       page: () => const VideoCallScreen()),

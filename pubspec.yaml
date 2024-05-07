@@ -60,6 +60,9 @@ dependencies:
   device_info_plus: ^10.1.0
   open_filex: ^4.4.0
   media_scanner: ^2.1.0
+  photo_gallery: ^2.2.1
+  transparent_image: ^2.0.1
+  camera: ^0.10.5+9
 
 
 dev_dependencies:

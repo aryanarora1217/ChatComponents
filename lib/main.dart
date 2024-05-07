@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:photo_gallery/photo_gallery.dart';
 import 'chat_components/model/chatHelper/chat_helper.dart';
 import 'chat_components/model/firebase_notification/firebase_notification.dart';
 

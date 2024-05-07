@@ -106,6 +106,9 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             "What's up"
           ];
 
+  RxList<File> imageList = <File>[].obs;
+  RxList<TextEditingController> imageMessageControllerList = <TextEditingController>[].obs;
+
   /// arguments get
   late ChatArguments chatArguments;
   ImageArguments? imageArguments;
@@ -248,19 +251,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     firebase.addMessage(message, chatRoomModel);
     messages.add(message);
 
-    firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
-            agoraChannelName: '',
-            agoraToken: '',
-            user: Users(),
-            currentUser: Users(),
-            callType: '',
-            callId: '',
-            imageBaseUrl: '',
-            agoraAppId: '',
-            agoraAppCertificate: '',
-            userId: '',
-            currentUserId: '',
-            firebaseServerKey: ''));
+    firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
 
     if (otherUserId.value != ChatHelpers.instance.userId) {
       await chatroomUpdates();
@@ -295,19 +286,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         ChatRoomModel chatRoomModel = addChatRoomModel(message);
 
         firebase.addMessage(message, chatRoomModel);
-        firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
-                agoraChannelName: '',
-                agoraToken: '',
-                user: Users(),
-                currentUser: Users(),
-                callType: '',
-                callId: '',
-                imageBaseUrl: '',
-                agoraAppId: '',
-                agoraAppCertificate: '',
-                userId: '',
-                currentUserId: '',
-                firebaseServerKey: ''));
+        firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
         if (otherUserId.value != ChatHelpers.instance.userId) {
           await chatroomUpdates();
         }
@@ -361,19 +340,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
           ChatRoomModel chatRoomModel = addChatRoomModel(message);
           firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
-                  agoraChannelName: '',
-                  agoraToken: '',
-                  user: Users(),
-                  currentUser: Users(),
-                  callType: '',
-                  callId: '',
-                  imageBaseUrl: '',
-                  agoraAppId: '',
-                  agoraAppCertificate: '',
-                  userId: '',
-                  currentUserId: '',
-                  firebaseServerKey: ''));
+          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
           messages.add(message);
           messageController.clear();
           if (otherUserId.value != ChatHelpers.instance.userId) {
@@ -424,19 +391,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
           ChatRoomModel chatRoomModel = addChatRoomModel(message);
           firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(
-                  agoraChannelName: '',
-                  agoraToken: '',
-                  user: Users(),
-                  currentUser: Users(),
-                  callType: '',
-                  callId: '',
-                  imageBaseUrl: '',
-                  agoraAppId: '',
-                  agoraAppCertificate: '',
-                  userId: '',
-                  currentUserId: '',
-                  firebaseServerKey: ''));
+          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
 
           messages.add(message);
           messageController.clear();
@@ -559,6 +514,72 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     initServices();
     super.onInit();
+  }
+
+  Future<void> goToCameraScreen() async {
+    Get.toNamed(ChatHelpers.cameraScreen,)?.
+    then((value) async {
+      logPrint("Image get form back : ${value.toString()}");
+      imageList.value = value["ImageList"];
+      imageMessageControllerList.value = value["textMessageList"];
+      logPrint("List of image and text : ${imageList.length} ${imageList.toString()} , ${imageMessageControllerList.toString()}");
+
+      await uploadListImages();
+    });
+  }
+
+  Future<void> uploadListImages() async {
+    try{
+      selectReactionIndex.value = "";
+      isReaction.value = false;
+      isDialogOpen.value = false;
+      isLoading.value = false;
+      for (int counter = 0; counter < imageList.length; counter++){
+        File cameraImage = imageList[counter];
+        TextEditingController imageMessage = imageMessageControllerList[counter];
+
+        if (cameraImage != File("")) {
+          try {
+            String fileName = image.value.path.split('/').last;
+
+            /// get file extension of a file
+            String fileExt = getFileExtension(fileName)!;
+            String id = getRandomString();
+
+            /// add image in firebase storage
+            String? url = await firebase.addChatFiles(id, cameraImage.path);
+
+            logPrint("url : - $url , ${imageMessage.text}");
+
+            List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
+
+            /// update chatroom and messages list
+
+            MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+
+            ChatRoomModel chatRoomModel = addChatRoomModel(message);
+            firebase.addMessage(message, chatRoomModel);
+            firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
+
+            messages.add(message);
+            messageController.clear();
+
+            if (otherUserId.value != ChatHelpers.instance.userId) {
+              await chatroomUpdates();
+            }
+          } catch (e) {
+            toastShow(massage: "Error sending image", error: true);
+          }
+        }
+
+      }
+      isLoading.value = true;
+
+    }catch(e){
+      isLoading.value = true;
+      logPrint("Error uploading images ing : $e");
+      toastShow(massage: "Error uploading images", error: true);
+    }
   }
 
   /// app life cycle  state manage with online status
@@ -694,7 +715,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> initServices() async {
     /// get all details with arguments
     chatArguments = Get.find<ChatServices>().chatArguments;
-
     imageArguments = chatArguments.imageArguments;
     themeArguments = chatArguments.themeArguments;
 

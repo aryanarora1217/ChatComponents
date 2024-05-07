@@ -9,6 +9,7 @@ class MessageField extends StatelessWidget {
   final TextStyle? hintTextStyle;
   final TextStyle? textStyle;
   final FocusNode? focus;
+  final bool? isFocused;
   final int maxLines;
   final double? height;
   final double? width;
@@ -19,14 +20,14 @@ class MessageField extends StatelessWidget {
   final String? Function(String?) onChange;
   final String? Function(String?) onValidators;
 
-  const MessageField({super.key, required this.controller, required this.hintText, this.hintTextStyle, required this.onValidators, this.focus, this.suffixValue, this.height, this.width, required this.onChange, required this.maxLines, this.focusedColors, this.unFocusedColor, this.focusedRadius, this.unFocusedRadius, this.textStyle});
+  const MessageField({super.key, required this.controller, required this.hintText, this.hintTextStyle, required this.onValidators, this.focus, this.suffixValue, this.height, this.width, required this.onChange, required this.maxLines, this.focusedColors, this.unFocusedColor, this.focusedRadius, this.unFocusedRadius, this.textStyle, this.isFocused = false});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
-        decoration: focus?.hasFocus == true ? ChatHelpers.instance.focusedMessageFieldRadius(focusedColors ?? ChatHelpers.mainColorLight, focusedRadius ?? ChatHelpers.cornerRadius) : ChatHelpers.instance.borderMessageFieldRadius(unFocusedColor ?? ChatHelpers.textColor_4, unFocusedRadius ?? ChatHelpers.cornerRadius),
+        decoration: isFocused == false ? focus?.hasFocus == true ? ChatHelpers.instance.focusedMessageFieldRadius(focusedColors ?? ChatHelpers.mainColorLight, focusedRadius ?? ChatHelpers.cornerRadius) : ChatHelpers.instance.borderMessageFieldRadius(unFocusedColor ?? ChatHelpers.textColor_4, unFocusedRadius ?? ChatHelpers.cornerRadius) : ChatHelpers.instance.focusedMessageFieldRadius(focusedColors ?? ChatHelpers.mainColorLight, focusedRadius ?? ChatHelpers.cornerRadius),
         child: Row(
           children: [
             Expanded(
