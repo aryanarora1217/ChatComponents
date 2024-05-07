@@ -114,6 +114,18 @@ class ImageView extends StatelessWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                reaction != 7
+                                    ? Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    chatController.emoji[reaction],
+                                    style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                )
+                                    : const SizedBox(),
+                                Spacer(),
                                 Text(
                                     time,
                                     textAlign: TextAlign.start,
@@ -133,17 +145,6 @@ class ImageView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      reaction != 7
-                          ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
-                        alignment: Alignment.centerLeft,
-                            child: Text(
-                              chatController.emoji[reaction],
-                              style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
-                              textAlign: TextAlign.start,
-                            ),
-                          )
-                          : const SizedBox()
                     ],
                   ),
                 ),
