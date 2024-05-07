@@ -100,9 +100,7 @@ class ImageView extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
                             margin: const EdgeInsets.only(
-                                right: ChatHelpers.marginSizeDefault,
                                 bottom: ChatHelpers.marginSizeExtraSmall),
-                            alignment: Alignment.bottomRight,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
@@ -110,6 +108,7 @@ class ImageView extends StatelessWidget {
                                 imageMessage.isEmpty || imageMessage == "" ? const SizedBox() :   Flexible(
                                   child: Text(
                                     imageMessage,
+                                    textAlign: TextAlign.start,
                                     style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
                                         ChatHelpers.fontSizeDefault,
                                         isSender == true
@@ -119,24 +118,27 @@ class ImageView extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: ChatHelpers.marginSizeExtraSmall,),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                        time,
-                                        textAlign: TextAlign.start,
-                                        style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
-                                            isSender == true
-                                                ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                                : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
-                                    ),
-                                    const SizedBox(
-                                      width: ChatHelpers.marginSizeExtraSmall,
-                                    ),
-                                    isSender == true
-                                        ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,package: 'chatcomponent')
-                                        : const SizedBox()
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                          time,
+                                          textAlign: TextAlign.start,
+                                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                                              isSender == true
+                                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                                      ),
+                                      const SizedBox(
+                                        width: ChatHelpers.marginSizeExtraSmall,
+                                      ),
+                                      isSender == true
+                                          ? Image.asset(ChatHelpers.instance.doubleTickImage,height: 15,width: 15,  color: isSeen ? chatController.themeArguments?.colorArguments?.tickSeenColor ?? ChatHelpers.backcolor : chatController.themeArguments?.colorArguments?.tickUnSeenColor ?? ChatHelpers.grey ,package: 'chatcomponent')
+                                          : const SizedBox()
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
