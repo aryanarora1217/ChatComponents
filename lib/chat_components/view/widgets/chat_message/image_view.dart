@@ -47,7 +47,7 @@ class ImageView extends StatelessWidget {
             Hero(
               tag: image,
               child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 210,minWidth: 220,maxWidth: 220),
+                constraints: const BoxConstraints(minHeight: 220,minWidth: 220,maxWidth: 220),
                 child: Container(
                   margin: const EdgeInsets.only(top:ChatHelpers.marginSizeExtraSmall),
                   decoration: BoxDecoration(
@@ -72,7 +72,7 @@ class ImageView extends StatelessWidget {
                   child: Column(
                     children: [
                       Container(
-                        height: 180,
+                        height: 200,
                         width: 220,
                         margin: const EdgeInsets.all(
                             ChatHelpers.marginSizeExtraSmall),
@@ -90,7 +90,7 @@ class ImageView extends StatelessWidget {
                                 url: chatController.chatArguments.imageBaseUrlFirebase + image)),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall),
+                        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
                         margin: const EdgeInsets.only(
                             right: ChatHelpers.marginSizeDefault,
                             bottom: ChatHelpers.marginSizeExtraSmall),
@@ -99,7 +99,7 @@ class ImageView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
+                            imageMessage.isEmpty || imageMessage == "" ? const SizedBox() :   Flexible(
                               child: Text(
                                 imageMessage,
                                 style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
@@ -134,10 +134,14 @@ class ImageView extends StatelessWidget {
                         ),
                       ),
                       reaction != 7
-                          ? Text(
-                            chatController.emoji[reaction],
-                            style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
-                            textAlign: TextAlign.center,
+                          ? Container(
+                        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeExtraSmall),
+                        alignment: Alignment.centerLeft,
+                            child: Text(
+                              chatController.emoji[reaction],
+                              style: const TextStyle(fontSize: ChatHelpers.fontSizeExtraLarge),
+                              textAlign: TextAlign.start,
+                            ),
                           )
                           : const SizedBox()
                     ],
