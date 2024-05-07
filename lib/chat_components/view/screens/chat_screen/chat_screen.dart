@@ -470,7 +470,7 @@ class ChatScreen extends StatelessWidget {
                                             ?.colorArguments?.cameraIconColor ??
                                             ChatHelpers.textColor_4,
                                         onTap: () =>
-                                            controller.cameraPermission(),
+                                            controller.goToCameraScreen(),
                                       )
                                           : const SizedBox()
                                     ],
