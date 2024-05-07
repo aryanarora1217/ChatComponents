@@ -40,16 +40,19 @@ class FileView extends StatelessWidget {
                   : CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Stack(
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxHeight: 150.0,
-                          maxWidth: MediaQuery.of(context).size.width * .8,
-                          minWidth: 5),
-                      child: Container(
-                          margin: const EdgeInsets.only(
-                              top: ChatHelpers.marginSizeExtraSmall),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: 150.0,
+                      maxWidth: MediaQuery.of(context).size.width * .8,
+                      minWidth: 5),
+                  child: Stack(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(
+                              top: ChatHelpers.marginSizeExtraSmall,
+                            left: isSender == true ? ChatHelpers.marginSizeSmall : 0,
+                            right: isSender == true ? 0 : ChatHelpers.marginSizeSmall ,
+                            bottom: reaction != 7 ? 10 : 0,),
                           padding: const EdgeInsets.symmetric(
                               horizontal: ChatHelpers.marginSizeSmall),
                           decoration: BoxDecoration(
@@ -253,20 +256,27 @@ class FileView extends StatelessWidget {
                               ),
                             ],
                           )),
-                    ),
-                    reaction != 7
-                        ? Positioned(
+                      reaction != 7
+                          ? Positioned(
+                            left: isSender ? 0 : null,
+                           right: isSender ? null: 0,
                             bottom: 0,
-                            left: ChatHelpers.marginSizeExtraSmall,
-                            child: Text(
-                              chatController.emoji[reaction],
-                              style: const TextStyle(
-                                  fontSize: ChatHelpers.fontSizeExtraLarge),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        : const SizedBox()
-                  ],
+                              child: Container(
+                                padding: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
+                                alignment: Alignment.centerLeft,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: ChatHelpers.blueLight),
+                                child: Text(
+                                  chatController.emoji[reaction],
+                                  style: const TextStyle(fontSize: ChatHelpers.fontSizeLarge),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
                 ),
                 if (chatController.selectReactionIndex.value ==
                     index.toString())
