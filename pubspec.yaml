@@ -63,6 +63,7 @@ dependencies:
   photo_gallery: ^2.2.1
   transparent_image: ^2.0.1
   camera: ^0.10.5+9
+  loading_animation_widget: ^1.2.1
 
 
 dev_dependencies:

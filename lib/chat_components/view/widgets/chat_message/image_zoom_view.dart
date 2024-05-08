@@ -5,17 +5,17 @@ import '../../../model/chatHelper/chat_helper.dart';
 import '../../../view_model/controller/chat_screen_controller/chat_screen_controller.dart';
 
 
-
 class ViewImageAndPlayVideoScreen extends StatelessWidget {
   final String file;
-  TransformationController ?transformationController;
+  TransformationController? transformationController;
   RxInt quarterTurns=4.obs;
   TapDownDetails? doubleTapDetails;
   final ChatController chatController;
 
   ViewImageAndPlayVideoScreen({super.key,required this.file, required this.chatController}){
-    transformationController=TransformationController();
+    transformationController = TransformationController();
   }
+
   @override
   Widget build(BuildContext context) {
     void handleDoubleTapDown(TapDownDetails details) {
@@ -35,20 +35,23 @@ class ViewImageAndPlayVideoScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Obx(()=>RotatedBox(
-            quarterTurns: quarterTurns.value,
-            child: Hero(
-              tag: file,
-              key: Key(file),
-              child: SizedBox(
-                height: double.infinity,
-                width: double.infinity,
-                child: GestureDetector(
-                  onDoubleTapDown: handleDoubleTapDown,
-                  onDoubleTap: handleDoubleTap,
-                  child: InteractiveViewer(
-                    transformationController: transformationController,
-                    child: Image.network(fit: BoxFit.contain,  chatController.chatArguments.imageBaseUrlFirebase+file,),
+          Obx(()=>Positioned(
+            top: MediaQuery.of(context).size.height * .12,
+            child: RotatedBox(
+              quarterTurns: quarterTurns.value,
+              child: Hero(
+                tag: file,
+                key: Key(file),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * .88,
+                  width: MediaQuery.of(context).size.width,
+                  child: GestureDetector(
+                    onDoubleTapDown: handleDoubleTapDown,
+                    onDoubleTap: handleDoubleTap,
+                    child: InteractiveViewer(
+                      transformationController: transformationController,
+                      child: Image.network(fit: BoxFit.fill,file,),
+                    ),
                   ),
                 ),
               ),

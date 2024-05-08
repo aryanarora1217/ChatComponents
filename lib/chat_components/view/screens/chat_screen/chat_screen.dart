@@ -1,10 +1,12 @@
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
 import 'package:chatcomponent/chat_components/view/widgets/chat_message/date_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/empty_data_view/empty_data_view.dart';
+import 'package:chatcomponent/chat_components/view/widgets/loader/loader_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import '../../../model/chatHelper/chat_helper.dart';
 import '../../../model/function_helper/date_time_convertor/date_time_convertor.dart';
@@ -163,10 +165,12 @@ class ChatScreen extends StatelessWidget {
                           Column(
                             children: [
                               controller.isLoadingPreviousChats.isFalse ?
-                              const SizedBox(
-                                height: 100,
+                              Container(
+                                height: 80,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
                                 child: Center(
-                                  child: CircularProgressIndicator(),
+                                  child: LoaderView(loaderColor: controller.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,),
                                 ),
                               ): const SizedBox(),
                               Expanded(
@@ -585,7 +589,7 @@ class ChatScreen extends StatelessWidget {
                       ],
                     ),
                     controller.isLoading.isFalse
-                        ? SizedBox(height: MediaQuery.of(context).size.height, width: MediaQuery.of(context).size.width, child: const Center(child: CircularProgressIndicator()))
+                        ? SizedBox(height: MediaQuery.of(context).size.height, width: MediaQuery.of(context).size.width, child: Center(child: LoaderView(loaderColor: controller.themeArguments?.colorArguments?.mainColor ?? ChatHelpers.mainColor,),))
                         : const SizedBox(),
                   ],
                 ),

@@ -47,7 +47,7 @@ class ImageView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 210,minWidth: 220,maxWidth: 220),
+              constraints: const BoxConstraints(minHeight: 240,minWidth: 220,maxWidth: 220),
               child: Stack(
                 children: [
                   Hero(
@@ -79,7 +79,7 @@ class ImageView extends StatelessWidget {
                       child: Column(
                         children: [
                           Container(
-                            height: 190,
+                            height: 220,
                             width: 220,
                             margin: const EdgeInsets.all(
                                 ChatHelpers.marginSizeExtraSmall),
@@ -94,7 +94,7 @@ class ImageView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(ChatHelpers.marginSizeSmall),
                                 child: cachedNetworkImage(
                                     isProfile: false,
-                                    height: 190,
+                                    height: 220,
                                     width: 220,
                                     url: image)),
                           ),
