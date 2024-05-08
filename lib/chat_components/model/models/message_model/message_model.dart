@@ -49,12 +49,14 @@ class Files {
   String? fileUrl;
   String? fileType;
   String? fileMimeType;
+  bool? isAdding;
 
   Files({
     this.fileName,
     this.fileUrl,
     this.fileType,
     this.fileMimeType,
+    this.isAdding,
   });
 
 
@@ -63,6 +65,7 @@ class Files {
     fileUrl: json["file_url"],
     fileType: json["file_type"],
     fileMimeType: json["file_mime_type"],
+    isAdding: json["isAdding"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -70,5 +73,6 @@ class Files {
     "file_url": fileUrl,
     "file_type": fileType,
     "file_mime_type": fileMimeType,
+    "isAdding": isAdding,
   };
 }

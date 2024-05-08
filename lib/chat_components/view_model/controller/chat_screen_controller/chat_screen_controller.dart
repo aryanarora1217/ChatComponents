@@ -262,15 +262,17 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void pickFile() async {
     /// pick up file for storage
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
-    isLoading.value = false;
     isDialogOpen.value = false;
-
-    if (result == null) {
-      isLoading.value = true;
-    } else {
+    /// genrate id
+    String id = getRandomString();
+    if (result == null)
+    {
+      logPrint("file not found ");
+    }
+    else {
       try {
-        /// genrate id
-        String id = getRandomString();
+        MessageModel loadingMessage = MessageModel(id: id,file: Files(fileName: result.files.first.name, fileMimeType: result.files.first.extension, fileType: FileTypes.document.name, fileUrl: result.files.first.path,isAdding: false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+        messages.add(loadingMessage);
 
         /// upload file in firebase storage
         String? url = await firebase.addChatFiles(id, result.files.first.path!);
@@ -280,81 +282,24 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         messageController.clear();
 
         /// update chatroom and message list
-        MessageModel message = MessageModel(id: id, file: Files(fileName: result.files.first.name, fileMimeType: result.files.first.extension, fileType: FileTypes.document.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
-        messageController.clear();
-        messages.add(message);
+        MessageModel message = MessageModel(id: id, file: Files(fileName: result.files.first.name, fileMimeType: result.files.first.extension, fileType: FileTypes.document.name, fileUrl: storagePath[1],isAdding: true), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
         ChatRoomModel chatRoomModel = addChatRoomModel(message);
 
         firebase.addMessage(message, chatRoomModel);
         firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
+
+        final index = messages.indexWhere((element) => element.id == message.id);
+        messages[index] = message;
+        messageController.clear();
+
         if (otherUserId.value != ChatHelpers.instance.userId) {
           await chatroomUpdates();
         }
       } catch (e) {
-        toastShow(massage: "Error sending image", error: true);
+        final index = messages.indexWhere((element) => element.id == id);
+        messages.removeAt(index);
+        toastShow(massage: "Error sending document", error: true);
       }
-    }
-
-    isLoading.value = true;
-  }
-
-  /// pick up image form camera and upload  send in chats
-  Future<void> cameraPermission() async {
-    PermissionStatus cameraStatus = await Permission.camera.status;
-    isDialogOpen.value = false;
-    if (cameraStatus.isGranted) {
-      isLoading.value = false;
-      isPermissionCameraGranted.value = true;
-
-      /// pick image from camera
-      image.value = (await GetImageHelper.instance.getImage(1)) ?? File("");
-
-      if (image.value != File("")) {
-        try {
-          String fileName = image.value.path.split('/').last;
-
-          String fileExt = getFileExtension(fileName)!;
-
-          String id = getRandomString();
-
-          /// upload image in firebase storage
-          String? url = await firebase.addChatFiles(id, image.value.path);
-
-          logPrint("url : - $url");
-
-          List storagePath =
-              url?.split(chatArguments.imageBaseUrlFirebase) ?? [""];
-
-          /// update chatroom and messages list
-          MessageModel message = MessageModel(
-              id: id,
-              file: Files(
-                  fileName: fileName,
-                  fileMimeType: fileExt,
-                  fileType: FileTypes.image.name,
-                  fileUrl: storagePath[1]),
-              messageType: MessageType.file.name,
-              sender: currentUserId.value,
-              isSeen: false,
-              time: DateTime.now().toUtc().toString());
-
-          ChatRoomModel chatRoomModel = addChatRoomModel(message);
-          firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
-          messages.add(message);
-          messageController.clear();
-          if (otherUserId.value != ChatHelpers.instance.userId) {
-            await chatroomUpdates();
-          }
-        } catch (e) {
-          logPrint("error sending image camera : $e");
-          toastShow(massage: "Error sending image", error: true);
-        }
-      }
-
-      isLoading.value = true;
-    } else {
-      Permission.camera.request();
     }
   }
 
@@ -363,20 +308,20 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     PermissionStatus photosStatus = await Permission.photos.status;
     isDialogOpen.value = false;
     if (photosStatus.isGranted) {
-      isLoading.value = false;
-
       isPermissionPhotosGranted.value = true;
-
       /// image picker
       image.value = (await GetImageHelper.instance.getImage(2)) ?? File("");
-
+      String id = getRandomString();
       if (image.value != File("")) {
         try {
           String fileName = image.value.path.split('/').last;
 
           /// get file extension of a file
           String fileExt = getFileExtension(fileName)!;
-          String id = getRandomString();
+
+
+          MessageModel loadingMessage = MessageModel(id: id,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: image.value.path,isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+          messages.add(loadingMessage);
 
           /// add image in firebase storage
           String? url = await firebase.addChatFiles(id, image.value.path);
@@ -393,17 +338,19 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           firebase.addMessage(message, chatRoomModel);
           firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
 
-          messages.add(message);
+          final index = messages.indexWhere((element) => element.id == message.id);
+          messages[index] = message;
           messageController.clear();
 
           if (otherUserId.value != ChatHelpers.instance.userId) {
             await chatroomUpdates();
           }
         } catch (e) {
+          final index = messages.indexWhere((element) => element.id == id);
+          messages.removeAt(index);
           toastShow(massage: "Error sending image", error: true);
         }
       }
-      isLoading.value = true;
     } else {
       Permission.photos.request();
     }
@@ -422,7 +369,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
       messages.clear();
       for (var element in data.docs) {
-        messages.add(MessageModel.fromJson(element.data()));
+        MessageModel messageModel = MessageModel.fromJson(element.data());
+        bool isFile = messageModel.messageType == "file";
+        messageModel.file?.fileUrl = isFile ? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+        messages.add(messageModel);
       }
       isLoadingChats.value = false;
       messages.value = messages.reversed.toList();
@@ -441,6 +391,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         for (var element in event.docs) {
           MessageModel messageModel = MessageModel.fromJson(element.data());
           messages.removeWhere((message) => message.id == messageModel.id);
+          bool isFile = messageModel.messageType == "file";
+          messageModel.file?.fileUrl = isFile ? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
           messages.add(messageModel);
         }
         if (messages.last.sender != currentUserId.value) {
@@ -533,18 +485,20 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       selectReactionIndex.value = "";
       isReaction.value = false;
       isDialogOpen.value = false;
-      isLoading.value = false;
       for (int counter = 0; counter < imageList.length; counter++){
+
         File cameraImage = imageList[counter];
         TextEditingController imageMessage = imageMessageControllerList[counter];
-
+        String id = getRandomString();
         if (cameraImage != File("")) {
           try {
-            String fileName = image.value.path.split('/').last;
+            String fileName = cameraImage.path.split('/').last;
 
             /// get file extension of a file
             String fileExt = getFileExtension(fileName)!;
-            String id = getRandomString();
+
+            MessageModel loadingMessage = MessageModel(id: id,message: imageMessage.text,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: cameraImage.path,isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+            messages.add(loadingMessage);
 
             /// add image in firebase storage
             String? url = await firebase.addChatFiles(id, cameraImage.path);
@@ -555,28 +509,29 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
             /// update chatroom and messages list
 
-            MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+            MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1],isAdding:true), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
 
             ChatRoomModel chatRoomModel = addChatRoomModel(message);
             firebase.addMessage(message, chatRoomModel);
+            final index = messages.indexWhere((element) => element.id == message.id);
+            messages[index] = message;
+            File file = File(cameraImage.path);
+            await file.delete(recursive: true);
             firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
 
-            messages.add(message);
-            messageController.clear();
 
             if (otherUserId.value != ChatHelpers.instance.userId) {
               await chatroomUpdates();
             }
           } catch (e) {
+            final index = messages.indexWhere((element) => element.id == id);
+            messages.removeAt(index);
             toastShow(massage: "Error sending image", error: true);
           }
         }
 
       }
-      isLoading.value = true;
-
     }catch(e){
-      isLoading.value = true;
       logPrint("Error uploading images ing : $e");
       toastShow(massage: "Error uploading images", error: true);
     }
@@ -694,7 +649,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             await firebase.updateMessages(chatRoomID.value, 5, true,messages.first);
             QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
             for (var element in data.docs) {
-              oldMessages.add(MessageModel.fromJson(element.data()));
+              MessageModel messageModel = MessageModel.fromJson(element.data());
+              bool isFile = messageModel.messageType == "file";
+              messageModel.file?.fileUrl = isFile ? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+              oldMessages.add(messageModel);
             }
             if(oldMessages.isNotEmpty){
               messages.insertAll(0, oldMessages.reversed.toList());

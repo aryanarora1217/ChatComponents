@@ -100,8 +100,6 @@ class CameraScnController extends GetxController {
       for(var image in imageList){
         messageControllerList.add(TextEditingController());
       }
-      File file = File(image.path);
-      await file.delete(recursive: true);
       isCameraVisible.value = false;
     } catch (e) {
       logPrint(e);

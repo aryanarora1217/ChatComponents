@@ -212,7 +212,7 @@ class MessageView extends StatelessWidget {
                               child: Text(
                                 reactionList[reaction],
                                 style: const TextStyle(
-                                    fontSize: ChatHelpers.fontSizeLarge),
+                                    fontSize: ChatHelpers.fontSizeSmall),
                                 textAlign: TextAlign.center,
                               ),
                             ),

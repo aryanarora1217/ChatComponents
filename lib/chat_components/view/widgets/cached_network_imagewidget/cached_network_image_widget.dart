@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import '../../../model/chatHelper/chat_helper.dart';
 
 
-CachedNetworkImage cachedNetworkImage({required String url,BoxFit fit = BoxFit.fill,Color ?color,required bool isProfile}){
+CachedNetworkImage cachedNetworkImage({required String url,BoxFit fit = BoxFit.fill,Color ?color,required bool isProfile,double height = 190 ,double width = 220 ,}){
   return CachedNetworkImage(
     cacheKey: url,
     imageUrl: url,
     fit: fit,
     color: color,
+    memCacheHeight: height.toInt(),
+    memCacheWidth: width.toInt(),
     placeholder: (context, url) => Padding(
       padding:EdgeInsets.all(isProfile?0:ChatHelpers.marginSizeExtraLarge),
       child: Image.asset(ChatHelpers.instance.loadingGIF,fit: BoxFit.cover,height: 50,width: 50,package: "chatcomponent",),

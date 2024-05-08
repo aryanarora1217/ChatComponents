@@ -15,7 +15,6 @@ import '../../widgets/chat_message/image_zoom_view.dart';
 import '../../widgets/chat_message/message_view.dart';
 import '../../widgets/common_button/common_text_button.dart';
 import '../../widgets/icon_button/icon_button.dart';
-import '../../widgets/log_print/log_print_condition.dart';
 import '../../widgets/message_box_field/message_box_field.dart';
 import '../../widgets/text_chip/text_chip.dart';
 import '../../widgets/user_detail_view_chat/user_details_view_chatscreen.dart';
@@ -263,6 +262,7 @@ class ChatScreen extends StatelessWidget {
                                                         ""))
                                                     : const SizedBox(),
                                                 ImageView(
+                                                  isAdding: controller.messages[index].file?.isAdding ?? true,
                                                   imageMessage: controller.messages[index].message ?? "",
                                                   reaction: controller.messages[index]
                                                       .reaction ?? 7,
@@ -325,6 +325,7 @@ class ChatScreen extends StatelessWidget {
                                                         ""))
                                                     : const SizedBox(),
                                                 FileView(
+                                                  isAdding: controller.messages[index].file?.isAdding ?? true,
                                                   reaction: controller.messages[index]
                                                       .reaction ?? 7,
                                                   isSeen: controller.messages[index]

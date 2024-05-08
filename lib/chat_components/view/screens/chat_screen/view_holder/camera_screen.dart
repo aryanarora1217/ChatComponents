@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../../../widgets/icon_button/icon_button.dart';
-import '../../../widgets/log_print/log_print_condition.dart';
 import '../../../widgets/message_box_field/message_box_field.dart';
 
 
@@ -148,7 +147,7 @@ class CameraScreen extends StatelessWidget {
                height:  MediaQuery.of(context).size.height,
                width:  MediaQuery.of(context).size.width,
                color: ChatHelpers.black,
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top+ChatHelpers.marginSizeExtraSmall),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: controller.imageList.isNotEmpty
                  ? ListView(
                shrinkWrap: true,
@@ -162,7 +161,7 @@ class CameraScreen extends StatelessWidget {
                        child: Stack(
                          children: [
                            Positioned(
-                               bottom: MediaQuery.of(context).size.height * .1,
+                               bottom: 0,
                                top: 0,
                                left: 0,
                                right: 0,
@@ -173,11 +172,11 @@ class CameraScreen extends StatelessWidget {
                                  fit: BoxFit.fill,
                                )),
                            Positioned(
-                             top: MediaQuery.of(context).size.height * .79 - MediaQuery.of(context).viewInsets.bottom,
+                             top: controller.imageList.length == 1 ? MediaQuery.of(context).size.height * .88 - MediaQuery.of(context).viewInsets.bottom  : MediaQuery.of(context).size.height * .79 - MediaQuery.of(context).viewInsets.bottom,
                              child: Container(
                                width: MediaQuery.of(context).size.width,
                                height: MediaQuery.of(context).size.width,
-                               color: ChatHelpers.black.withOpacity(.3),
+                               color: ChatHelpers.black.withOpacity(.4),
                              ),
                            ),
                            controller.imageList.length == 1 || controller.imageList.isEmpty ? const  SizedBox()  : Positioned(
