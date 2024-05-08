@@ -371,7 +371,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       for (var element in data.docs) {
         MessageModel messageModel = MessageModel.fromJson(element.data());
         bool isFile = messageModel.messageType == "file";
-        messageModel.file?.fileUrl = isFile ? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+        bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
+        messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
         messages.add(messageModel);
       }
       isLoadingChats.value = false;
@@ -392,7 +393,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           MessageModel messageModel = MessageModel.fromJson(element.data());
           messages.removeWhere((message) => message.id == messageModel.id);
           bool isFile = messageModel.messageType == "file";
-          messageModel.file?.fileUrl = isFile ? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+          bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
+          messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
           messages.add(messageModel);
         }
         if (messages.last.sender != currentUserId.value) {
@@ -508,7 +510,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
 
             /// update chatroom and messages list
-
+            logPrint("url : - $url , ${imageMessage.text} , ${storagePath[1]}");
             MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1],isAdding:true), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
 
             ChatRoomModel chatRoomModel = addChatRoomModel(message);
@@ -517,6 +519,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             messages[index] = message;
             File file = File(cameraImage.path);
             await file.delete(recursive: true);
+
             firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
 
 
