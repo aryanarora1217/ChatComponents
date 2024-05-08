@@ -374,6 +374,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
         messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
         messages.add(messageModel);
+        logPrint("update chats : $isAdded , ${messageModel.file?.fileUrl}");
       }
       isLoadingChats.value = false;
       messages.value = messages.reversed.toList();
@@ -396,6 +397,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
           messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
           messages.add(messageModel);
+          logPrint("update chats : ${messageModel.file?.fileUrl}");
         }
         if (messages.last.sender != currentUserId.value) {
           MessageModel message = messages.last;

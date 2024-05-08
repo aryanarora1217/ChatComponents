@@ -5,8 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:photo_gallery/photo_gallery.dart';
 import 'chat_components/model/chatHelper/chat_helper.dart';
 import 'chat_components/model/firebase_notification/firebase_notification.dart';
 
@@ -75,8 +73,8 @@ class MyHomePage extends StatelessWidget {
         child: MaterialButton(
           color: ChatHelpers.mainColor,
           onPressed: () => ChatHelpers.instance.chatScreenNavigation(
-              otherUserID: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
-              currentUserID: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+              otherUserID: "BdHleEqAmaVLcB1b60xoYU5ET6N2",
+              currentUserID: "4BOKnOShPIe8JeeyZZbxRaufM3h1",
               agoraChannelName: "DemoRoom",
               agoraToken: "007eJxTYLCvrVOZVLHT+tv/5fP6P34rv2VT09/NfiPsmoX72icveBwVGFITLYxNjc2NDMwMU0xMki2TLC1TUhKNLNPMLJIMEi0tTT9rpjUEMjJIz7jHysgAgSA+B4NLam5+UH5+LgMDAGY8IoE="),
           child: const Text(
