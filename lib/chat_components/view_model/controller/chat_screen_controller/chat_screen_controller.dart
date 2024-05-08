@@ -400,6 +400,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         if (messages.last.sender != currentUserId.value) {
           MessageModel message = messages.last;
           message.isSeen = true;
+          message.file?.fileUrl?.replaceAll(chatArguments.imageBaseUrlFirebase, "");
           FirebaseFirestore.instance.collection(ChatHelpers.instance.chats).doc(chatRoomID.value).collection("messages").doc(message.id).update(message.toJson());
         }
       });
