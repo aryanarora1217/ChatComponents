@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import '../../../view/widgets/log_print/log_print_condition.dart';
 
@@ -12,6 +13,8 @@ class CameraScnController extends GetxController {
   RxBool isCameraRear = false.obs;
   RxBool isCameraVisible = true.obs;
   RxBool isFlashOn = false.obs;
+  RxBool isCropped = false.obs;
+  RxBool isImagePainterOpen = false.obs;
   RxBool isLoading = false.obs;
 
   RxInt selectedImageIndex = 0.obs;
@@ -26,8 +29,11 @@ class CameraScnController extends GetxController {
   RxList<CameraDescription> availableCamera = <CameraDescription>[].obs;
 
   RxList<File> imageList = <File>[].obs;
+  RxList<File> cropImageList = <File>[].obs;
   RxList<Medium> selectedMediumList = <Medium>[].obs;
   RxList<TextEditingController> messageControllerList = <TextEditingController>[].obs;
+
+
 
 
   @override
@@ -35,6 +41,7 @@ class CameraScnController extends GetxController {
     super.onInit();
     await initServices();
   }
+
 
   Future<void> initServices() async {
     isLoading.value = true;
@@ -54,11 +61,7 @@ class CameraScnController extends GetxController {
   void onCameraSwitchTap() {
     isLoading.value = true;
     isCameraRear.value = !isCameraRear.value;
-    // state.switchCameraSensor(
-    //   aspectRatio: state.sensorConfig.aspectRatio,
-    // );
-    // logPrint(isCameraRear.value);
-    // get current lens direction (front / rear)
+
     final lensDirection = cameraController.description.lensDirection;
     CameraDescription newDescription;
     logPrint("avaible cameras : ${availableCamera.toString()}");
@@ -93,11 +96,13 @@ class CameraScnController extends GetxController {
       if (!context.mounted) return;
 
       imageList.add(File(image.path));
+      cropImageList.add(File(image.path));
       // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
       //   "Images": imageList
       // });
       logPrint("ImageList : ${imageList.toString()}");
       for(var image in imageList){
+        logPrint(image);
         messageControllerList.add(TextEditingController());
       }
       isCameraVisible.value = false;
@@ -122,11 +127,13 @@ class CameraScnController extends GetxController {
     Medium selectedMedia = mediaList[index];
     image.value = await selectedMedia.getFile();
     imageList.add(File(image.value.path));
+    cropImageList.add(File(image.value.path));
     // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
     //   "Images": imageList
     // });
     logPrint("ImageList : ${imageList.toString()}");
     for(var image in imageList){
+      logPrint(image);
       messageControllerList.add(TextEditingController());
     }
     isCameraVisible.value = false;
@@ -140,6 +147,7 @@ class CameraScnController extends GetxController {
       image.value = await selectedMedia.getFile();
       selectedMediumList.add(selectedMedia);
       imageList.add(File(image.value.path));
+      cropImageList.add(File(image.value.path));
       // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
       //   "Images": imageList
       // });
@@ -148,6 +156,7 @@ class CameraScnController extends GetxController {
       image.value = await selectedMedia.getFile();
       selectedMediumList.removeWhere((element) => element.id == selectedMedia.id);
       imageList.removeWhere((element) => element.path == image.value.path);
+      cropImageList.removeWhere((element) => element.path == image.value.path);
     }
 
   }
@@ -155,18 +164,72 @@ class CameraScnController extends GetxController {
   void onTapSelectImages(){
     messageControllerList.clear();
     for(var image in imageList){
+      logPrint(image);
       messageControllerList.add(TextEditingController());
     }
     isCameraVisible.value = false;
   }
 
   void sendOnTap(){
-    Get.back(result: {"ImageList":imageList,"textMessageList":messageControllerList});
+    Get.back(result: {"ImageList": isCropped.isTrue ? cropImageList : imageList,"textMessageList":messageControllerList});
+  }
+
+  Future cropImage(int index) async {
+    image.value = imageList[index];
+    // logPrint("image lists : ${imageList[index].path}  , ${cropImageList[index].path}");
+    try{
+      CroppedFile? cropped = await ImageCropper().cropImage(
+          sourcePath: image.value.path,
+          aspectRatioPresets:
+          [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          uiSettings: [
+            AndroidUiSettings(
+                toolbarTitle: 'Crop',
+                toolbarColor: ChatHelpers.mainColor,
+                toolbarWidgetColor: ChatHelpers.white,
+                statusBarColor:ChatHelpers.white,
+                cropGridColor: ChatHelpers.white,
+                activeControlsWidgetColor: ChatHelpers.mainColor,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            IOSUiSettings(title: 'Crop')
+          ]);
+
+      if (cropped != null) {
+        isCropped.value = true;
+        imageList[index] = image.value;
+        // logPrint("image in cropped get : ${imageList[index]} , ${image.value}  ${isCropped.value}");
+        cropImageList[index] = File(cropped.path);
+        // logPrint("image in cropped get : ${cropped.path} , cropList ${cropImageList[index]}  , normal List ${imageList[index]} , ${image.value}  ${isCropped.value}");
+      }
+    }catch(e){
+      logPrint("error in editing image $e");
+    }
+
+  }
+
+  void drawImage(int index) async {
+    image.value = isCropped.isTrue ? cropImageList[index] : imageList[index];
+    Get.toNamed(ChatHelpers.drawEditScreen,arguments: image.value)?.then((value) {
+      image.value = value ;
+      isCropped.isTrue ? cropImageList[index] = image.value : imageList[index] = image.value;
+    });
   }
 
   @override
   void onClose() {
+
+   try{
+     cameraController.dispose();
+   }catch(e){
+     logPrint("error : $e");
+   }
     super.onClose();
-    cameraController.dispose();
   }
 }

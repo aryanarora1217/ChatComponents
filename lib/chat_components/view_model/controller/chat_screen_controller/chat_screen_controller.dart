@@ -479,9 +479,13 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       logPrint("Image get form back : ${value.toString()}");
       imageList.value = value["ImageList"];
       imageMessageControllerList.value = value["textMessageList"];
+
       logPrint("List of image and text : ${imageList.length} ${imageList.toString()} , ${imageMessageControllerList.toString()}");
 
-      await uploadListImages();
+      if(imageList.isNotEmpty) {
+        await uploadListImages();
+      }
+
     });
   }
 

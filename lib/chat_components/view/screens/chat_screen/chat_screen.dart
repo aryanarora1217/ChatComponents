@@ -6,7 +6,6 @@ import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import '../../../model/chatHelper/chat_helper.dart';
 import '../../../model/function_helper/date_time_convertor/date_time_convertor.dart';

@@ -1,4 +1,5 @@
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/camera_screen.dart';
+import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/draw_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../view/screens/call_screens/agora/audio_call_screen.dart';
@@ -88,8 +89,7 @@ class ChatHelpers {
   String get agoraAppId => 'agoraAppId';
 
   ///messages string
-  String get noChatsMessage =>
-      "There are no chats available since you haven't chatted with anyone";
+  String get noChatsMessage => "There are no chats available since you haven't chatted with anyone";
   String get errorMissingData => "required details are missing";
 
 
@@ -105,6 +105,7 @@ class ChatHelpers {
   String get placeHolder => icons("placeholder.png");
   String get errorImage => icons("errorImage.png");
   String get speaker => icons("speaker.png");
+  String get scribbleIcon => icons("scribble.png");
   String get loadingGIF => gif("LoadingAnimationSpinner.gif");
   String get speakerOff => icons("speakerOff.png");
   String get groupIcon => icons("groupIcon.png");
@@ -150,11 +151,12 @@ class ChatHelpers {
 
 
   /// Routes
-  static String videoCall = '/VideoCall';
-  static String audioCall = '/AudioCall';
-  static String outGoingScreen = '/OutGoingScreen';
-  static String chatScreen = '/ChatScreen';
-  static String cameraScreen = '/CameraScreen';
+  static String videoCall = '/videoCall';
+  static String audioCall = '/audioCall';
+  static String outGoingScreen = '/outGoingScreen';
+  static String chatScreen = '/chatScreen';
+  static String cameraScreen = '/cameraScreen';
+  static String drawEditScreen = '/drawEditScreen';
   // static String imagePreviewScreen = '/ImagePreviewScreen';
 
 
@@ -356,6 +358,9 @@ final getPages = [
   GetPage(
       name: ChatHelpers.cameraScreen,
       page: () => const CameraScreen()),
+  GetPage(
+      name: ChatHelpers.drawEditScreen,
+      page: () => const DrawEditScreen()),
   GetPage(
       name: ChatHelpers.videoCall,
       page: () => const VideoCallScreen()),
