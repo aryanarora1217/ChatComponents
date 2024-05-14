@@ -35,7 +35,8 @@ class DownloadHelper {
           onSuccess: onSuccess,
           url: url,
           fileName: fileName);
-    } else if (Platform.isAndroid &&
+    }
+    else if (Platform.isAndroid &&
         (androidInfo?.version.sdkInt ?? 0) <= 32 &&
         status == PermissionStatus.denied) {
       askPermissionBox(

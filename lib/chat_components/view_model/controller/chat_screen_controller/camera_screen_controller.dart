@@ -219,12 +219,12 @@ class CameraScnController extends GetxController {
     Get.toNamed(ChatHelpers.drawEditScreen,arguments: image.value)?.then((value) {
       image.value = value ;
       isCropped.isTrue ? cropImageList[index] = image.value : imageList[index] = image.value;
+      logPrint("value : $value , ${isCropped.value} , $cropImageList ,$imageList");
     });
   }
 
   @override
   void onClose() {
-
    try{
      cameraController.dispose();
    }catch(e){
@@ -232,4 +232,6 @@ class CameraScnController extends GetxController {
    }
     super.onClose();
   }
+
+
 }

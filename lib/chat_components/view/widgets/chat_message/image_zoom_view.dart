@@ -14,6 +14,7 @@ class ViewImageAndPlayVideoScreen extends StatelessWidget {
 
   ViewImageAndPlayVideoScreen({super.key,required this.file, required this.chatController}){
     transformationController = TransformationController();
+
   }
 
   @override
@@ -31,26 +32,27 @@ class ViewImageAndPlayVideoScreen extends StatelessWidget {
           ..scale(3.0);
       }
     }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
           Obx(()=>Positioned(
-            top: MediaQuery.of(context).size.height * .12,
-            child: RotatedBox(
-              quarterTurns: quarterTurns.value,
-              child: Hero(
-                tag: file,
-                key: Key(file),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * .88,
-                  width: MediaQuery.of(context).size.width,
+            top: MediaQuery.of(context).size.height * .1,
+            child: Hero(
+              tag: file,
+              key: Key(file),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * .9,
+                width: MediaQuery.of(context).size.width,
+                child: RotatedBox(
+                  quarterTurns: quarterTurns.value,
                   child: GestureDetector(
                     onDoubleTapDown: handleDoubleTapDown,
                     onDoubleTap: handleDoubleTap,
                     child: InteractiveViewer(
                       transformationController: transformationController,
-                      child: Image.network(fit: BoxFit.fill,file,),
+                      child: Image.network(width: MediaQuery.of(context).size.width,file,),
                     ),
                   ),
                 ),
