@@ -36,36 +36,6 @@ class CameraScreen extends StatelessWidget {
                       top: MediaQuery.of(context).padding.top + 20),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * .85,
-                  // child: CameraAwesomeBuilder.awesome(
-                  //   saveConfig: SaveConfig.photo(
-                  //     mirrorFrontCamera: false,
-                  //   ),
-                  //   sensorConfig: SensorConfig.single(
-                  //     aspectRatio: CameraAspectRatios.ratio_16_9,
-                  //     sensor: Sensor.position(SensorPosition.front),
-                  //     zoom: 0.0,
-                  //   ),
-                  //   topActionsBuilder: (state) {
-                  //     controller.cameraState = state;
-                  //     return const SizedBox();
-                  //   },
-                  //   middleContentBuilder: (state) => const SizedBox(),
-                  //   bottomActionsBuilder: (state) {
-                  //     controller.cameraState = state;
-                  //     return AwesomeBottomActions(
-                  //       state: state,
-                  //       left: AwesomeFlashButton(
-                  //         state: state,
-                  //       ),
-                  //       captureButton: AwesomeCaptureButton(state: state),
-                  //       right: AwesomeCameraSwitchButton(
-                  //           state: state,
-                  //           scale: 1.0,
-                  //           onSwitchTap: (state) =>
-                  //               controller.onCameraSwitchTap(state)),
-                  //     );
-                  //   },
-                  // )),
                   child:
                   FutureBuilder<void>(
                     future: controller.initializeControllerFuture,
