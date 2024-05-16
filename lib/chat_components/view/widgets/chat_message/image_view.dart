@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../model/chatHelper/chat_helper.dart';
@@ -107,19 +108,16 @@ class ImageView extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 imageMessage.isEmpty || imageMessage == "" ? const SizedBox() :
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Flexible(
-                                    child: Text(
-                                      imageMessage,
-                                      textAlign: TextAlign.start,
-                                      style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
-                                          ChatHelpers.fontSizeDefault,
-                                          isSender == true
-                                              ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                              : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
-                                      softWrap: true,
-                                    ),
+                                Flexible(
+                                  child: Text(
+                                    imageMessage,
+                                    textAlign: TextAlign.start,
+                                    style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
+                                        ChatHelpers.fontSizeDefault,
+                                        isSender == true
+                                            ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                            : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
+                                    softWrap: true,
                                   ),
                                 ),
                                 const SizedBox(height: ChatHelpers.marginSizeExtraSmall,),
@@ -130,13 +128,15 @@ class ImageView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(
-                                          time,
-                                          textAlign: TextAlign.start,
-                                          style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
-                                              isSender == true
-                                                  ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                                  : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                                      Flexible(
+                                        child: Text(
+                                            time,
+                                            textAlign: TextAlign.start,
+                                            style: chatController.themeArguments?.styleArguments?.messagesTimeTextStyle ??  ChatHelpers.instance.styleLight(ChatHelpers.fontSizeExtraSmall,
+                                                isSender == true
+                                                    ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                                    : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black)
+                                        ),
                                       ),
                                       const SizedBox(
                                         width: ChatHelpers.marginSizeExtraSmall,
@@ -272,15 +272,17 @@ class ImageView extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               imageMessage.isEmpty || imageMessage == "" ? const SizedBox() :   Flexible(
-                                child: Text(
-                                  imageMessage,
-                                  textAlign: TextAlign.start,
-                                  style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
-                                      ChatHelpers.fontSizeDefault,
-                                      isSender == true
-                                          ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
-                                          : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
-                                  softWrap: true,
+                                child: Flexible(
+                                  child: Text(
+                                    imageMessage,
+                                    textAlign: TextAlign.start,
+                                    style: chatController.themeArguments?.styleArguments?.messageTextStyle ?? ChatHelpers.instance.styleRegular(
+                                        ChatHelpers.fontSizeDefault,
+                                        isSender == true
+                                            ? chatController.themeArguments?.colorArguments?.senderMessageTextColor ?? ChatHelpers.white
+                                            : chatController.themeArguments?.colorArguments?.receiverMessageTextColor ?? ChatHelpers.black),
+                                    softWrap: true,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: ChatHelpers.marginSizeExtraSmall,),
