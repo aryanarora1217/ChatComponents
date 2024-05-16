@@ -9,15 +9,16 @@ class DateView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall,vertical: ChatHelpers.marginSizeExtraSmall),
+        padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeDefault,vertical: ChatHelpers.marginSizeExtraSmall-1),
         margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeDefault,vertical: ChatHelpers.marginSizeSmall),
         decoration: BoxDecoration(
             color: ChatHelpers.mainColor.withOpacity(.5),
-          borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)
+          borderRadius: BorderRadius.circular(ChatHelpers.roundButtonRadius)
         ),
         child: Text(
           date,
-          style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.white),
+          textAlign: TextAlign.center,
+          style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeSmall, ChatHelpers.white),
         ),
       ),
     );

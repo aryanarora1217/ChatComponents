@@ -112,15 +112,13 @@ class MessageView extends StatelessWidget {
                           ),
                         ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: isSender
+                              ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Flexible(
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: isSender
-                                        ? ChatHelpers.marginSizeSmall
-                                        : ChatHelpers.marginSizeDefault),
+                                padding: const EdgeInsets.symmetric(horizontal:ChatHelpers.marginSizeExtraSmall),
                                 child: Text(
                                   message,
                                   style: chatController

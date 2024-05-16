@@ -14,7 +14,7 @@ class DateTimeConvertor {
     return DateFormat("yyyy-MM-dd").format(DateTime.parse(time).toLocal()).toString();
   }
   static String dateConvertorDate(String time){
-    return DateFormat("dd-MM-yyyy").format(DateTime.parse(time).toLocal()).toString();
+    return DateFormat("dd MMMM, yy").format(DateTime.parse(time).toLocal()).toString();
   }
 
   static String formattedTime({required int timeInSecond}) {
