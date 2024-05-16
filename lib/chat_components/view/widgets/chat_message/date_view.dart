@@ -12,12 +12,12 @@ class DateView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeSmall,vertical: ChatHelpers.marginSizeExtraSmall),
         margin: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeDefault,vertical: ChatHelpers.marginSizeSmall),
         decoration: BoxDecoration(
-            color: ChatHelpers.grey.withOpacity(.5),
+            color: ChatHelpers.mainColor.withOpacity(.5),
           borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)
         ),
         child: Text(
           date,
-          style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.black.withOpacity(.5)),
+          style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.white),
         ),
       ),
     );

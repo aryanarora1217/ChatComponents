@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../model/chatHelper/chat_helper.dart';
@@ -153,7 +154,7 @@ class FileView extends StatelessWidget {
                                     const SizedBox(
                                       width: 15,
                                     ),
-                                    Expanded(
+                                    Flexible(
                                       child: Text(
                                         fileName,
                                         style: ChatHelpers.instance.styleRegular(
@@ -418,7 +419,7 @@ class FileView extends StatelessWidget {
                               const SizedBox(
                                 width: 15,
                               ),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   fileName,
                                   style: ChatHelpers.instance.styleRegular(
