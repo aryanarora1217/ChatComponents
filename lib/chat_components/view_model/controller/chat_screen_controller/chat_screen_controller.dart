@@ -190,8 +190,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       isReaction.value = isReaction.value;
       messages[messageIndex].reaction = index;
       selectReactionIndex.value = "";
-      logPrint(
-          "select value is : ${selectReactionIndex.value} , ${messages[messageIndex]}");
+      logPrint("select value is : ${selectReactionIndex.value} , ${messages[messageIndex].reaction}");
       ChatRoomModel chatRoomModel = addChatRoomModel(messages[messageIndex]);
 
       firebase.addMessage(messages[messageIndex], chatRoomModel);
@@ -311,45 +310,23 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       isPermissionPhotosGranted.value = true;
       /// image picker
       image.value = (await GetImageHelper.instance.getImage(2)) ?? File("");
-      String id = getRandomString();
-      if (image.value != File("")) {
-        try {
-          String fileName = image.value.path.split('/').last;
 
-          /// get file extension of a file
-          String fileExt = getFileExtension(fileName)!;
+      if (image.value.path != "") {
 
+        Get.toNamed(ChatHelpers.cameraScreen,arguments: image.value)?.
+        then((value) async {
+          logPrint("Image get form back : ${value.toString()}");
+          imageList.value = value["ImageList"];
+          imageMessageControllerList.value = value["textMessageList"];
 
-          MessageModel loadingMessage = MessageModel(id: id,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: image.value.path,isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
-          messages.add(loadingMessage);
+          logPrint("List of image and text : ${imageList.length} ${imageList.toString()} , ${imageMessageControllerList.toString()}");
 
-          /// add image in firebase storage
-          String? url = await firebase.addChatFiles(id, image.value.path);
-
-          logPrint("url : - $url");
-
-          List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
-
-          /// update chatroom and messages list
-
-          MessageModel message = MessageModel(id: id, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1]), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
-
-          ChatRoomModel chatRoomModel = addChatRoomModel(message);
-          firebase.addMessage(message, chatRoomModel);
-          firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
-
-          final index = messages.indexWhere((element) => element.id == message.id);
-          messages[index] = message;
-          messageController.clear();
-
-          if (otherUserId.value != ChatHelpers.instance.userId) {
-            await chatroomUpdates();
+          if(imageList.isNotEmpty) {
+            await uploadListImages();
           }
-        } catch (e) {
-          final index = messages.indexWhere((element) => element.id == id);
-          messages.removeAt(index);
-          toastShow(massage: "Error sending image", error: true);
-        }
+
+        });
+
       }
     } else {
       Permission.photos.request();
@@ -365,7 +342,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> updateChats() async {
     try {
       Query<Map<String, dynamic>>? reference =
-          await firebase.updateChatRoom(chatRoomID.value, 5, true);
+          await firebase.updateChatRoom(chatRoomID.value, 15, true);
       QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
       messages.clear();
       for (var element in data.docs) {
@@ -474,7 +451,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> goToCameraScreen() async {
-    Get.toNamed(ChatHelpers.cameraScreen,)?.
+    Get.toNamed(ChatHelpers.cameraScreen,arguments: File(""))?.
     then((value) async {
       logPrint("Image get form back : ${value.toString()}");
       imageList.value = value["ImageList"];
@@ -528,7 +505,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             await file.delete(recursive: true);
 
             firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
-
 
             if (otherUserId.value != ChatHelpers.instance.userId) {
               await chatroomUpdates();
@@ -656,7 +632,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             oldMessages.clear();
             isLoadingPreviousChats.value = false;
             Query<Map<String, dynamic>>? reference =
-            await firebase.updateMessages(chatRoomID.value, 5, true,messages.first);
+            await firebase.updateMessages(chatRoomID.value, 15, true,messages.first);
             QuerySnapshot<Map<String, dynamic>> data = await reference!.get();
             for (var element in data.docs) {
               MessageModel messageModel = MessageModel.fromJson(element.data());

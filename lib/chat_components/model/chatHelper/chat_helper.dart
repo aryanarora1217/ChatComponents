@@ -1,5 +1,6 @@
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/camera_screen.dart';
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/draw_edit_screen.dart';
+import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../view/screens/call_screens/agora/audio_call_screen.dart';
@@ -32,7 +33,6 @@ enum PresenceStatus { online,offline,typing }
 
 
 /// font weights
-
 FontWeight semiBold = FontWeight.w600;
 FontWeight regular = FontWeight.w400;
 FontWeight light = FontWeight.w200;
@@ -42,7 +42,6 @@ FontWeight extraBold = FontWeight.w900;
 
 
 /// chat helper class
-
 class ChatHelpers {
   static ChatHelpers? _instance;
 
@@ -157,6 +156,8 @@ class ChatHelpers {
   static String chatScreen = '/chatScreen';
   static String cameraScreen = '/cameraScreen';
   static String drawEditScreen = '/drawEditScreen';
+  static String mapScreen = '/mapScreen';
+  // static String imageEditorScreen = '/imageEditorScreen';
   // static String imagePreviewScreen = '/ImagePreviewScreen';
 
 
@@ -361,6 +362,9 @@ final getPages = [
   GetPage(
       name: ChatHelpers.drawEditScreen,
       page: () => const DrawEditScreen()),
+  GetPage(
+      name: ChatHelpers.mapScreen,
+      page: () => const MapScreen()),
   GetPage(
       name: ChatHelpers.videoCall,
       page: () => const VideoCallScreen()),

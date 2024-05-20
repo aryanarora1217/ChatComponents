@@ -264,7 +264,11 @@ class CameraScreen extends StatelessWidget {
                                      Padding(
                                        padding: const EdgeInsets.all(ChatHelpers.marginSizeDefault),
                                        child: CircleIconButton(height: 50,width: 50,onTap: () => controller.cropImage(index), isImage: false,icons: Icons.crop,boxColor: ChatHelpers.mainColor,colors: ChatHelpers.white,shapeRec: false,),
-                                     )
+                                     ),
+                                     Padding(
+                                       padding: const EdgeInsets.all(ChatHelpers.marginSizeDefault),
+                                       child: CircleIconButton(height: 50,width: 50,onTap: () => controller.drawImage(index), isImage: true,image: ChatHelpers.instance.scribbleIcon,isImageText: false, boxColor: ChatHelpers.mainColor,colors: ChatHelpers.white,shapeRec: false,padding: 0,),
+                                     ),
                                    ],)),
                              Positioned(
                                top: controller.imageList.length == 1 ? MediaQuery.of(context).size.height * .88 - MediaQuery.of(context).viewInsets.bottom  : MediaQuery.of(context).size.height * .79 - MediaQuery.of(context).viewInsets.bottom,

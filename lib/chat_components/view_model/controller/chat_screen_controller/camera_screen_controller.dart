@@ -45,15 +45,29 @@ class CameraScnController extends GetxController {
 
   Future<void> initServices() async {
     isLoading.value = true;
-    availableCamera.value = await availableCameras();
 
-    final firstCamera = availableCamera.first;
-    _initCamera(firstCamera);
-    imageAlbums.value = await PhotoGallery.listAlbums();
-    MediaPage mediaPage = await imageAlbums.first.listMedia();
-    mediaList.value = mediaPage.items;
-    logPrint("media image : ${mediaList.first.toString()}");
-    isLoading.value = false;
+    image.value = Get.arguments;
+    if(image.value.path == ""){
+      availableCamera.value = await availableCameras();
+
+      final firstCamera = availableCamera.first;
+      _initCamera(firstCamera);
+      imageAlbums.value = await PhotoGallery.listAlbums();
+      MediaPage mediaPage = await imageAlbums.first.listMedia();
+      mediaList.value = mediaPage.items;
+      logPrint("media image : ${mediaList.first.toString()}");
+      isLoading.value = false;
+    }else {
+      imageList.add(File(image.value.path));
+      cropImageList.add(File(image.value.path));
+      logPrint("ImageList : ${imageList.toString()}");
+      for(var image in imageList){
+        logPrint(image);
+        messageControllerList.add(TextEditingController());
+      }
+      isCameraVisible.value = false;
+    }
+
   }
 
 
@@ -64,7 +78,9 @@ class CameraScnController extends GetxController {
 
     final lensDirection = cameraController.description.lensDirection;
     CameraDescription newDescription;
+
     logPrint("avaible cameras : ${availableCamera.toString()}");
+
     if (lensDirection == CameraLensDirection.front) {
       newDescription = availableCamera.firstWhere((description) =>
           description.lensDirection == CameraLensDirection.back);
@@ -97,9 +113,7 @@ class CameraScnController extends GetxController {
 
       imageList.add(File(image.path));
       cropImageList.add(File(image.path));
-      // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
-      //   "Images": imageList
-      // });
+
       logPrint("ImageList : ${imageList.toString()}");
       for(var image in imageList){
         logPrint(image);
@@ -128,9 +142,6 @@ class CameraScnController extends GetxController {
     image.value = await selectedMedia.getFile();
     imageList.add(File(image.value.path));
     cropImageList.add(File(image.value.path));
-    // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
-    //   "Images": imageList
-    // });
     logPrint("ImageList : ${imageList.toString()}");
     for(var image in imageList){
       logPrint(image);
@@ -148,9 +159,6 @@ class CameraScnController extends GetxController {
       selectedMediumList.add(selectedMedia);
       imageList.add(File(image.value.path));
       cropImageList.add(File(image.value.path));
-      // Get.offAndToNamed(ChatHelpers.imagePreviewScreen,arguments: {
-      //   "Images": imageList
-      // });
       logPrint("ImageList : ${imageList.toString()}");
     }else{
       image.value = await selectedMedia.getFile();
@@ -176,7 +184,6 @@ class CameraScnController extends GetxController {
 
   Future cropImage(int index) async {
     image.value = imageList[index];
-    // logPrint("image lists : ${imageList[index].path}  , ${cropImageList[index].path}");
     try{
       CroppedFile? cropped = await ImageCropper().cropImage(
           sourcePath: image.value.path,
@@ -204,9 +211,7 @@ class CameraScnController extends GetxController {
       if (cropped != null) {
         isCropped.value = true;
         imageList[index] = image.value;
-        // logPrint("image in cropped get : ${imageList[index]} , ${image.value}  ${isCropped.value}");
         cropImageList[index] = File(cropped.path);
-        // logPrint("image in cropped get : ${cropped.path} , cropList ${cropImageList[index]}  , normal List ${imageList[index]} , ${image.value}  ${isCropped.value}");
       }
     }catch(e){
       logPrint("error in editing image $e");
@@ -222,6 +227,7 @@ class CameraScnController extends GetxController {
       logPrint("value : $value , ${isCropped.value} , $cropImageList ,$imageList");
     });
   }
+
 
   @override
   void onClose() {

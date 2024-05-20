@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../chatHelper/chat_helper.dart';
 import '../models/call_model/call_model.dart';
 import '../models/chat_model/chat_model.dart';
@@ -132,32 +133,50 @@ class FirebaseNotification {
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions();
     fltNotification = FlutterLocalNotificationsPlugin();
 
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+
     await fltNotification.pendingNotificationRequests();
-    var androidDetailsChannel = const AndroidNotificationChannel(
-        'syncChat', 'syncApp',
-        playSound: true, importance: Importance.max);
 
-    await fltNotification
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidDetailsChannel);
+    // var androidDetailsChannel = AndroidNotificationChannelGroup(
+    //     appName, appName,);
+    //
+    //
+    //
+    // await fltNotification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannelGroup(androidDetailsChannel);
+    //
+    // const List<String> lines = <String>[
+    //   'Alex Faarborg  Check this out',
+    //   'Jeff Chang    Launch Party'
+    // ];
+    //
+    // const InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
+    //     lines,
+    //     contentTitle: '2 messages',
+    //     summaryText: 'janedoe@example.com');
 
-    var androidDetails = const AndroidNotificationDetails(
-      'syncChat',
-      'syncApp',
-      sound: RawResourceAndroidNotificationSound('cellphone_sound'),
+    var androidDetails = AndroidNotificationDetails(
+      appName,
+      appName,
+      sound: const RawResourceAndroidNotificationSound('cellphone_sound'),
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
+      // groupKey: packageName,
+      // groupAlertBehavior: GroupAlertBehavior.all,
+      // setAsGroupSummary: true,
+      onlyAlertOnce: false,
     );
 
     var iosDetails = const IOSNotificationDetails();
-    var generalNotificationDetails =
-    NotificationDetails(android: androidDetails, iOS: iosDetails);
+    var generalNotificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     var androiInit = const AndroidInitializationSettings('logo');
     var iosInit = const IOSInitializationSettings();
     var initSetting = InitializationSettings(android: androiInit, iOS: iosInit);
+
     fltNotification.initialize(initSetting,
         onSelectNotification: (String? payload) {
           // if (payload != null) {
@@ -204,7 +223,8 @@ class FirebaseNotification {
                     generalNotificationDetails,
                     payload: chatRoomID);
               // }
-            } else {
+            }
+            else {
               // if (chatRoomModel.userSecond?.userActiveStatus == false || chatRoomModel.userSecond?.userActiveStatus == null) {
                 /// show message notification for messages
                 fltNotification.show(
