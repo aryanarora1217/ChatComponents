@@ -140,7 +140,6 @@ class FirebaseNotification {
     List<Map<String,String>> recentNotificationList = [];
 
     String appName = packageInfo.appName;
-    String packageName = packageInfo.packageName;
 
     await fltNotification.pendingNotificationRequests();
 
@@ -252,7 +251,7 @@ class FirebaseNotification {
             //   // }
             // }
             try{
-              recentNotificationList = await NotificationLocalStoreManger.getNotificationList(userDetails.id??"");
+              recentNotificationList = await NotificationLocalStoreManger.getNotificationList(otherUserDetails.id??"");
             }catch(e){
               logPrint("error fetching recent list : $e");
             }
@@ -260,13 +259,13 @@ class FirebaseNotification {
             if(recentNotificationList.isEmpty){
               recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               /// show message notifications
-              fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
+              fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(otherUserDetails.id??""), otherUserDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
               // }
-              NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
+              NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
             }else{
               recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-              Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
+              Map<String, dynamic> data = {"title":otherUserDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
               handleInboxStyleNotification(data,appName);
             }
           }
@@ -300,15 +299,13 @@ class FirebaseNotification {
     //
 
     // Extract notification data (title, body, messages for inbox style)
-    String title = data['title'];
-    String body = data['body'];
     List<Map<String,String>> recentMessagesList = data['messages']?? [] as List<Map<String,String>>;
     List<String> messageList = recentMessagesList.map((e) => e["message"]??"").toList();
 
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         messageList,
         contentTitle: " ${messageList.length} messages",
-        summaryText: userDetails.profileName);
+        summaryText: otherUserDetails.profileName);
 
     var androidDetails = AndroidNotificationDetails(
       appName,
@@ -329,7 +326,7 @@ class FirebaseNotification {
     var generalNotificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     // Use a notification provider to show the notification (e.g., flutter_local_notifications)
-    fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
+    fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(otherUserDetails.id??""), otherUserDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
   }
 
   /// fetching chatroom detials
