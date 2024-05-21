@@ -92,6 +92,9 @@ dependencies:
   image_cropper: ^3.0.1
   image_painter: ^0.7.1
 
+  hive: ^2.2.3
+  hive_flutter: any
+
 
 
 

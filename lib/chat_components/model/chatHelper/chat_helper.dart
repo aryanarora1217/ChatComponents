@@ -1,6 +1,7 @@
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/camera_screen.dart';
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/draw_edit_screen.dart';
 import 'package:chatcomponent/chat_components/view/screens/chat_screen/view_holder/map_screen.dart';
+import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../view/screens/call_screens/agora/audio_call_screen.dart';
@@ -346,6 +347,17 @@ class ChatHelpers {
           ChatHelpers.instance.agoraToken : agoraToken??""
         }
     );
+  }
+
+  int removeCharFromStringToInt(String value){
+    String myString = "4BOKnOShPIe8JeeyZZbxRaufM3h1";
+    String pattern = r"[^\d]"; // Regex pattern to match non-digits
+    RegExp regExp = RegExp(pattern);
+
+    String numericString = myString.replaceAll(regExp, "");
+
+    logPrint("value after removing characters : $numericString");
+    return int.parse(numericString);
   }
 
 }
