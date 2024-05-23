@@ -266,10 +266,15 @@ class FirebaseNotification {
               // }
               NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
             }else{
-              recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
+              if(recentNotificationList.first["userId"] == userDetails.id)
+                {
+                  recentNotificationList.add({"userId":userDetails.id ?? "","messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
               Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
               handleInboxStyleNotification(data,appName,packageName);
+                }else {
+                logPrint("notification received form diffrent user ");
+              }
             }
           }
           else {
