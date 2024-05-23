@@ -322,7 +322,6 @@ class FirebaseNotification {
       importance: Importance.max,
       priority: Priority.max,
       styleInformation: inboxStyleInformation,
-      groupKey: packageName + userDetails.id.toString(),
       // groupAlertBehavior: GroupAlertBehavior.all,
       // setAsGroupSummary: true,
       // onlyAlertOnce: false,
