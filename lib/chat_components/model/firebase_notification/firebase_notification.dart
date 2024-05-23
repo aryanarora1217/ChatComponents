@@ -141,6 +141,7 @@ class FirebaseNotification {
     List<Map<String,String>> recentNotificationList = [];
 
     String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
 
     await fltNotification.pendingNotificationRequests();
 
@@ -268,7 +269,7 @@ class FirebaseNotification {
               recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
               Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
-              handleInboxStyleNotification(data,appName);
+              handleInboxStyleNotification(data,appName,packageName);
             }
           }
           else {
@@ -293,7 +294,7 @@ class FirebaseNotification {
 
   }
 
-  void handleInboxStyleNotification(Map<String, dynamic> data,String appName) {
+  void handleInboxStyleNotification(Map<String, dynamic> data,String appName,String packageName) {
     // const List<String> lines = <String>[
     //   'Alex Faarborg  Check this out',
     //   'Jeff Chang    Launch Party'
@@ -316,7 +317,7 @@ class FirebaseNotification {
       importance: Importance.max,
       priority: Priority.max,
       styleInformation: inboxStyleInformation,
-      // groupKey: packageName,
+      groupKey: packageName + userDetails.id.toString(),
       // groupAlertBehavior: GroupAlertBehavior.all,
       // setAsGroupSummary: true,
       // onlyAlertOnce: false,
