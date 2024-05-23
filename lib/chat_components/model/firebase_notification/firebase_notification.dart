@@ -100,7 +100,8 @@ class FirebaseNotification {
               ""
               : "${userDetails.profileName} is calling",
           'title': userDetails.profileName,
-          'sound': isMessages.isTrue ? "cellphone_sound" : "Default",
+          // 'sound': isMessages.isTrue ? "Default" : "cellphone_sound" ,
+          'sound': "Default",
           "priority": "high",
         },
         'data': isMessages.isTrue
@@ -165,7 +166,6 @@ class FirebaseNotification {
     var androidDetails = AndroidNotificationDetails(
       appName,
       appName,
-      sound: const RawResourceAndroidNotificationSound('cellphone_sound'),
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
@@ -200,10 +200,8 @@ class FirebaseNotification {
         AndroidNotification? android = message.notification?.android;
         if (notification != null && android != null) {
           String isMessage = message.data[ChatHelpers.instance.isMessage];
-          userDetails  = Users.fromJson(
-              jsonDecode(message.data[ChatHelpers.instance.userDetails]));
-      otherUserDetails = Users.fromJson(
-              jsonDecode(message.data[ChatHelpers.instance.otherUserDetails]));
+          userDetails  = Users.fromJson(jsonDecode(message.data[ChatHelpers.instance.userDetails]));
+      otherUserDetails = Users.fromJson(jsonDecode(message.data[ChatHelpers.instance.otherUserDetails]));
           if (isMessage == "true") {
             chatRoomID = message.data[ChatHelpers.instance.chatRoomId];
             chatRoomModel = await fetchChatroomDetails(chatRoomID);
@@ -250,22 +248,26 @@ class FirebaseNotification {
             //   }
             //   // }
             // }
+            logPrint("notification deatils : current user ${otherUserDetails.toJson()} , sender  ${userDetails.toJson()}");
+
             try{
-              recentNotificationList = await NotificationLocalStoreManger.getNotificationList(otherUserDetails.id??"");
+              recentNotificationList = await NotificationLocalStoreManger.getNotificationList(userDetails.id??"");
             }catch(e){
               logPrint("error fetching recent list : $e");
             }
 
+            logPrint(" recent message lsit : ${recentNotificationList.length}");
+
             if(recentNotificationList.isEmpty){
               recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               /// show message notifications
-              fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(otherUserDetails.id??""), otherUserDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
+              fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
               // }
-              NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
+              NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
             }else{
               recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
               NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-              Map<String, dynamic> data = {"title":otherUserDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
+              Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
               handleInboxStyleNotification(data,appName);
             }
           }
@@ -304,13 +306,12 @@ class FirebaseNotification {
 
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         messageList,
-        contentTitle: " ${messageList.length} messages",
-        summaryText: otherUserDetails.profileName);
+        contentTitle: " ${messageList.length} messages received from ${userDetails.profileName} ",
+        summaryText: userDetails.profileName);
 
     var androidDetails = AndroidNotificationDetails(
       appName,
       appName,
-      sound: const RawResourceAndroidNotificationSound('cellphone_sound'),
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
