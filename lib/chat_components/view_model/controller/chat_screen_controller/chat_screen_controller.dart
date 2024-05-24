@@ -7,11 +7,7 @@ import 'package:chatcomponent/chat_components/model/services/chat_services.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../model/firebase_notification/firebase_notification.dart';
 import '../../../model/function_helper/file_extension.dart';
@@ -113,8 +109,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   RxList<File> imageList = <File>[].obs;
   RxList<TextEditingController> imageMessageControllerList = <TextEditingController>[].obs;
 
-  late FlutterSoundRecorder _recordingSession;
-  late String pathToAudio;
 
 
   /// arguments get
@@ -151,61 +145,61 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     isDialogOpen.value = false;
   }
 
-  void initializer() async {
-    _recordingSession = FlutterSoundRecorder();
-    await _recordingSession.openAudioSession(
-        focus: AudioFocus.requestFocusAndStopOthers,
-        category: SessionCategory.playAndRecord,
-        mode: SessionMode.modeDefault,
-        device: AudioDevice.speaker);
-    await _recordingSession.setSubscriptionDuration(const Duration(milliseconds: 10));
-
-    await Permission.microphone.request();
-    await Permission.storage.request();
-
-  }
-
-  Future<String?> stopRecording() async {
-    isAudioRecorderStart.value = false;
-    _recordingSession.closeAudioSession();
-    logPrint("recoder session closed : $_recordingSession");
-    return await _recordingSession.stopRecorder();
-  }
-
-  Future<void> startRecording() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    String appName = packageInfo.appName;
-    String packageName = packageInfo.packageName;
-
-    logPrint("package info : $appName , $packageName");
-    var tempDir = await getExternalStorageDirectory();
-    String deviceDirectoryPath = tempDir?.absolute.path
-        .replaceAll('/Android/data/$packageName/files', '') ??
-        "";
-    Directory directory = Directory('$deviceDirectoryPath/Download/$appName');
-    String path = '${directory.path}/audio.aac';
-
-
-    _recordingSession.openAudioSession();
-    await _recordingSession.startRecorder(
-      toFile: path,
-      // codec: Codec.aacADTS,
-    );
-    StreamSubscription<RecordingDisposition>? recorderSubscription =
-    _recordingSession.onProgress?.listen((e) {
-      var date = DateTime.fromMillisecondsSinceEpoch(
-          e.duration.inMilliseconds,
-          isUtc: true);
-      var timeText = DateFormat('mm:ss:SS', 'en_GB').format(date);
-        logPrint("time is :${timeText.substring(0, 8)}  , ");
-    });
-    directory = Directory(path);
-    await Permission.storage.request().isGranted;
-    directory.create(recursive: true);
-    logPrint("recorded path : $path  ${directory.existsSync()}");
-    recorderSubscription?.cancel();
-  }
+  // void initializer() async {
+  //   _recordingSession = FlutterSoundRecorder();
+  //   await _recordingSession.openAudioSession(
+  //       focus: AudioFocus.requestFocusAndStopOthers,
+  //       category: SessionCategory.playAndRecord,
+  //       mode: SessionMode.modeDefault,
+  //       device: AudioDevice.speaker);
+  //   await _recordingSession.setSubscriptionDuration(const Duration(milliseconds: 10));
+  //
+  //   await Permission.microphone.request();
+  //   await Permission.storage.request();
+  //
+  // }
+  //
+  // Future<String?> stopRecording() async {
+  //   isAudioRecorderStart.value = false;
+  //   _recordingSession.closeAudioSession();
+  //   logPrint("recoder session closed : $_recordingSession");
+  //   return await _recordingSession.stopRecorder();
+  // }
+  //
+  // Future<void> startRecording() async {
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //
+  //   String appName = packageInfo.appName;
+  //   String packageName = packageInfo.packageName;
+  //
+  //   logPrint("package info : $appName , $packageName");
+  //   var tempDir = await getExternalStorageDirectory();
+  //   String deviceDirectoryPath = tempDir?.absolute.path
+  //       .replaceAll('/Android/data/$packageName/files', '') ??
+  //       "";
+  //   Directory directory = Directory('$deviceDirectoryPath/Download/$appName');
+  //   String path = '${directory.path}/audio.aac';
+  //
+  //
+  //   _recordingSession.openAudioSession();
+  //   await _recordingSession.startRecorder(
+  //     toFile: path,
+  //     // codec: Codec.aacADTS,
+  //   );
+  //   StreamSubscription<RecordingDisposition>? recorderSubscription =
+  //   _recordingSession.onProgress?.listen((e) {
+  //     var date = DateTime.fromMillisecondsSinceEpoch(
+  //         e.duration.inMilliseconds,
+  //         isUtc: true);
+  //     var timeText = DateFormat('mm:ss:SS', 'en_GB').format(date);
+  //       logPrint("time is :${timeText.substring(0, 8)}  , ");
+  //   });
+  //   directory = Directory(path);
+  //   await Permission.storage.request().isGranted;
+  //   directory.create(recursive: true);
+  //   logPrint("recorded path : $path  ${directory.existsSync()}");
+  //   recorderSubscription?.cancel();
+  // }
 
   /// send messages form message box( text field ) and updating message chatroom and messages list
   Future<void> sendMessage() async {
@@ -511,7 +505,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> onInit() async {
     WidgetsBinding.instance.addObserver(this);
     initServices();
-    initializer();
+    // initializer();
     super.onInit();
   }
 
@@ -758,4 +752,73 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       }
     }
   }
+
+
+  // /// for audio record
+  // final Codec _codec = Codec.aacMP4;
+  // final FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
+  // String appDocDir ="";
+  // RxBool audioListeningOn =false.obs;
+  // Future<void> openTheRecorder() async {
+  //   var status = await Permission.microphone.request();
+  //   if (status == PermissionStatus.granted) {
+  //     await _mRecorder.openRecorder();
+  //     final session = await AudioSession.instance;
+  //     await session.configure(AudioSessionConfiguration(
+  //       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+  //       avAudioSessionCategoryOptions:
+  //       AVAudioSessionCategoryOptions.allowBluetooth |
+  //       AVAudioSessionCategoryOptions.defaultToSpeaker,
+  //       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+  //       avAudioSessionRouteSharingPolicy:
+  //       AVAudioSessionRouteSharingPolicy.defaultPolicy,
+  //       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+  //       androidAudioAttributes: const AndroidAudioAttributes(
+  //         contentType: AndroidAudioContentType.speech,
+  //         flags: AndroidAudioFlags.none,
+  //         usage: AndroidAudioUsage.voiceCommunication,
+  //       ),
+  //       androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+  //       androidWillPauseWhenDucked: true,
+  //     ));
+  //   }else{
+  //     Permission.microphone.request().then((status){
+  //       if(status==PermissionStatus.granted)openTheRecorder();
+  //     });
+  //   }
+  // }
+  // VoidCallback get startRecorder=> () async{
+  //   try{
+  //     audioListeningOn.value = true;
+  //     startRecordingTimer();
+  //     appDocDir = "BIH_${Random().nextInt(10000)}.mp4";
+  //     print("record path =>$appDocDir");
+  //     _mRecorder!.startRecorder(
+  //       toFile: appDocDir,
+  //       codec: _codec,
+  //       audioSource: AudioSource.microphone,
+  //     );
+  //   }catch(e){
+  //     audioListeningOn.value = false;
+  //     print("catch error"+e.toString());
+  //   }
+  // };
+  // VoidCallback get stopRecorder=>() async {
+  //   try{
+  //     audioListeningOn.value=false;
+  //     isUploadFileLoader.value=true;
+  //     seconds.value = 0;
+  //     countdownTimer!.cancel();
+  //     await _mRecorder!.stopRecorder().then((value) async{
+  //       print("stop path =>$appDocDir");
+  //       print("stop record =>$value");
+  //       if(appDocDir!="")
+  //         await uploadFileOnS3(File(value!),p.extension(value)).then((imagePath) => messageSend(textMessage:imagePath.split('/').last,fileType : "audio",fileName: appDocDir.split('/').last));
+  //     });
+  //   }catch(e){
+  //     audioListeningOn.value=false;
+  //     isUploadFileLoader.value=false;
+  //     print(e.toString());}
+  // };
+
 }
