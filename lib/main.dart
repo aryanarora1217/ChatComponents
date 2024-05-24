@@ -31,7 +31,7 @@ Future<void> runChatServices() async {
   Get.putAsync(() => ChatServices().init(
           imageBaseUrlFirebase: 'https://firebasestorage.googleapis.com/v0/b/chatcomponents.appspot.com',
           firebaseServerKey: 'AAAA45SJcD8:APA91bEXoiP3PLnWsajOYz_PojFSu2AJAnbLJg2iqA3qCzSQDkw6qQw9vsMZoTdsQCo1ZQ8P0g4ALl6OauERl-qXghfK7qyk-Cbke5fnaW-HdfGKSm7kOkydH2LIobJfP2oABA1B0SE-',
-          imageArguments: ImageArguments(isImageFromCamera: true,isDocumentsSendEnable: true,isImageFromGallery: true),
+          imageArguments: ImageArguments(isImageFromCamera: true,isDocumentsSendEnable: true,isImageFromGallery: true,isAudioRecorderEnable: true),
           isAttachmentSendEnable: true,
           isAudioCallEnable: true,
           agoraAppId: "ea835372061d44c9b99dda29f68b0a99",

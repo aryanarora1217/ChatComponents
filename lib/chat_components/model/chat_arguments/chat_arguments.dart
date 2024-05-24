@@ -36,8 +36,10 @@ class ImageArguments {
   final bool? isImageFromGallery;
   final bool? isImageFromCamera;
   final bool? isDocumentsSendEnable;
+  final bool? isAudioRecorderEnable;
 
   ImageArguments({
+    this.isAudioRecorderEnable = false,
     this.isImageFromGallery = false,
     this.isImageFromCamera = false,
     this.isDocumentsSendEnable = false,

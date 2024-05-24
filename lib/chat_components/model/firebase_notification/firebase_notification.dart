@@ -206,6 +206,7 @@ class FirebaseNotification {
           if (isMessage == "true") {
             chatRoomID = message.data[ChatHelpers.instance.chatRoomId];
             chatRoomModel = await fetchChatroomDetails(chatRoomID);
+
             // if (chatRoomModel.userFirstId == userDetails.id) {
             //   try{
             //     recentNotificationList = await NotificationLocalStoreManger.getNotificationList(userDetails.id??"");
@@ -249,6 +250,7 @@ class FirebaseNotification {
             //   }
             //   // }
             // }
+
             logPrint("notification deatils : current user ${otherUserDetails.toJson()} , sender  ${userDetails.toJson()}");
 
             try{

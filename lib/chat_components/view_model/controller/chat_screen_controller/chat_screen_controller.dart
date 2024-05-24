@@ -7,7 +7,11 @@ import 'package:chatcomponent/chat_components/model/services/chat_services.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../model/firebase_notification/firebase_notification.dart';
 import '../../../model/function_helper/file_extension.dart';
@@ -23,8 +27,7 @@ import '../../../view/widgets/toast_view/toast_view.dart';
 
 class ChatController extends GetxController with WidgetsBindingObserver {
   /// emojis list for reaction
-  List<String> emoji =
-      Get.find<ChatServices>().chatArguments.reactionsEmojisIcons ??
+  List<String> emoji = Get.find<ChatServices>().chatArguments.reactionsEmojisIcons ??
           ["❤️", "😀", "😁", "😎", "👆"];
 
   /// inital index for reaction list when diplay in chats
@@ -87,6 +90,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   RxBool isLoadingChats = true.obs;
   RxBool isScreenOn = false.obs;
   RxBool isDownloadingStart = false.obs;
+  RxBool isAudioRecorderStart = false.obs;
 
   /// dailog open boolean value
   RxBool isDialogOpen = false.obs;
@@ -108,6 +112,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   RxList<File> imageList = <File>[].obs;
   RxList<TextEditingController> imageMessageControllerList = <TextEditingController>[].obs;
+
+  late FlutterSoundRecorder _recordingSession;
+  late String pathToAudio;
+
 
   /// arguments get
   late ChatArguments chatArguments;
@@ -141,6 +149,62 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     selectReactionIndex.value = "";
     isReaction.value = false;
     isDialogOpen.value = false;
+  }
+
+  void initializer() async {
+    _recordingSession = FlutterSoundRecorder();
+    await _recordingSession.openAudioSession(
+        focus: AudioFocus.requestFocusAndStopOthers,
+        category: SessionCategory.playAndRecord,
+        mode: SessionMode.modeDefault,
+        device: AudioDevice.speaker);
+    await _recordingSession.setSubscriptionDuration(const Duration(milliseconds: 10));
+
+    await Permission.microphone.request();
+    await Permission.storage.request();
+
+  }
+
+  Future<String?> stopRecording() async {
+    isAudioRecorderStart.value = false;
+    _recordingSession.closeAudioSession();
+    logPrint("recoder session closed : $_recordingSession");
+    return await _recordingSession.stopRecorder();
+  }
+
+  Future<void> startRecording() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+
+    logPrint("package info : $appName , $packageName");
+    var tempDir = await getExternalStorageDirectory();
+    String deviceDirectoryPath = tempDir?.absolute.path
+        .replaceAll('/Android/data/$packageName/files', '') ??
+        "";
+    Directory directory = Directory('$deviceDirectoryPath/Download/$appName');
+    String path = '${directory.path}/audio.aac';
+
+
+    _recordingSession.openAudioSession();
+    await _recordingSession.startRecorder(
+      toFile: path,
+      // codec: Codec.aacADTS,
+    );
+    StreamSubscription<RecordingDisposition>? recorderSubscription =
+    _recordingSession.onProgress?.listen((e) {
+      var date = DateTime.fromMillisecondsSinceEpoch(
+          e.duration.inMilliseconds,
+          isUtc: true);
+      var timeText = DateFormat('mm:ss:SS', 'en_GB').format(date);
+        logPrint("time is :${timeText.substring(0, 8)}  , ");
+    });
+    directory = Directory(path);
+    await Permission.storage.request().isGranted;
+    directory.create(recursive: true);
+    logPrint("recorded path : $path  ${directory.existsSync()}");
+    recorderSubscription?.cancel();
   }
 
   /// send messages form message box( text field ) and updating message chatroom and messages list
@@ -447,6 +511,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> onInit() async {
     WidgetsBinding.instance.addObserver(this);
     initServices();
+    initializer();
     super.onInit();
   }
 
@@ -659,6 +724,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   Future<void> initServices() async {
     /// get all details with arguments
     chatArguments = Get.find<ChatServices>().chatArguments;
+    logPrint("image arguments : ${chatArguments.imageArguments?.isAudioRecorderEnable}");
     imageArguments = chatArguments.imageArguments;
     themeArguments = chatArguments.themeArguments;
 

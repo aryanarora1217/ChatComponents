@@ -95,6 +95,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: any
 
+  flutter_sound: ^8.1.9
+
 
 
 
