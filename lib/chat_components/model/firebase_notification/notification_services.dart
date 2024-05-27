@@ -17,9 +17,9 @@ class NotificationService {
         null,
         [
           NotificationChannel(
-              channelKey: appName,
-              channelName: appName,
-              channelDescription: appName,
+              channelKey: "chat_messages",
+              channelName: "chatdemo",
+              channelDescription: "chatdemo",
               importance: NotificationImportance.Max,
               channelShowBadge: true,
               playSound: true,
@@ -27,7 +27,8 @@ class NotificationService {
               onlyAlertOnce: true,
               groupAlertBehavior: GroupAlertBehavior.Children,
               defaultColor: const Color(0xFF9D58D0),
-              ledColor: Colors.white)
+              ledColor: Colors.white
+          )
         ],
         debug: true);
     await AwesomeNotifications()
@@ -68,6 +69,7 @@ class NotificationService {
   static Future<void> show({
     required final String title,
     required final String body,
+    required final String id,
     final String? summary,
     final Map<String, String>? payload,
     final ActionType actionType = ActionType.Default,
@@ -82,13 +84,13 @@ class NotificationService {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
 
-    String appName = packageInfo.appName;
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: 0,
-          channelKey: appName,
+          id: DateTime.now().millisecond,
+          channelKey: "chat_messages",
           title: title,
           body: body,
+          groupKey:'com.chat.demo.$id' ,
           actionType: actionType,
           notificationLayout: notificationLayout,
           summary: summary,

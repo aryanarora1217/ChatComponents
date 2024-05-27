@@ -350,7 +350,7 @@ class ChatHelpers {
   }
 
   int removeCharFromStringToInt(String value){
-    String myString = "4BOKnOShPIe8JeeyZZbxRaufM3h1";
+    String myString = value;
     String pattern = r"[^\d]"; // Regex pattern to match non-digits
     RegExp regExp = RegExp(pattern);
 

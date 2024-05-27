@@ -269,7 +269,7 @@ class FirebaseNotification {
               /// show message notifications
               // fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
               // }
-              NotificationService.show(title: userDetails.profileName ??"", body: (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "",notificationLayout: NotificationLayout.MessagingGroup,category: NotificationCategory.Message,summary: userDetails.profileName ??"");
+              NotificationService.show(title: userDetails.profileName ??"", body: (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "",notificationLayout: NotificationLayout.MessagingGroup,category: NotificationCategory.Message,summary:"",id: userDetails.profileName ??"");
               NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
             }else{
               // Group notifications by user ID
@@ -280,26 +280,11 @@ class FirebaseNotification {
               // Access notifications for a specific user
               final userNotifications = groupedNotifications[userDetails.id] ?? [];
               logPrint("userNotifications : $userNotifications");
-              
+
               logPrint("list to string  : ${userNotifications.map((toElement) => toElement["message"]).toList().join("\n")}");
 
-              NotificationService.show(title: userDetails.profileName ??"", body: userNotifications.map((toElement) => toElement["message"]).toList().join("\n"),notificationLayout: NotificationLayout.MessagingGroup,category: NotificationCategory.Message,summary: userDetails.profileName ??"");
+              NotificationService.show(title: userDetails.profileName ??"", body: (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "",notificationLayout: NotificationLayout.MessagingGroup,category: NotificationCategory.Email,summary:"",id: userDetails.profileName ??"");
 
-              // if(recentNotificationList.last["userId"] == userDetails.id)
-              //   {
-              //     logPrint("notification received form same user ");
-              //     recentNotificationList.add({"userId":userDetails.id ?? "","messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-              // NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
-              // Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList.where((element) => element["userId"] == userDetails.id) };
-              // handleInboxStyleNotification(data,appName,packageName);
-              //   }
-              // else {
-              //   // logPrint("notification received form same user ");
-              //   // recentNotificationList.add({"userId":userDetails.id ?? "","messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-              //   // NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
-              //   // Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
-              //   // handleInboxStyleNotification(data,appName,packageName);
-              // }
             }
           }
           else {
