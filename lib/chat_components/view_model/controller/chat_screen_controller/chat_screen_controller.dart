@@ -23,10 +23,9 @@ import '../../../view/widgets/toast_view/toast_view.dart';
 
 class ChatController extends GetxController with WidgetsBindingObserver {
   /// emojis list for reaction
-  List<String> emoji = Get.find<ChatServices>().chatArguments.reactionsEmojisIcons ??
-          ["❤️", "😀", "😁", "😎", "👆"];
+  List<String> emoji = Get.find<ChatServices>().chatArguments.reactionsEmojisIcons ?? ["❤️", "😀", "😁", "😎", "👆"];
 
-  /// inital index for reaction list when diplay in chats
+  /// initial index for reaction list when display in chats
   RxInt reactionIndex = 7.obs;
 
   /// select index for reaction list
