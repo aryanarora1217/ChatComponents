@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
 import 'package:chatcomponent/chat_components/model/function_helper/downlaod_helper.dart';
@@ -7,6 +8,8 @@ import 'package:chatcomponent/chat_components/model/services/chat_services.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../model/firebase_notification/firebase_notification.dart';
@@ -496,6 +499,11 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     typingListener?.cancel();
     presenceListener?.cancel();
     activeStatusListener?.cancel();
+    _mRecorder!.closeAudioSession();
+    _mRecorder = null;
+
+    _mRecorder!.closeAudioSession();
+    _mRecorder = null;
     super.onClose();
   }
 
@@ -750,74 +758,98 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         isLoadingChats.value = false;
       }
     }
+    await openTheRecorder();
   }
 
 
-  // /// for audio record
-  // final Codec _codec = Codec.aacMP4;
-  // final FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
-  // String appDocDir ="";
-  // RxBool audioListeningOn =false.obs;
-  // Future<void> openTheRecorder() async {
-  //   var status = await Permission.microphone.request();
-  //   if (status == PermissionStatus.granted) {
-  //     await _mRecorder.openRecorder();
-  //     final session = await AudioSession.instance;
-  //     await session.configure(AudioSessionConfiguration(
-  //       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
-  //       avAudioSessionCategoryOptions:
-  //       AVAudioSessionCategoryOptions.allowBluetooth |
-  //       AVAudioSessionCategoryOptions.defaultToSpeaker,
-  //       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
-  //       avAudioSessionRouteSharingPolicy:
-  //       AVAudioSessionRouteSharingPolicy.defaultPolicy,
-  //       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-  //       androidAudioAttributes: const AndroidAudioAttributes(
-  //         contentType: AndroidAudioContentType.speech,
-  //         flags: AndroidAudioFlags.none,
-  //         usage: AndroidAudioUsage.voiceCommunication,
-  //       ),
-  //       androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
-  //       androidWillPauseWhenDucked: true,
-  //     ));
-  //   }else{
-  //     Permission.microphone.request().then((status){
-  //       if(status==PermissionStatus.granted)openTheRecorder();
-  //     });
-  //   }
-  // }
-  // VoidCallback get startRecorder=> () async{
-  //   try{
-  //     audioListeningOn.value = true;
-  //     startRecordingTimer();
-  //     appDocDir = "BIH_${Random().nextInt(10000)}.mp4";
-  //     print("record path =>$appDocDir");
-  //     _mRecorder!.startRecorder(
-  //       toFile: appDocDir,
-  //       codec: _codec,
-  //       audioSource: AudioSource.microphone,
-  //     );
-  //   }catch(e){
-  //     audioListeningOn.value = false;
-  //     print("catch error"+e.toString());
-  //   }
-  // };
-  // VoidCallback get stopRecorder=>() async {
-  //   try{
-  //     audioListeningOn.value=false;
-  //     isUploadFileLoader.value=true;
-  //     seconds.value = 0;
-  //     countdownTimer!.cancel();
-  //     await _mRecorder!.stopRecorder().then((value) async{
-  //       print("stop path =>$appDocDir");
-  //       print("stop record =>$value");
-  //       if(appDocDir!="")
-  //         await uploadFileOnS3(File(value!),p.extension(value)).then((imagePath) => messageSend(textMessage:imagePath.split('/').last,fileType : "audio",fileName: appDocDir.split('/').last));
-  //     });
-  //   }catch(e){
-  //     audioListeningOn.value=false;
-  //     isUploadFileLoader.value=false;
-  //     print(e.toString());}
-  // };
+  /// for audio record
+
+  final Codec _codec = Codec.aacMP4;
+  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+  String appDocDir = "";
+  RxBool audioListeningOn = false.obs;
+
+  Future<void> openTheRecorder() async {
+    await _mRecorder?.openAudioSession();
+  }
+
+  void record() {
+    try{
+      appDocDir = "Chat_${Random().nextInt(10000)}.mp4";
+      logPrint("record path => $appDocDir");
+      isAudioRecorderStart.value = true;
+      _mRecorder?.startRecorder(
+        toFile: appDocDir,
+        codec: _codec,
+        audioSource: AudioSource.microphone
+      );
+    }catch(e){
+      logPrint("error in starting record file : $e");
+    }
+  }
+
+  void stopRecorder() async {
+    try{
+
+      await _mRecorder?.stopRecorder().then((value) {
+        isAudioRecorderStart.value = false;
+        logPrint("stop path =>$appDocDir");
+        logPrint("stop record =>$value");
+
+        uploadAudioFile(value??"");
+
+      });
+    }catch(e){
+      logPrint("error in stopping record file : $e");
+    }
+  }
+
+  uploadAudioFile(String path) async {
+    String id = getRandomString();
+    if ( path != "") {
+      try {
+        File audioFile = File(path);
+        String fileName = audioFile.path.split('/').last;
+
+        /// get file extension of a file
+        String fileExt = getFileExtension(fileName)!;
+
+
+
+        MessageModel loadingMessage = MessageModel(id: id,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.audio.name, fileUrl: audioFile.path,isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+        messages.add(loadingMessage);
+
+        /// add image in firebase storage
+        String? url = await firebase.addChatFiles(id, audioFile.path);
+
+        logPrint("url : - $url ");
+
+        List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
+
+        /// update chatroom and messages list
+        logPrint("url : - $url , ${storagePath[1]}");
+        MessageModel message = MessageModel(id: id,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.audio.name, fileUrl: storagePath[1],isAdding:true), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+
+        ChatRoomModel chatRoomModel = addChatRoomModel(message);
+        firebase.addMessage(message, chatRoomModel);
+        final index = messages.indexWhere((element) => element.id == message.id);
+        messages[index] = message;
+
+
+        firebaseNotification.sendNotification("", currentUser.value, users.value.deviceToken ?? "", CallModel(), true, message, chatRoomModel.chatRoomId, chatArguments.firebaseServerKey, users.value, CallArguments(agoraChannelName: '', agoraToken: '', user: Users(), currentUser: Users(), callType: '', callId: '', imageBaseUrl: '', agoraAppId: '', agoraAppCertificate: '', userId: '', currentUserId: '', firebaseServerKey: ''));
+
+        if (otherUserId.value != ChatHelpers.instance.userId) {
+          await chatroomUpdates();
+        }
+
+        File file = File(audioFile.path);
+        await file.delete(recursive: true);
+      } catch (e) {
+        final index = messages.indexWhere((element) => element.id == id);
+        messages.removeAt(index);
+        toastShow(massage: "Error sending audio file ", error: true);
+      }
+    }
+  }
 
 }
