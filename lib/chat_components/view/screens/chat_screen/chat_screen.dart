@@ -769,7 +769,7 @@ class ChatScreen extends StatelessWidget {
                                                   child: Lottie.asset(
                                                     ChatHelpers.instance
                                                         .soundEffectLottie,
-                                                    // package: "chatcomponent",
+                                                    package: "chatcomponent",
                                                   )),
                                               CircleIconButton(
                                                 onTap: controller.stopRecorder,
