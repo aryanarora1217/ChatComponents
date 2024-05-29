@@ -408,9 +408,11 @@ class ChatScreen extends StatelessWidget {
                                                               .messages[index]
                                                               .file?.fileUrl ??
                                                               "",
-                                                          time: controller
-                                                              .messages[index]
-                                                              .time ?? "",
+                                                          time: DateTimeConvertor
+                                                              .timeExt(
+                                                              controller
+                                                                  .messages[index]
+                                                                  .time ?? ""),
                                                           index: index,
                                                           reaction: controller
                                                               .messages[index]

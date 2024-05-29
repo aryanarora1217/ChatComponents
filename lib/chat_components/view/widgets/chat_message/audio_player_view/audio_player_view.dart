@@ -185,7 +185,7 @@ class AudioPlayerViewState extends State<AudioPlayerView> with WidgetsBindingObs
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          height: 75,
+                          height: 70,
                           margin: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
                           padding: const EdgeInsets.symmetric(horizontal:ChatHelpers.marginSizeSmall,vertical: ChatHelpers.marginSizeSmall),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25),
@@ -219,14 +219,14 @@ class AudioPlayerViewState extends State<AudioPlayerView> with WidgetsBindingObs
                                       processingState == ProcessingState.buffering) {
                                     return Container(
                                       margin: const EdgeInsets.all(8.0),
-                                      width: 35.0,
-                                      height: 35.0,
-                                      child: const LoaderView(loaderColor: ChatHelpers.white , size: 15),
+                                      width: 25.0,
+                                      height: 25.0,
+                                      child: const LoaderView(loaderColor: ChatHelpers.white , size: 20),
                                     );
                                   } else if (playing != true) {
                                     return IconButton(
                                       icon: const Icon(Icons.play_arrow),
-                                      iconSize: 40.0,
+                                      iconSize: 35.0,
                                       disabledColor: ChatHelpers.grey,
                                       onPressed: player.play ,
                                       color: ChatHelpers.white,
@@ -234,7 +234,7 @@ class AudioPlayerViewState extends State<AudioPlayerView> with WidgetsBindingObs
                                   } else if (processingState != ProcessingState.completed) {
                                     return IconButton(
                                       icon: const Icon(Icons.pause),
-                                      iconSize: 40.0,
+                                      iconSize: 35.0,
                                       onPressed: player.pause,
                                       disabledColor: ChatHelpers.grey,
                                       color: ChatHelpers.white,
@@ -242,7 +242,7 @@ class AudioPlayerViewState extends State<AudioPlayerView> with WidgetsBindingObs
                                   } else {
                                     return IconButton(
                                       icon: const Icon(Icons.replay),
-                                      iconSize: 40.0,
+                                      iconSize: 35.0,
                                       color: ChatHelpers.white,
                                       disabledColor: ChatHelpers.grey,
                                       onPressed: () => player.seek(Duration.zero),

@@ -47,8 +47,8 @@ class SeekBarState extends State<SeekBar> {
           SliderTheme(
             data: _sliderThemeData.copyWith(
               thumbShape: HiddenThumbComponentShape(),
-              activeTrackColor: ChatHelpers.mainColorLight,
-              inactiveTrackColor: ChatHelpers.mainColorLight,
+              activeTrackColor: ChatHelpers.lightGrey,
+              inactiveTrackColor: ChatHelpers.lightGrey,
             ),
             child: ExcludeSemantics(
               child: Slider(
