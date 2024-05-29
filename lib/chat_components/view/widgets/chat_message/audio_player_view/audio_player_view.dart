@@ -15,6 +15,7 @@ import '../../toast_view/toast_view.dart';
 
 
 class AudioPlayerView extends StatefulWidget {
+
   final String time;
   final int index;
   final int reaction;
@@ -26,6 +27,8 @@ class AudioPlayerView extends StatefulWidget {
   final VoidCallback onLongTap;
   final ChatController chatController;
   final String audioUrl;
+
+
    const AudioPlayerView({super.key, required this.audioUrl, required this.time, required this.index, required this.reaction, required this.isSender, required this.isSeen, required this.visible, required this.isReaction, required this.reactionList, required this.onLongTap, required this.chatController});
 
   @override
@@ -186,14 +189,8 @@ class AudioPlayerViewState extends State<AudioPlayerView> with WidgetsBindingObs
                           margin: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
                           padding: const EdgeInsets.symmetric(horizontal:ChatHelpers.marginSizeSmall,vertical: ChatHelpers.marginSizeSmall),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25),
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  ChatHelpers.mainColor,
-                                  ChatHelpers.mainColorLight,
-                                ],
-                              )),
+                           color: ChatHelpers.mainColorLight,
+                          ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

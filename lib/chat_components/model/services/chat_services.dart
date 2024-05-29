@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 /// get values form user and add to Chat Arguments to use in whole app
 
 class ChatServices extends GetxService {
+
   late ChatArguments chatArguments;
 
   Future<ChatServices> init({
