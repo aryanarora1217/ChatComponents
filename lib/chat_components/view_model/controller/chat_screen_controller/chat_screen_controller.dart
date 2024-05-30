@@ -489,21 +489,19 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
   /// destroy or close method controller
   @override
-  void onClose() {
+  Future<void> onClose() async {
     isScreenOn.value = false;
     updatePresence(PresenceStatus.offline.name);
-    firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
+    await firebase.userActiveChatroom(chatRoomID.value, isScreenOn.value,
         isFirstUser.call, currentUserId.value);
     scrollController.dispose();
     messageListener?.cancel();
     typingListener?.cancel();
     presenceListener?.cancel();
     activeStatusListener?.cancel();
-    _mRecorder!.closeAudioSession();
+    await _mRecorder!.closeAudioSession();
     _mRecorder = null;
 
-    _mRecorder!.closeAudioSession();
-    _mRecorder = null;
     super.onClose();
   }
 
