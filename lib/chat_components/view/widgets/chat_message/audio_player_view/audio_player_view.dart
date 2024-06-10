@@ -400,7 +400,7 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
     controller.value.dispose();
   }
 
-   downloadFile() async {
+  downloadFile() async {
     try{
       Permission.storage.isGranted;
       String fileName = widget.chatController.messages[widget.index].id ?? "";
@@ -569,7 +569,7 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                                 ),
                                 const SizedBox(width: ChatHelpers.marginSizeSmall,),
                                 CircleIconButton(
-                                  icons: controller.value.playerState.isPlaying ? Icons.pause : Icons.play_arrow,
+                                  icons: audioFile.value.path == "" ? Icons.play_arrow :controller.value.playerState.isPlaying ? Icons.pause : Icons.play_arrow,
                                   height: 45.0,
                                   width: 45.0,
                                   isImage: false,
