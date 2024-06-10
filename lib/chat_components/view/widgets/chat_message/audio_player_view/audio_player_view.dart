@@ -533,7 +533,6 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Obx(() {
-                          logPrint("player state : ${controller.value.playerState}");
                           return Container(
                             height: 50,
                             margin: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
@@ -576,7 +575,10 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                                   isImage: false,
                                   iconsSize: 20,
                                   shapeRec: false,
-                                  colors: widget.isSender ? ChatHelpers.white : ChatHelpers.black, onTap: _playAndPause,
+                                  colors: widget.isSender ? ChatHelpers.white : ChatHelpers.black,
+                                  onTap: audioFile.value.path == "" ? (){
+                                    toastShow(massage: "audio file is loading", error: false);
+                                  } : _playAndPause,
                                 )
                               ],
                             ),
