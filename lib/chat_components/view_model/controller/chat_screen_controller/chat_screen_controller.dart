@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
 import 'package:chatcomponent/chat_components/model/function_helper/downlaod_helper.dart';
@@ -8,8 +8,6 @@ import 'package:chatcomponent/chat_components/model/services/chat_services.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../model/firebase_notification/firebase_notification.dart';
@@ -18,6 +16,7 @@ import '../../../model/function_helper/get_image_function.dart';
 import '../../../model/models/call_model/call_model.dart';
 import '../../../model/models/chat_model/chat_model.dart';
 import '../../../model/models/message_model/message_model.dart';
+import '../../../model/models/picker_file_modal/picker_file_modal.dart';
 import '../../../model/models/user_model/user_model.dart';
 import '../../../model/network_services/firebase_database.dart';
 import '../../../model/randomkey/randomkey.dart';
@@ -108,9 +107,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             "What's up"
           ];
 
-  RxList<File> imageList = <File>[].obs;
+  RxList<PickerFileModal> imageList = <PickerFileModal>[].obs;
   RxList<TextEditingController> imageMessageControllerList = <TextEditingController>[].obs;
 
+  RecorderController recorderController = RecorderController();
 
 
   /// arguments get
@@ -136,6 +136,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   void openDialog() {
     if (isDialogOpen.isTrue) {
       isDialogOpen.value = false;
+      isAudioRecorderStart.isTrue ? stopRecorder(false) : null;
+      isAudioRecorderStart.isTrue ? isAudioRecorderStart.value = false : null;
     } else {
       isDialogOpen.value = true;
     }
@@ -147,61 +149,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     isDialogOpen.value = false;
   }
 
-  // void initializer() async {
-  //   _recordingSession = FlutterSoundRecorder();
-  //   await _recordingSession.openAudioSession(
-  //       focus: AudioFocus.requestFocusAndStopOthers,
-  //       category: SessionCategory.playAndRecord,
-  //       mode: SessionMode.modeDefault,
-  //       device: AudioDevice.speaker);
-  //   await _recordingSession.setSubscriptionDuration(const Duration(milliseconds: 10));
-  //
-  //   await Permission.microphone.request();
-  //   await Permission.storage.request();
-  //
-  // }
-  //
-  // Future<String?> stopRecording() async {
-  //   isAudioRecorderStart.value = false;
-  //   _recordingSession.closeAudioSession();
-  //   logPrint("recoder session closed : $_recordingSession");
-  //   return await _recordingSession.stopRecorder();
-  // }
-  //
-  // Future<void> startRecording() async {
-  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //
-  //   String appName = packageInfo.appName;
-  //   String packageName = packageInfo.packageName;
-  //
-  //   logPrint("package info : $appName , $packageName");
-  //   var tempDir = await getExternalStorageDirectory();
-  //   String deviceDirectoryPath = tempDir?.absolute.path
-  //       .replaceAll('/Android/data/$packageName/files', '') ??
-  //       "";
-  //   Directory directory = Directory('$deviceDirectoryPath/Download/$appName');
-  //   String path = '${directory.path}/audio.aac';
-  //
-  //
-  //   _recordingSession.openAudioSession();
-  //   await _recordingSession.startRecorder(
-  //     toFile: path,
-  //     // codec: Codec.aacADTS,
-  //   );
-  //   StreamSubscription<RecordingDisposition>? recorderSubscription =
-  //   _recordingSession.onProgress?.listen((e) {
-  //     var date = DateTime.fromMillisecondsSinceEpoch(
-  //         e.duration.inMilliseconds,
-  //         isUtc: true);
-  //     var timeText = DateFormat('mm:ss:SS', 'en_GB').format(date);
-  //       logPrint("time is :${timeText.substring(0, 8)}  , ");
-  //   });
-  //   directory = Directory(path);
-  //   await Permission.storage.request().isGranted;
-  //   directory.create(recursive: true);
-  //   logPrint("recorded path : $path  ${directory.existsSync()}");
-  //   recorderSubscription?.cancel();
-  // }
 
   /// send messages form message box( text field ) and updating message chatroom and messages list
   Future<void> sendMessage() async {
@@ -499,8 +446,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     typingListener?.cancel();
     presenceListener?.cancel();
     activeStatusListener?.cancel();
-    await _mRecorder!.closeAudioSession();
-    _mRecorder = null;
+
 
     super.onClose();
   }
@@ -518,7 +464,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     Get.toNamed(ChatHelpers.cameraScreen,arguments: File(""))?.
     then((value) async {
       logPrint("Image get form back : ${value.toString()}");
-      imageList.value = value["ImageList"];
+      imageList.value = value["ImageList"] ?? [];
       imageMessageControllerList.value = value["textMessageList"];
 
       logPrint("List of image and text : ${imageList.length} ${imageList.toString()} , ${imageMessageControllerList.toString()}");
@@ -537,7 +483,7 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       isDialogOpen.value = false;
       for (int counter = 0; counter < imageList.length; counter++){
 
-        File cameraImage = imageList[counter];
+        File cameraImage = imageList[counter].file ?? File("");
         TextEditingController imageMessage = imageMessageControllerList[counter];
         String id = getRandomString();
         if (cameraImage != File("")) {
@@ -756,47 +702,50 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         isLoadingChats.value = false;
       }
     }
-    await openTheRecorder();
   }
 
 
   /// for audio record
-
-  final Codec _codec = Codec.aacMP4;
-  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
-  String appDocDir = "";
-  RxBool audioListeningOn = false.obs;
-
-  Future<void> openTheRecorder() async {
-    await _mRecorder?.openAudioSession();
-  }
-
-  void record() {
+  Future<void> record() async {
     try{
-      appDocDir = "Chat_${Random().nextInt(10000)}.mp4";
-      logPrint("record path => $appDocDir");
-      isAudioRecorderStart.value = true;
-      _mRecorder?.startRecorder(
-        toFile: appDocDir,
-        codec: _codec,
-        audioSource: AudioSource.microphone
-      );
+      final hasPermission = await recorderController.checkPermission();  // Check mic permission (also called during record)
+      if(hasPermission){
+        recorderController = RecorderController()
+          ..androidEncoder = AndroidEncoder.aac
+          ..androidOutputFormat = AndroidOutputFormat.mpeg4
+          ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+          ..sampleRate = 16000;
+        isAudioRecorderStart.value = true;
+        await recorderController.record();
+      }else{
+        PermissionStatus status = await Permission.microphone.request();
+        if(status.isGranted){
+          recorderController = RecorderController();
+          isAudioRecorderStart.value = true;
+          await recorderController.record();
+        }else{
+          toastShow(massage: "Please allow microphone permission to record", error: true);
+        }
+      }
     }catch(e){
       logPrint("error in starting record file : $e");
     }
   }
 
-  void stopRecorder() async {
+  void stopRecorder(bool isStop) async {
     try{
-
-      await _mRecorder?.stopRecorder().then((value) {
+      if(isStop) {
+        final path = await recorderController.stop();
         isAudioRecorderStart.value = false;
-        logPrint("stop path =>$appDocDir");
-        logPrint("stop record =>$value");
-
-        uploadAudioFile(value??"");
-
-      });
+        recorderController.refresh();
+        recorderController.dispose();
+        uploadAudioFile(path??"");
+      }
+      else{
+        isAudioRecorderStart.value = false;
+        recorderController.refresh();
+        recorderController.dispose();
+      }
     }catch(e){
       logPrint("error in stopping record file : $e");
     }

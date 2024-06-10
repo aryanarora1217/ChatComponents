@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chatcomponent/chat_components/model/chat_arguments/chat_arguments.dart';
 import 'package:chatcomponent/chat_components/view/widgets/chat_message/audio_player_view/audio_player_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/chat_message/date_view.dart';
@@ -33,7 +34,7 @@ class ChatScreen extends StatelessWidget {
         WillPopScope(
           onWillPop: () async {
             if (controller.isAudioRecorderStart.isTrue) {
-              controller.stopRecorder();
+              controller.stopRecorder(false);
               return false;
             } else if (controller.isDialogOpen.isTrue) {
               controller.isDialogOpen.value = false;
@@ -433,38 +434,19 @@ class ChatScreen extends StatelessWidget {
                                                         isAdding: controller.messages[index].file?.isAdding ?? true,
                                                         reaction: controller.messages[index].reaction ?? 7,
                                                         isSeen: controller.messages[index].isSeen ?? false,
-                                                        isVisible: controller.messages[index].sender ==
-                                                            controller
-                                                                .currentUserId
-                                                                .value
-                                                            ? controller
-                                                            .messages.length -
-                                                            1 == index
-                                                            ? true
-                                                            : false
-                                                            : false,
+                                                        isVisible: controller.messages[index].sender == controller.currentUserId.value
+                                                            ? controller.messages.length - 1 == index
+                                                            ? true : false : false,
                                                         onLongPress: () {
-                                                          controller
-                                                              .selectReactionIndex
-                                                              .value =
-                                                              index.toString();
-                                                          controller.isReaction
-                                                              .value =
-                                                          !controller.isReaction
-                                                              .value;
+                                                          controller.selectReactionIndex.value = index.toString();
+                                                          controller.isReaction.value = !controller.isReaction.value;
                                                         },
                                                         index: index,
                                                         chatController: controller,
                                                         time:
                                                         DateTimeConvertor
-                                                            .timeExt(
-                                                            controller
-                                                                .messages[index]
-                                                                .time ?? ""),
-                                                        fileName: controller
-                                                            .messages[index]
-                                                            .file?.fileName ??
-                                                            '',
+                                                            .timeExt(controller.messages[index].time ?? ""),
+                                                        fileName: controller.messages[index].file?.fileName ?? '',
                                                         isSender: controller
                                                             .messages[index]
                                                             .sender ==
@@ -642,8 +624,8 @@ class ChatScreen extends StatelessWidget {
                                                 ?.isImageFromCamera ?? false) &&
                                             (controller.imageArguments
                                                 ?.isImageFromGallery ?? false)
-                                            ? 160
-                                            : 90
+                                            ? 170
+                                            : controller.isAudioRecorderStart.isTrue ? 170 : 90
                                             : 0,
                                         width: controller.isDialogOpen.isTrue
                                             ? MediaQuery
@@ -664,10 +646,13 @@ class ChatScreen extends StatelessWidget {
                                             .isFalse ?
                                         Wrap(
                                           alignment: WrapAlignment.center,
+                                          spacing: ChatHelpers.marginSizeExtraSmall,
+                                          runSpacing: ChatHelpers.marginSizeSmall,
                                           children: [
                                             controller.imageArguments
                                                 ?.isImageFromCamera ?? false ?
                                             CommonIconVBtn(
+                                              boxColor: ChatHelpers.grey.withOpacity(.4),
                                               // onPressed: () => controller.cameraPermission(),
                                               onPressed: () =>
                                                   controller.goToCameraScreen(),
@@ -684,12 +669,12 @@ class ChatScreen extends StatelessWidget {
                                                   ?.colorArguments
                                                   ?.attachmentCameraIconColor ??
                                                   ChatHelpers.mainColorLight,
-                                              iconSize: ChatHelpers
-                                                  .iconSizeLarge,
+                                              iconSize: ChatHelpers.iconSizeDefault,
                                             ) : const SizedBox(),
                                             controller.imageArguments
                                                 ?.isImageFromGallery ?? false ?
                                             CommonIconVBtn(
+                                              boxColor: ChatHelpers.grey.withOpacity(.4),
                                               onPressed: () =>
                                                   controller.photoPermission(),
                                               title: 'Gallery',
@@ -706,12 +691,13 @@ class ChatScreen extends StatelessWidget {
                                                   ?.attachmentGalleryIconColor ??
                                                   ChatHelpers.red,
                                               iconSize: ChatHelpers
-                                                  .iconSizeLarge,
+                                                  .iconSizeDefault,
                                             ) : const SizedBox(),
                                             controller.imageArguments
                                                 ?.isDocumentsSendEnable ?? false
                                                 ?
                                             CommonIconVBtn(
+                                              boxColor: ChatHelpers.grey.withOpacity(.4),
                                               onPressed: () =>
                                                   controller.pickFile(),
                                               title: 'Documents',
@@ -728,12 +714,13 @@ class ChatScreen extends StatelessWidget {
                                                   ?.attachmentDocumentsIconColor ??
                                                   ChatHelpers.green,
                                               iconSize: ChatHelpers
-                                                  .iconSizeLarge,
+                                                  .iconSizeDefault,
                                             )
                                                 : const SizedBox(),
                                             controller.imageArguments
                                                 ?.isAudioRecorderEnable ?? false
                                                 ? CommonIconVBtn(
+                                              boxColor: ChatHelpers.grey.withOpacity(.4),
                                               onPressed: controller.record,
                                               title: 'Recorder',
                                               icons: Icons.mic,
@@ -747,9 +734,9 @@ class ChatScreen extends StatelessWidget {
                                               color: controller.themeArguments
                                                   ?.colorArguments
                                                   ?.attachmentDocumentsIconColor ??
-                                                  ChatHelpers.amber,
+                                                  ChatHelpers.purple,
                                               iconSize: ChatHelpers
-                                                  .iconSizeLarge,
+                                                  .iconSizeDefault,
                                             )
                                                 : const SizedBox(),
                                           ],
@@ -760,27 +747,53 @@ class ChatScreen extends StatelessWidget {
                                               .of(context)
                                               .size
                                               .width,
-                                          child: Stack(
-                                            alignment: Alignment.center,
+                                           child: Column(
                                             children: [
-                                              Container(
-                                                  decoration: const BoxDecoration(
-                                                      shape: BoxShape.circle
-                                                  ),
-                                                  height: 200,
-                                                  child: Lottie.asset(
-                                                    ChatHelpers.instance
-                                                        .soundEffectLottie,
-                                                    package: "chatcomponent",
-                                                  )),
-                                              CircleIconButton(
-                                                onTap: controller.stopRecorder,
-                                                isImage: false,
-                                                icons: Icons.mic,
-                                                colors: ChatHelpers.white,
-                                                height: 50,
-                                                width: 50,
-                                                shapeRec: false,),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: ChatHelpers.marginSizeDefault),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.rectangle,
+                                                color: ChatHelpers.white,
+                                                border: Border.all(color: ChatHelpers.mainColor),
+                                                borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)
+                                              ),
+                                              child: AudioWaveforms(
+                                              size: Size(MediaQuery.of(context).size.width * .7, 50.0),
+                                              recorderController: controller.recorderController,
+                                              enableGesture: true,
+                                              waveStyle: const WaveStyle(
+                                              waveColor: ChatHelpers.mainColorLight,
+                                              showDurationLabel: false,
+                                              spacing: 8.0,
+                                              showBottom: true,
+                                              extendWaveform: true,
+                                              showMiddleLine: false,
+                                              ),
+                                              ),
+                                            ),
+                                              const SizedBox(height: ChatHelpers.marginSizeDefault,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  CircleIconButton(
+                                                    onTap: () => controller.stopRecorder(true),
+                                                    isImage: false,
+                                                    icons: Icons.mic,
+                                                    colors: ChatHelpers.white,
+                                                    height: 50,
+                                                    width: 50,
+                                                    shapeRec: true,),
+                                                  const SizedBox(width: ChatHelpers.marginSizeDefault,),
+                                                  CircleIconButton(
+                                                    onTap: () => controller.stopRecorder(false),
+                                                    isImage: false,
+                                                    icons: Icons.clear,
+                                                    colors: ChatHelpers.white,
+                                                    height: 50,
+                                                    width: 50,
+                                                    shapeRec: true,),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         )

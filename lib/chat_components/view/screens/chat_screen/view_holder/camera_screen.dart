@@ -4,6 +4,7 @@ import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart'
 import 'package:chatcomponent/chat_components/view/widgets/image_view/image_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:chatcomponent/chat_components/view_model/controller/chat_screen_controller/camera_screen_controller.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -19,11 +20,14 @@ class CameraScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     CameraScnController controller = Get.put(CameraScnController());
 
+    logPrint('${controller.videoPlayerController?.value.size.width ?? 0}');
+    logPrint('${controller.videoPlayerController?.value.size.height ?? 0}');
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: ChatHelpers.black,
       body: Obx(() {
-        logPrint("is cropped value and ${controller.isCropped.value}  , ${controller.cropImageList} ,${controller.imageList} ");
+        logPrint("is cropped value and ${controller.isCropped.value}  , ${controller.cropImageList} ,${controller.imageList}  , ${controller.isVideoRecorded.value} ");
         return controller.isCameraVisible.isTrue ?
         controller.isLoading.isFalse
             ? Column(
@@ -68,15 +72,26 @@ class CameraScreen extends StatelessWidget {
                           height: 60,
                           width: 60,
                         ),
-                        CircleIconButton(
-                          boxColor: ChatHelpers.white,
-                          isImage: false,
-                          shapeRec: false,
-                          splashColor: ChatHelpers.grey.withOpacity(.4),
+                        GestureDetector(
                           onTap: () async => await controller.clickImage(context),
-                          icons: null,
-                          height: 70,
-                          width: 70,
+                          onLongPressStart: (details){
+                            logPrint("long press started ");
+                            controller.recordVideo();
+                          },
+                          onLongPressEnd: (details){
+                            logPrint("long press ended ");
+                            controller.stopRecording(context);
+                          },
+                          child: CircleIconButton(
+                            boxColor: ChatHelpers.white,
+                            isImage: false,
+                            shapeRec: false,
+                            splashColor: ChatHelpers.grey.withOpacity(.4),
+                            onTap: () async => await controller.clickImage(context),
+                            icons: null,
+                            height: 70,
+                            width: 70,
+                          ),
                         ),
                         CircleIconButton(
                           boxColor: ChatHelpers.grey.withOpacity(.4),
@@ -131,23 +146,33 @@ class CameraScreen extends StatelessWidget {
                    ...List.generate( controller.isCropped.isTrue ? controller.cropImageList.length
                        : controller.imageList.length, (index) =>
                        SizedBox(
-                         height: MediaQuery.of(context).size.height,
+                         height:  MediaQuery.of(context).size.height,
                          width:  MediaQuery.of(context).size.width,
                          child: Stack(
                            children: [
-                             Positioned(
-                                 bottom: 0,
+                             controller.isVideoRecorded.isTrue ?
+                         SizedBox(
+                           height: MediaQuery.of(context).size.height * .8,
+                           width: MediaQuery.of(context).size.width,
+                           child: AspectRatio(
+                             aspectRatio: 9/16,
+                             child: Chewie(
+                             controller: controller.chewieController,
+                           ),)
+                         )
+                             : Positioned(
+                                 bottom: controller.isVideoRecorded.isTrue ? MediaQuery.of(context).size.height * .08 : 0,
                                  left: 0,
                                  right: 0,
                                  child: SizedBox(
-                                   height:  MediaQuery.of(context).size.height,
+                                   height: MediaQuery.of(context).size.height,
                                    width:  MediaQuery.of(context).size.width,
-                                   child: Image.file(
-                                     File(controller.isCropped.isTrue ? controller.cropImageList[controller.selectedImageIndex.value].path  : controller.imageList[controller.selectedImageIndex.value].path),
+                                   child:  Image.file(
+                                     File(controller.isCropped.isTrue ? (controller.cropImageList[controller.selectedImageIndex.value].file?.path ?? "")  : (controller.imageList[controller.selectedImageIndex.value].file?.path ?? "")),
                                      fit: BoxFit.fitWidth,
                                    ),
                                  )),
-                             Positioned(
+                             controller.isVideoRecorded.isTrue ? const SizedBox() : Positioned(
                                  child: Row(
                                    children: [
                                      Padding(
@@ -188,7 +213,7 @@ class CameraScreen extends StatelessWidget {
                                        child: FadeInImage(
                                            fit: BoxFit.cover,
                                            placeholder: MemoryImage(kTransparentImage),
-                                           image: FileImage(File(controller.imageList[index].path),)
+                                           image: FileImage(File(controller.imageList[index].file?.path ?? ""),)
                                        ),
                                      ),
                                    )),
@@ -255,7 +280,7 @@ class CameraScreen extends StatelessWidget {
                                  child: Image.file(
                                    height:  MediaQuery.of(context).size.height,
                                    width:  MediaQuery.of(context).size.width,
-                                   File(controller.isCropped.isTrue ? controller.cropImageList[controller.selectedImageIndex.value].path  : controller.imageList[controller.selectedImageIndex.value].path),
+                                   File(controller.isCropped.isTrue ? controller.cropImageList[controller.selectedImageIndex.value].file?.path ??""  : controller.imageList[controller.selectedImageIndex.value].file?.path ?? ""),
                                    fit: BoxFit.fill,
                                  )),
                              Positioned(
@@ -299,7 +324,7 @@ class CameraScreen extends StatelessWidget {
                                        child: FadeInImage(
                                            fit: BoxFit.cover,
                                            placeholder: MemoryImage(kTransparentImage),
-                                           image: FileImage(File(controller.imageList[index].path),)
+                                           image: FileImage(File(controller.imageList[index].file?.path ?? ""),)
                                        ),
                                      ),
                                    )),

@@ -69,8 +69,7 @@ class DownloadHelper {
     try {
       if (Platform.isAndroid) {
         var tempDir = await getExternalStorageDirectory();
-        deviceDirectoryPath = tempDir?.absolute.path
-                .replaceAll('/Android/data/$packageName/files', '') ??
+        deviceDirectoryPath = tempDir?.absolute.path.replaceAll('/Android/data/$packageName/files', '') ??
             "";
         directoryPath = Directory('$deviceDirectoryPath/Download/$appName');
       } else if (Platform.isIOS) {

@@ -15,6 +15,7 @@ class CircleIconButton extends StatelessWidget {
   final Color? splashColor;
   final double? height;
   final double? width;
+  final double? iconsSize;
   final double? padding;
   final Widget? sendBtn;
 
@@ -31,7 +32,7 @@ class CircleIconButton extends StatelessWidget {
       this.shapeRec,
       this.image,
       required this.isImage,
-      this.boxColor, this.padding});
+      this.boxColor, this.padding, this.iconsSize});
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +63,15 @@ class CircleIconButton extends StatelessWidget {
                               child: Image.asset(
                                 image ?? "",
                                 color: colors,
+                                height: iconsSize,
+                                width: iconsSize,
                                 fit: BoxFit.fill,
                                 package: "chatcomponent",
                               ),
                             )
                       : Icon(
                           icons,
+                          size: iconsSize,
                           color: colors ?? ChatHelpers.textColor_4,
                         ),
                 ),
@@ -100,13 +104,14 @@ class CircleIconButton extends StatelessWidget {
                             )
                           : Image.asset(
                               image ?? "",
-                              height: 10,
-                              width: 10,
+                    height: iconsSize,
+                    width: iconsSize,
                               color: colors,
                     package: "chatcomponent",
                             )
                       : Icon(
                           icons,
+                    size: iconsSize,
                           color: colors ?? ChatHelpers.textColor_4,
                         ),
                 ),

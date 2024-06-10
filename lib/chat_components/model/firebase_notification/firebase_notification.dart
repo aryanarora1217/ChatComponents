@@ -210,78 +210,9 @@ class FirebaseNotification {
             chatRoomID = message.data[ChatHelpers.instance.chatRoomId];
             chatRoomModel = await fetchChatroomDetails(chatRoomID);
 
-            // if (chatRoomModel.userFirstId == userDetails.id) {
-            //   try{
-            //     recentNotificationList = await NotificationLocalStoreManger.getNotificationList(userDetails.id??"");
-            //   }catch(e){
-            //     logPrint("error fetching recent list : $e");
-            //   }
-            //
-            //   if(recentNotificationList.isEmpty){
-            //     recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //     /// show message notifications
-            //     fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
-            //     // }
-            //     NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-            //   }else{
-            //     recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //     NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-            //     Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
-            //     handleInboxStyleNotification(data,appName);
-            //   }
-            // }
-            // else {
-            //   // if (chatRoomModel.userSecond?.userActiveStatus == false || chatRoomModel.userSecond?.userActiveStatus == null) {
-            //     /// show message notification for messages
-            //   try{
-            //     recentNotificationList = await NotificationLocalStoreManger.getNotificationList(userDetails.id??"");
-            //   }catch(e){
-            //     logPrint("error fetching recent list : $e");
-            //   }
-            //
-            //   if(recentNotificationList.isEmpty){
-            //     recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //     /// show message notifications
-            //     fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
-            //     // }
-            //     NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-            //   }else{
-            //     recentNotificationList.add({"messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //     NotificationLocalStoreManger.setNotificationList(userId: userDetails.id??"", recentMessageList: recentNotificationList);
-            //     Map<String, dynamic> data = {"title":userDetails.id??"","body":(chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file"),"messages":recentNotificationList};
-            //     handleInboxStyleNotification(data,appName);
-            //   }
-            //   // }
-            // }
 
             logPrint("notification deatils : current user ${otherUserDetails.toJson()} , sender  ${userDetails.toJson()}");
 
-            // try{
-            //   recentNotificationList = await NotificationLocalStoreManger.getNotificationList(otherUserDetails.id??"");
-            // }catch(e){
-            //   logPrint("error fetching recent list : $e");
-            // }
-            //
-            // logPrint(" recent message lsit : ${recentNotificationList.length}");
-            //
-            // if(recentNotificationList.isEmpty){
-            //   recentNotificationList.add({"userId":userDetails.id ?? "","messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //   /// show message notifications
-            //   // fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
-            //   // }
-            //   NotificationService.show(title: userDetails.profileName ??"", body: (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "",notificationLayout: NotificationLayout.MessagingGroup,category: NotificationCategory.Message,summary:"",id: userDetails.profileName ??"");
-            //   NotificationLocalStoreManger.setNotificationList(userId: otherUserDetails.id??"", recentMessageList: recentNotificationList);
-            // }else{
-            //   // Group notifications by user ID
-            //   recentNotificationList.add({"userId":userDetails.id ?? "","messageId": chatRoomModel.recentMessage?.id??"","message" : (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "" });
-            //   final groupedNotifications = groupNotificationsByUserId(recentNotificationList);
-            //
-            //
-            //   // Access notifications for a specific user
-            //   final userNotifications = groupedNotifications[userDetails.id] ?? [];
-            //   logPrint("userNotifications : $userNotifications");
-            //
-            //   logPrint("list to string  : ${userNotifications.map((toElement) => toElement["message"]).toList().join("\n")}");
 
             logPrint("user notificaitons : ${chatRoomModel.recentMessage?.message} , ${chatRoomModel.recentMessage?.sender}");
             

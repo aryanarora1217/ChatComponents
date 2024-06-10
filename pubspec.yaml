@@ -101,7 +101,12 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: any
 
-  flutter_sound: ^8.5.0
+
+  audio_waveforms: ^1.0.5
+
+  video_player: ^2.8.6
+  chewie: ^1.8.1
+  flick_video_player: ^0.8.0
 
 
 

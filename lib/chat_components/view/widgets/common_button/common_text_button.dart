@@ -195,6 +195,7 @@ class CommonIconVBtn extends StatelessWidget {
   final double? width;
   final IconData icons;
   final Color? color;
+  final Color? boxColor;
 
   const CommonIconVBtn(
       {super.key,
@@ -206,7 +207,7 @@ class CommonIconVBtn extends StatelessWidget {
       this.width,
       required this.icons,
       this.iconSize,
-      this.color});
+      this.color, this.boxColor});
 
   @override
   Widget build(BuildContext context) {
@@ -221,18 +222,23 @@ class CommonIconVBtn extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icons,
-                color: color ?? ChatHelpers.black,
-                size: iconSize,
+              CircleAvatar(
+                backgroundColor: boxColor ?? ChatHelpers.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
+                  child: Icon(
+                    icons,
+                    color: color ?? ChatHelpers.black,
+                    size: iconSize,
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
               Text(
                 title ?? "",
-                style: ChatHelpers.instance.styleRegular(
-                    ChatHelpers.fontSizeDefault, ChatHelpers.black),
+                style: ChatHelpers.instance.styleRegular(ChatHelpers.fontSizeDefault, ChatHelpers.black),
               )
             ],
           ),
