@@ -4,7 +4,6 @@ import 'package:chatcomponent/chat_components/model/chat_arguments/chat_argument
 import 'package:chatcomponent/chat_components/model/firebase_notification/notification_services.dart';
 import 'package:chatcomponent/chat_components/model/services/chat_services.dart';
 import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
-import 'package:chatcomponent/chat_components/view_model/local_storage_manager/notification_store/notification_store.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -132,70 +131,6 @@ class FirebaseNotification {
 
   Future<void> initMessaging() async {
 
-    /// flutter local notification plugin intilaize for both android snd ios
-
-
-    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions();
-    fltNotification = FlutterLocalNotificationsPlugin();
-
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    List<Map<String,String>> recentNotificationList = [];
-
-    String appName = packageInfo.appName;
-    String packageName = packageInfo.packageName;
-
-    await fltNotification.pendingNotificationRequests();
-
-
-
-    // var androidDetailsChannel = AndroidNotificationChannelGroup(
-    //     appName, appName,);
-    //
-    //
-    //
-    // await fltNotification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannelGroup(androidDetailsChannel);
-    //
-    // const List<String> lines = <String>[
-    //   'Alex Faarborg  Check this out',
-    //   'Jeff Chang    Launch Party'
-    // ];
-    //
-    // const InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
-    //     lines,
-    //     contentTitle: '2 messages',
-    //     summaryText: 'janedoe@example.com');
-
-    var androidDetails = AndroidNotificationDetails(
-      appName,
-      appName,
-      playSound: true,
-      importance: Importance.max,
-      priority: Priority.max,
-      // groupKey: packageName,
-      // groupAlertBehavior: GroupAlertBehavior.all,
-      // setAsGroupSummary: true,
-      onlyAlertOnce: false,
-    );
-
-    var iosDetails = const IOSNotificationDetails();
-    var generalNotificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-    var androiInit = const AndroidInitializationSettings('logo');
-    var iosInit = const IOSInitializationSettings();
-    var initSetting = InitializationSettings(android: androiInit, iOS: iosInit);
-
-    fltNotification.initialize(initSetting,
-        onSelectNotification: (String? payload) {
-          // if (payload != null) {
-          //   Get.toNamed(ChatHelpers.chatScreen, arguments: {
-          //     ChatHelpers.instance.chatRoomId: payload,
-          //     ChatHelpers.instance.userId:
-          //     ChatHelpers.instance.userId
-          //   });
-          // }
-        });
-
     /// notification listner form firebase
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       try {
@@ -239,42 +174,6 @@ class FirebaseNotification {
       }
     });
 
-  }
-
-  void handleInboxStyleNotification(Map<String, dynamic> data,String appName,String packageName,) {
-    // const List<String> lines = <String>[
-    //   'Alex Faarborg  Check this out',
-    //   'Jeff Chang    Launch Party'
-    // ];
-    //
-
-    // Extract notification data (title, body, messages for inbox style)
-    List<Map<String,String>> recentMessagesList = data['messages']?? [] as List<Map<String,String>>;
-    List<String> messageList = recentMessagesList.map((e) => e["message"]??"").toList();
-
-    InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
-        messageList,
-        contentTitle: " ${messageList.length} messages received from ${userDetails.profileName} ",
-        summaryText: userDetails.profileName);
-
-    var androidDetails = AndroidNotificationDetails(
-      appName,
-      appName,
-      playSound: true,
-      importance: Importance.max,
-      priority: Priority.max,
-      styleInformation: inboxStyleInformation,
-      // groupAlertBehavior: GroupAlertBehavior.all,
-      // setAsGroupSummary: true,
-      // onlyAlertOnce: false,
-    );
-
-    // Generate a platform-specific notification
-    var iosDetails = const IOSNotificationDetails();
-    var generalNotificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-    // Use a notification provider to show the notification (e.g., flutter_local_notifications)
-    fltNotification.show(ChatHelpers.instance.removeCharFromStringToInt(userDetails.id??""), userDetails.profileName, (chatRoomModel.recentMessage?.messageType == MessageType.text.name ? chatRoomModel.recentMessage?.message : chatRoomModel.recentMessage?.file?.fileType == FileTypes.image.name ? chatRoomModel.recentMessage?.sender == userDetails.id ? "send image" : "Receive image" : chatRoomModel.recentMessage?.sender == userDetails.id ? "send file" : "Receive file") ?? "", generalNotificationDetails, payload: chatRoomID);
   }
 
   /// fetching chatroom detials
