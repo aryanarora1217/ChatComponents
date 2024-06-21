@@ -6,9 +6,7 @@ import 'package:chatcomponent/chat_components/model/services/chat_services.dart'
 import 'package:chatcomponent/chat_components/view/widgets/log_print/log_print_condition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../chatHelper/chat_helper.dart';
 import '../models/call_model/call_model.dart';
 import '../models/chat_model/chat_model.dart';
@@ -20,7 +18,6 @@ import 'package:http/http.dart' as http;
 
 class FirebaseNotification {
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  late FlutterLocalNotificationsPlugin fltNotification;
   Users userDetails = Users();
   Users otherUserDetails = Users();
   CallModel callDetails = CallModel();
