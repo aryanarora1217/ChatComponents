@@ -5,7 +5,6 @@ import 'package:chatcomponent/chat_components/model/models/picker_file_modal/pic
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:video_player/video_player.dart';
@@ -198,8 +197,7 @@ class CameraScnController extends GetxController {
   }
 
   Future<void> _initCamera(CameraDescription description) async {
-    cameraController =
-        CameraController(description, ResolutionPreset.max, enableAudio: true);
+    cameraController = CameraController(description, ResolutionPreset.max, enableAudio: true);
     cameraController.setFlashMode(FlashMode.off);
     try {
       initializeControllerFuture = cameraController.initialize();

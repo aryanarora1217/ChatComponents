@@ -153,20 +153,44 @@ class ImageView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(
                                     ChatHelpers.marginSizeSmall),
                                 child: isAdding ?
-                                cachedNetworkImage(
-                                    isProfile: false,
-                                    height: 220,
-                                    width: 220,
-                                    url: image) : Stack(
+                                Stack(
+                                  children: [
+                                    SizedBox(
+                                      height: 220,
+                                      width: 220,
+                                      child: cachedNetworkImage(
+                                          isProfile: false,
+                                          height: 220,
+                                          width: 220,
+                                          url: image),
+                                    ),
+                                    isVideo ?  SizedBox(
+                                      height: 220,
+                                      width: 220,
+                                      child: Center(
+                                        child: Container(
+                                          height: 35,
+                                          width: 35,
+                                          padding: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: ChatHelpers.black.withOpacity(.4)
+                                          ),
+                                          child: const Icon(Icons.play_arrow,color: ChatHelpers.white,),
+                                        ),
+                                      ),
+                                    )  : const SizedBox()
+                                  ],
+                                ) : Stack(
                                   children: [
                                     Image.file(
                                       File(image),
-                                      height: 190,
+                                      height: 220,
                                       width: 220,
                                       fit: BoxFit.fill,
                                     ),
                                     const SizedBox(
-                                      height: 190,
+                                      height: 220,
                                       width: 220,
                                       child: Center(
                                         child: CircularProgressIndicator(),
