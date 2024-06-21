@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/view/widgets/icon_button/icon_button.dart';
+import 'package:chatcomponent/chat_components/view/widgets/loader/loader_view.dart';
 import 'package:chatcomponent/chat_components/view/widgets/toast_view/toast_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -534,7 +535,7 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                       children: [
                         Obx(() {
                           return Container(
-                            height: 50,
+                            height: 60,
                             margin: const EdgeInsets.all(ChatHelpers.marginSizeExtraSmall),
                             padding: const EdgeInsets.symmetric(horizontal:ChatHelpers.marginSizeSmall,vertical: ChatHelpers.marginSizeSmall),
                             decoration: BoxDecoration(
@@ -548,32 +549,37 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                                 audioFile.value.path == "" ?
                                 Container(width: MediaQuery.of(context).size.width * .5,
                                   height: 50, decoration: BoxDecoration(
-                                      color: ChatHelpers.mainColorLight,
+                                      color: ChatHelpers.white,
                                       borderRadius: BorderRadius.circular(ChatHelpers.buttonRadius)
-                                  ),)
-                                    : AudioFileWaveforms(
-                                  size: Size( MediaQuery.of(context).size.width * .5, 40.0),
-                                  playerController: controller.value,
-                                  enableSeekGesture: true,
-                                  continuousWaveform: false,
-                                  waveformType: WaveformType.long,
-                                  waveformData: controller.value.waveformData,
-                                  playerWaveStyle: PlayerWaveStyle(
-                                    fixedWaveColor: widget.isSender ? ChatHelpers.white.withOpacity(.5) : ChatHelpers.black.withOpacity(.4),
-                                    liveWaveColor: widget.isSender ? ChatHelpers.white : ChatHelpers.black,
-                                    showSeekLine: false,
-                                    spacing: 6,
-                                    showBottom: true,
-                                    showTop: true,
                                   ),
-                                ),
+                                  child: const LoaderView(loaderColor: ChatHelpers.white,size: 15,),
+                                )
+                                    : SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.55, // Example width constraint
+                          child: AudioFileWaveforms(
+                          size: const Size.fromHeight(50.0),
+                          playerController: controller.value,
+                          enableSeekGesture: true,
+                          continuousWaveform: false,
+                          waveformType: WaveformType.long,
+                          waveformData: controller.value.waveformData,
+                          playerWaveStyle: PlayerWaveStyle(
+                          fixedWaveColor: widget.isSender ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.4),
+                          liveWaveColor: widget.isSender ? Colors.white : Colors.black,
+                          showSeekLine: false,
+                          spacing: 6,
+                          showBottom: true,
+                          showTop: true,
+                          ),
+                          ),
+                          ),
                                 const SizedBox(width: ChatHelpers.marginSizeSmall,),
                                 CircleIconButton(
                                   icons: audioFile.value.path == "" ? Icons.play_arrow :controller.value.playerState.isPlaying ? Icons.pause : Icons.play_arrow,
-                                  height: 45.0,
-                                  width: 45.0,
+                                  height: 50.0,
+                                  width: 50.0,
                                   isImage: false,
-                                  iconsSize: 20,
+                                  iconsSize: 25,
                                   shapeRec: false,
                                   colors: widget.isSender ? ChatHelpers.white : ChatHelpers.black,
                                   onTap: audioFile.value.path == "" ? (){

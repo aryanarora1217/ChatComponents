@@ -5,13 +5,13 @@ import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../../../view_model/controller/chat_screen_controller/camera_screen_controller.dart';
 
-class ImageView extends StatelessWidget {
+class ImageListView extends StatelessWidget {
   final double height;
   final double width;
   final List<Medium> mediaList;
   final CameraScnController controller;
 
-  const ImageView(
+  const ImageListView(
       {super.key,
       required this.height,
       required this.width,

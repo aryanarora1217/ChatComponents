@@ -3,9 +3,9 @@ import 'package:camera/camera.dart';
 import 'package:chatcomponent/chat_components/model/chatHelper/chat_helper.dart';
 import 'package:chatcomponent/chat_components/model/models/picker_file_modal/picker_file_modal.dart';
 import 'package:chewie/chewie.dart';
-import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:video_player/video_player.dart';
@@ -15,7 +15,6 @@ import '../../../view/widgets/log_print/log_print_condition.dart';
 class CameraScnController extends GetxController {
 
   RxBool isCameraRear = false.obs;
-  RxBool isCameraVisible = true.obs;
   RxBool isStartRecording = false.obs;
   RxBool isVideoRecorded = false.obs;
   RxBool isFlashOn = false.obs;
@@ -34,8 +33,11 @@ class CameraScnController extends GetxController {
   late Future<void> initializeControllerFuture;
   VideoPlayerController? videoPlayerController;
   late ChewieController chewieController;
-  FlickManager? flickManager;
 
+  RxInt pageMainIndex = 0.obs;
+  RxInt pageCameraIndex = 0.obs;
+  PageController pageViewMainController = PageController();
+  PageController pageViewCameraController = PageController();
 
 
 
@@ -71,6 +73,7 @@ class CameraScnController extends GetxController {
       mediaList.value = mediaPage.items;
       logPrint("media image : ${mediaList.first.toString()}");
       isLoading.value = false;
+
     }else {
       imageList.add(PickerFileModal(file: File(image.value.path), isVideo: false));
       cropImageList.add(PickerFileModal(file: File(image.value.path), isVideo: false));
@@ -79,7 +82,7 @@ class CameraScnController extends GetxController {
         logPrint(image);
         messageControllerList.add(TextEditingController());
       }
-      isCameraVisible.value = false;
+      pageViewMainController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.ease);
     }
 
   }
@@ -133,7 +136,8 @@ class CameraScnController extends GetxController {
         logPrint(image);
         messageControllerList.add(TextEditingController());
       }
-      isCameraVisible.value = false;
+      pageViewMainController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
     } catch (e) {
       logPrint(e);
     }
@@ -167,8 +171,6 @@ class CameraScnController extends GetxController {
 
       videoPlayerController = VideoPlayerController.file(File(videoFile.path));
 
-      flickManager = FlickManager(videoPlayerController: VideoPlayerController.file(File(videoFile.path)),autoPlay: true,autoInitialize: true);
-
 
       chewieController = ChewieController(
         videoPlayerController: videoPlayerController!,
@@ -189,7 +191,7 @@ class CameraScnController extends GetxController {
 
       isStartRecording.value = false;
       isVideoRecorded.value = true;
-      isCameraVisible.value = false;
+      pageViewMainController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.ease);
     }catch(e){
       logPrint(e);
     }
@@ -217,11 +219,6 @@ class CameraScnController extends GetxController {
 
       videoPlayerController = VideoPlayerController.file(File(image.value.path));
 
-      flickManager = FlickManager(videoPlayerController: VideoPlayerController.file(File(image.value.path)),autoPlay: true,autoInitialize: true);
-
-      logPrint("flick maanger details :${flickManager?.flickVideoManager}");
-
-
 
       chewieController = ChewieController(
           videoPlayerController: videoPlayerController!,
@@ -241,7 +238,7 @@ class CameraScnController extends GetxController {
       logPrint(image);
       messageControllerList.add(TextEditingController());
     }
-    isCameraVisible.value = false;
+    pageViewMainController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   Future<void> longPressOnImage(int index) async {
@@ -269,7 +266,7 @@ class CameraScnController extends GetxController {
       logPrint(image);
       messageControllerList.add(TextEditingController());
     }
-    isCameraVisible.value = false;
+    pageViewMainController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   void sendOnTap(){
@@ -330,7 +327,6 @@ class CameraScnController extends GetxController {
      await videoPlayerController?.initialize();
      await videoPlayerController?.dispose();
      chewieController.dispose();
-     await flickManager?.dispose();
    }catch(e){
      logPrint("error : $e");
    }

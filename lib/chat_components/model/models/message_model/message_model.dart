@@ -47,6 +47,7 @@ class MessageModel {
 class Files {
   String? fileName;
   String? fileUrl;
+  String? fileImageThumbnail;
   String? fileType;
   String? fileMimeType;
   bool? isAdding;
@@ -55,6 +56,7 @@ class Files {
     this.fileName,
     this.fileUrl,
     this.fileType,
+    this.fileImageThumbnail,
     this.fileMimeType,
     this.isAdding,
   });
@@ -64,6 +66,7 @@ class Files {
     fileName: json["file_name"],
     fileUrl: json["file_url"],
     fileType: json["file_type"],
+    fileImageThumbnail: json["file_image_thumbnail"],
     fileMimeType: json["file_mime_type"],
     isAdding: json["isAdding"],
   );
@@ -72,6 +75,7 @@ class Files {
     "file_name": fileName,
     "file_url": fileUrl,
     "file_type": fileType,
+    "file_image_thumbnail": fileImageThumbnail,
     "file_mime_type": fileMimeType,
     "isAdding": isAdding,
   };

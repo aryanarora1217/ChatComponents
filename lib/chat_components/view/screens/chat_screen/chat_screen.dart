@@ -13,6 +13,7 @@ import '../../../model/chatHelper/chat_helper.dart';
 import '../../../model/function_helper/date_time_convertor/date_time_convertor.dart';
 import '../../../view_model/controller/chat_screen_controller/chat_screen_controller.dart';
 import '../../widgets/chat_message/file_view.dart';
+import '../../widgets/chat_message/full_screen_video_player.dart';
 import '../../widgets/chat_message/image_view.dart';
 import '../../widgets/chat_message/image_zoom_view.dart';
 import '../../widgets/chat_message/message_view.dart';
@@ -335,7 +336,10 @@ class ChatScreen extends StatelessWidget {
                                                           : controller
                                                           .messages[index].file
                                                           ?.fileType ==
-                                                          FileTypes.image.name
+                                                          FileTypes.image.name || controller
+                                                          .messages[index].file
+                                                          ?.fileType ==
+                                                          FileTypes.video.name
                                                           ? ImageView(
                                                         isAdding: controller
                                                             .messages[index]
@@ -352,24 +356,25 @@ class ChatScreen extends StatelessWidget {
                                                             controller
                                                                 .messages[index]
                                                                 .time ?? ""),
-                                                        image: controller
-                                                            .messages[index]
-                                                            .file?.fileUrl ??
-                                                            '',
+                                                        image: controller.messages[index].file?.fileType == FileTypes.video.name
+                                                            ? controller.messages[index].file?.fileImageThumbnail ?? ""
+                                                            : controller.messages[index].file?.fileUrl ?? '',
                                                         isSender: controller
                                                             .messages[index]
                                                             .sender ==
                                                             controller
                                                                 .currentUserId
                                                                 .value,
-                                                        onTap: () =>
-                                                            Get.to(
+                                                        onTap: () => controller.messages[index].file?.fileType == FileTypes.video.name ?
+                                                        Get.to(
+                                                          FullScreenVideoPlayer(
+                                                            file: controller.messages[index].file?.fileUrl ?? '',
+                                                            chatController: controller, imageThumbnail: controller.messages[index].file?.fileImageThumbnail ?? "",
+                                                          ),
+                                                        )
+                                                            : Get.to(
                                                               ViewImageAndPlayVideoScreen(
-                                                                file: controller
-                                                                    .messages[index]
-                                                                    .file
-                                                                    ?.fileUrl ??
-                                                                    '',
+                                                                file: controller.messages[index].file?.fileUrl ?? '',
                                                                 chatController: controller,
                                                               ),
                                                             ),
@@ -400,6 +405,7 @@ class ChatScreen extends StatelessWidget {
                                                         },
                                                         index: index,
                                                         chatController: controller,
+                                                        isVideo: controller.messages[index].file?.fileType == FileTypes.image.name ? false : true,
                                                       ) : controller
                                                           .messages[index].file
                                                           ?.fileType ==

@@ -19,6 +19,7 @@ class ImageView extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   final ChatController chatController;
+  final bool isVideo;
 
   const ImageView(
       {super.key,
@@ -33,7 +34,7 @@ class ImageView extends StatelessWidget {
       required this.index,
       required this.reaction,
       required this.imageMessage,
-      required this.isAdding});
+      required this.isAdding, required this.isVideo});
 
   @override
   Widget build(BuildContext context) {

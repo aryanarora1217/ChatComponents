@@ -9,7 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 import '../../../model/firebase_notification/firebase_notification.dart';
 import '../../../model/function_helper/file_extension.dart';
 import '../../../model/function_helper/get_image_function.dart';
@@ -357,8 +359,10 @@ class ChatController extends GetxController with WidgetsBindingObserver {
         bool isFile = messageModel.messageType == "file";
         bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
         messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+        messageModel.file?.fileImageThumbnail = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileImageThumbnail??"") : (messageModel.file?.fileImageThumbnail??"");
         messages.add(messageModel);
         logPrint("update chats : $isAdded , ${messageModel.file?.fileUrl}");
+        // logPrint("update chats video file  : $isAdded , ${ messageModel.messageType == "file" ? messageModel.file?.fileType == FileTypes.video.name ?  await getVideoThumbnail(messageModel.file?.fileUrl??"") : "" :""}");
       }
       isLoadingChats.value = false;
       messages.value = messages.reversed.toList();
@@ -380,8 +384,9 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           bool isFile = messageModel.messageType == "file";
           bool isAdded =  messageModel.file?.fileUrl?.contains(chatArguments.imageBaseUrlFirebase) ?? true;
           messageModel.file?.fileUrl = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileUrl??"") : (messageModel.file?.fileUrl??"");
+          messageModel.file?.fileImageThumbnail = isFile && (isAdded == false)? chatArguments.imageBaseUrlFirebase+(messageModel.file?.fileImageThumbnail??"") : (messageModel.file?.fileImageThumbnail??"");
           messages.add(messageModel);
-          logPrint("update chats : ${messageModel.file?.fileUrl}");
+          logPrint("update chats : ${messageModel.file?.fileUrl}  , ${messageModel.file?.fileImageThumbnail}");
         }
         if (messages.last.sender != currentUserId.value) {
           MessageModel message = messages.last;
@@ -493,19 +498,24 @@ class ChatController extends GetxController with WidgetsBindingObserver {
             /// get file extension of a file
             String fileExt = getFileExtension(fileName)!;
 
-            MessageModel loadingMessage = MessageModel(id: id,message: imageMessage.text,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: cameraImage.path,isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+            String thumbnail = await getVideoThumbnail(imageList[counter].file?.path ?? "");
+
+
+            MessageModel loadingMessage = MessageModel(id: id,message: imageMessage.text,file: Files(fileName: fileName, fileMimeType: fileExt, fileType: imageList[counter].isVideo ?? false ? FileTypes.video.name : FileTypes.image.name , fileUrl: cameraImage.path,fileImageThumbnail: imageList[counter].isVideo ?? false ? thumbnail : "", isAdding:false), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
             messages.add(loadingMessage);
 
             /// add image in firebase storage
             String? url = await firebase.addChatFiles(id, cameraImage.path);
+            String? thumbnailUrl = await firebase.addChatFiles("$id+thumbnail", thumbnail);
 
-            logPrint("url : - $url , ${imageMessage.text}");
+            logPrint("url : - $url , ${imageMessage.text} , $thumbnailUrl");
 
             List storagePath = url!.split(chatArguments.imageBaseUrlFirebase);
+            List thumbnailStoragePath = thumbnailUrl!.split(chatArguments.imageBaseUrlFirebase);
 
             /// update chatroom and messages list
             logPrint("url : - $url , ${imageMessage.text} , ${storagePath[1]}");
-            MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: FileTypes.image.name, fileUrl: storagePath[1],isAdding:true), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
+            MessageModel message = MessageModel(id: id,message: imageMessage.text, file: Files(fileName: fileName, fileMimeType: fileExt, fileType: imageList[counter].isVideo ?? false ? FileTypes.video.name : FileTypes.image.name, fileUrl: storagePath[1],isAdding:true, fileImageThumbnail: imageList[counter].isVideo ?? false ? thumbnailStoragePath[1] : ""), messageType: MessageType.file.name, sender: currentUserId.value, isSeen: false, time: DateTime.now().toUtc().toString());
 
             ChatRoomModel chatRoomModel = addChatRoomModel(message);
             firebase.addMessage(message, chatRoomModel);
@@ -531,6 +541,27 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       logPrint("Error uploading images ing : $e");
       toastShow(massage: "Error uploading images", error: true);
     }
+  }
+
+  Future<String> getVideoThumbnail(String url) async {
+   try{
+     final uint8list = await VideoThumbnail.thumbnailData(
+       video: url,
+       imageFormat: ImageFormat.JPEG,
+       maxWidth: 128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+       quality: 25,
+     );
+     Permission.storage.isGranted;
+     var tempDir = await getExternalStorageDirectory();
+     final imagePath = await File('${tempDir?.path}/image.png').create();
+     await imagePath.writeAsBytes(uint8list??[]);
+     logPrint("vidoe file thumbnail : ${imagePath.path} $uint8list , ${uint8list.runtimeType}");
+     return imagePath.path;
+   }catch(e){
+     logPrint("error in video thumbnail fetching : $e}");
+     return "";
+   }
+    // return uint8list ?? "";
   }
 
   /// app life cycle  state manage with online status
